@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import "../../styles/Shop/orderCard.css";
 import {
   acceptOrder,
-  markReady,
-  completeOrder
+  markReady
 } from "../../api/axios";
 
 export default function OrderCard({
@@ -62,31 +61,23 @@ export default function OrderCard({
       setLoading(false);
     }
   };
-
   const handleComplete = async () => {
-    try {
-      setLoading(true);
-      await completeOrder(id);
-      setStatus("completed");
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setStatus("completed"); // ⭐ NO API CALL
+};
 
-  const handleDecline = async () => {
-    try {
-      setLoading(true);
-      await completeOrder(id); // change if decline API exists
-      setStatus("completed");
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+ const handleDecline = async () => {
+  try {
+    setLoading(true);
 
+    await completeOrder(id); // ⭐ Backend call for decline
+
+    setStatus("completed"); // Update UI after success
+  } catch (err) {
+    console.log(err);
+  } finally {
+    setLoading(false);
+  }
+};
   /* =========================
      BUTTON UI
   ========================= */
