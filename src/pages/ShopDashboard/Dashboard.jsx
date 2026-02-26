@@ -10,7 +10,7 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
 
   /* =========================
-     FETCH ORDERS
+     FETCH ORDERS -shop
   ========================= */
  const fetchOrders = async () => {
   try {
