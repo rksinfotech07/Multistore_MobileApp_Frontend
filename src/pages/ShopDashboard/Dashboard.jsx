@@ -12,25 +12,25 @@ export default function Dashboard() {
   /* =========================
      FETCH ORDERS
   ========================= */
-  const fetchOrders = async () => {
-    try {
-      const res = await axios.get("/api/shop/orders");
+ const fetchOrders = async () => {
+  try {
+    const res = await axios.get("/api/shop/orders");
 
-      // debug
-      console.log("Dashboard Orders 👉", res.data);
+    console.log("Dashboard Orders 👉", res.data);
 
-      if (Array.isArray(res.data)) {
-        setOrders(res.data);
-      } else {
-        setOrders([]);
-      }
-    } catch (err) {
-      console.error("Fetch orders error 👉", err);
-      setError("Unable to load orders");
-    } finally {
-      setLoading(false);
+    // ⭐ CORRECT — use res.data.data
+    if (res.data?.success && Array.isArray(res.data.data)) {
+      setOrders(res.data.data);
+    } else {
+      setOrders([]);
     }
-  };
+  } catch (err) {
+    console.error("Fetch orders error 👉", err);
+    setError("Unable to load orders");
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchOrders();
