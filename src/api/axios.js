@@ -19,7 +19,7 @@ export const acceptOrder = (id) =>
 export const markReady = (id) =>
   instance.put(`/api/shop/orders/${id}/ready`);
 
-export const completeOrder = (id) =>
-  instance.put(`/api/shop/orders/${id}/completed`);
+export const declineOrder = (id) =>
+  instance.put(`/api/shop/orders/${id}/decline`);
 
 export default instance;

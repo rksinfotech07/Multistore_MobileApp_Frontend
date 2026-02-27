@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import "../../styles/Shop/orderCard.css";
 import {
   acceptOrder,
-  markReady
+  markReady,
+  declineOrder
 } from "../../api/axios";
 
 export default function OrderCard({
@@ -10,7 +11,8 @@ export default function OrderCard({
   name,
   amount,
   statusFromDB,
-  items = []
+  items = [],
+  onComplete
 }) {
   const [status, setStatus] = useState("received");
   const [loading, setLoading] = useState(false);
@@ -27,11 +29,20 @@ export default function OrderCard({
     const s = statusFromDB.toLowerCase();
 
     if (s === "pending") setStatus("received");
-    else if (s === "accepted") setStatus("preparing");
-    else if (s === "preparing") setStatus("preparing");
-    else if (s === "ready") setStatus("ready");
-    else if (s === "completed") setStatus("completed");
-    else setStatus("received");
+
+else if (s === "accepted")
+  setStatus("accepted");   // waiting for agent
+
+else if (s === "assigned")
+  setStatus("preparing");  // agent assigned → shop can cook
+
+else if (s === "ready")
+  setStatus("ready");
+
+else if (s === "completed")
+  setStatus("completed");
+
+else setStatus("received");
   }, [statusFromDB]);
 
   /* =========================
@@ -61,17 +72,35 @@ export default function OrderCard({
       setLoading(false);
     }
   };
-  const handleComplete = async () => {
-  setStatus("completed"); // ⭐ NO API CALL
+ const handleComplete = () => {
+  setStatus("completed");
+
+  // ⭐ Get stored completed orders
+  const completed = JSON.parse(
+    localStorage.getItem("completedOrders") || "[]"
+  );
+
+  // ⭐ Add this order ID if not already present
+  if (!completed.includes(id)) {
+    completed.push(id);
+    localStorage.setItem(
+      "completedOrders",
+      JSON.stringify(completed)
+    );
+  }
+
+  // ⭐ Inform parent (Dashboard)
+  if (onComplete) onComplete(id);
 };
 
- const handleDecline = async () => {
+const handleDecline = async () => {
   try {
     setLoading(true);
+    await declineOrder(id);
 
-    await completeOrder(id); // ⭐ Backend call for decline
+    setStatus("completed");
+    if (onComplete) onComplete(id);
 
-    setStatus("completed"); // Update UI after success
   } catch (err) {
     console.log(err);
   } finally {
@@ -98,6 +127,13 @@ export default function OrderCard({
         </div>
       );
     }
+    if (status === "accepted") {
+  return (
+    <div className="status-text">
+      Waiting for delivery partner...
+    </div>
+  );
+}
 
     if (status === "preparing") {
       return (

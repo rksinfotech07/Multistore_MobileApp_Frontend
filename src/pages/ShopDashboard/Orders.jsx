@@ -9,22 +9,32 @@ export default function Orders() {
   /* =========================
      FETCH COMPLETED ORDERS
   ========================= */
-  const fetchCompletedOrders = async () => {
-    try {
-      const res = await axios.get("/api/shop/orders");
+ const fetchCompletedOrders = async () => {
+  try {
+    const res = await axios.get("/api/shop/orders");
 
-      // only completed orders
-      const completedOrders = res.data.filter(
-        (order) => order.status === "completed"
-      );
+    const allOrders = res.data.data || [];
 
-      setOrders(completedOrders);
-    } catch (err) {
-      console.error("Fetch completed orders failed", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    // ⭐ Get completed order IDs stored locally
+    const completedIds = JSON.parse(
+      localStorage.getItem("completedOrders") || "[]"
+    );
+
+    // ⭐ Filter orders
+    const completedOrders = allOrders.filter(
+      (order) =>
+        order.status === "completed" ||   // backend completed
+        completedIds.includes(order.id)   // frontend completed
+    );
+
+    setOrders(completedOrders);
+
+  } catch (err) {
+    console.error("Fetch completed orders failed", err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchCompletedOrders();

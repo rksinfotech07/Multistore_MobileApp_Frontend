@@ -42,10 +42,16 @@ export default function Dashboard() {
   if (loading) return <p>Loading dashboard...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
-  const activeOrders = orders.filter(
-    (o) => o.status !== "completed"
-  );
+ // ⭐ Get completed IDs from localStorage
+const completedIds = JSON.parse(
+  localStorage.getItem("completedOrders") || "[]"
+);
 
+const activeOrders = orders.filter(
+  (o) =>
+    o.status !== "completed" &&
+    !completedIds.includes(o.id)
+);
   const totalRevenue = orders.reduce(
     (sum, o) => sum + Number(o.total_amount || 0),
     0
@@ -164,13 +170,23 @@ export default function Dashboard() {
         ) : (
           activeOrders.map((order) => (
             <OrderCard
-              key={order.id}
-              id={order.id}
-              name={order.customer_name || "Unknown"}
-              amount={order.total_amount || 0}
-              statusFromDB={order.status}
-              items={order.items}
-            />
+  key={order.id}
+  id={order.id}
+  name={order.customer_name || "Unknown"}
+  amount={order.total_amount || 0}
+  statusFromDB={order.status}
+  items={order.items}
+
+  onComplete={(orderId) => {
+    setOrders((prev) =>
+      prev.map((o) =>
+        o.id === orderId
+          ? { ...o, status: "completed" }
+          : o
+      )
+    );
+  }}
+/>
           ))
         )}
       </div>
