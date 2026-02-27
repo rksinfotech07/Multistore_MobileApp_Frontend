@@ -1,13 +1,59 @@
+import { Inbox, RefreshCcw, DollarSign, Search } from "lucide-react";
 import { useEffect, useState } from "react";
-
+import { useOutletContext } from "react-router-dom";
 import OrderCard from "../../components/Shop/orderCard";
 import axios from "../../api/axios";
 import "../../styles/Shop/Dashboard.css";
 
+/* ===== COUNTER ===== */
+function Counter({ value }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const duration = 700;
+    const increment = value / (duration / 16);
+
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= value) {
+        setCount(value);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+
+    return () => clearInterval(timer);
+  }, [value]);
+
+  return <>{count}</>;
+}
+
 export default function Dashboard() {
+  /* ⭐ GET GLOBAL STATUS FROM LAYOUT */
+  const { shopActive } = useOutletContext();
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchText, setSearchText] = useState("");
+
+    /* ===== PROFILE DATA ===== */
+  const [profileData, setProfileData] = useState(
+    JSON.parse(localStorage.getItem("profileData")) || {}
+  );
+
+  useEffect(() => {
+    const updateProfile = () => {
+      const latest = JSON.parse(localStorage.getItem("profileData"));
+      setProfileData(latest);
+    };
+
+    window.addEventListener("profileUpdated", updateProfile);
+    return () =>
+      window.removeEventListener("profileUpdated", updateProfile);
+  }, []);
 
   /* =========================
      FETCH ORDERS -shop
@@ -42,6 +88,31 @@ export default function Dashboard() {
   if (loading) return <p>Loading dashboard...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
+  
+  /* ===== OFFLINE MODE ===== */
+if (!shopActive) {
+  return (
+    <div className="offline-screen">
+      <div className="offline-card">
+
+        <div className="offline-icon">⏻</div>
+
+        <h2>You're Offline</h2>
+
+        <p>
+          Your store is currently not receiving any new orders.
+          Switch your status to <b>Active</b> to start accepting orders instantly.
+        </p>
+
+        <div className="offline-hint">
+          💡 Turn ON the toggle in the top-right corner to go online
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
  // ⭐ Get completed IDs from localStorage
 const completedIds = JSON.parse(
   localStorage.getItem("completedOrders") || "[]"
@@ -59,134 +130,102 @@ const activeOrders = orders.filter(
 
   return (
     <>
-      {/* ================= STATS ================= */}
-<div className="grid grid-cols-3 gap-6 mb-8">
-
-  {/* ================= NEW ORDERS ================= */}
-  <div className="group relative overflow-hidden
-    bg-white/70 backdrop-blur-xl
-    rounded-2xl p-6
-    shadow-lg transition-all duration-300
-    hover:-translate-y-2 hover:shadow-2xl">
-
-    <div className="absolute inset-0 rounded-2xl opacity-0
-      group-hover:opacity-100 transition duration-500
-      bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 blur-xl">
-    </div>
-
-    <div className="relative flex items-center gap-5">
-      <div className="w-14 h-14 rounded-xl flex items-center justify-center
-        text-xl text-white
-        bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md">
-        📩
-      </div>
-      <div>
-        <p className="text-xs tracking-wider font-semibold text-gray-500">
-          NEW ORDERS
-        </p>
-        <h3 className="text-2xl font-bold text-gray-800">
-          {orders.length}
-        </h3>
-      </div>
-    </div>
-  </div>
-
-  {/* ================= ORDERS IN PROCESS ================= */}
-  <div className="group relative overflow-hidden
-    bg-white/70 backdrop-blur-xl
-    rounded-2xl p-6
-    shadow-lg transition-all duration-300
-    hover:-translate-y-2 hover:shadow-2xl">
-
-    <div className="absolute inset-0 rounded-2xl opacity-0
-      group-hover:opacity-100 transition duration-500
-      bg-gradient-to-r from-orange-500/20 via-pink-500/20 to-red-500/20 blur-xl">
-    </div>
-
-    <div className="relative flex items-center gap-5">
-      <div className="w-14 h-14 rounded-xl flex items-center justify-center
-        text-xl text-white
-        bg-gradient-to-br from-orange-500 to-pink-500 shadow-md">
-        📌
-      </div>
-      <div>
-        <p className="text-xs tracking-wider font-semibold text-gray-500">
-          ORDERS IN PROCESS
-        </p>
-        <h3 className="text-2xl font-bold text-gray-800">
-          {activeOrders.length}
-        </h3>
-      </div>
-    </div>
-  </div>
-
-  {/* ================= TODAY REVENUE ================= */}
-  <div className="group relative overflow-hidden
-    bg-white/70 backdrop-blur-xl
-    rounded-2xl p-6
-    shadow-lg transition-all duration-300
-    hover:-translate-y-2 hover:shadow-2xl">
-
-    <div className="absolute inset-0 rounded-2xl opacity-0
-      group-hover:opacity-100 transition duration-500
-      bg-gradient-to-r from-emerald-500/20 via-teal-500/20 to-green-500/20 blur-xl">
-    </div>
-
-    <div className="relative flex items-center gap-5">
-      <div className="w-14 h-14 rounded-xl flex items-center justify-center
-        text-xl text-white
-        bg-gradient-to-br from-emerald-500 to-teal-500 shadow-md">
-        💰
-      </div>
-      <div>
-        <p className="text-xs tracking-wider font-semibold text-gray-500">
-          TODAY'S REVENUE
-        </p>
-        <h3 className="text-2xl font-bold text-gray-800">
-          ₹{totalRevenue}
-        </h3>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-
-      {/* ================= HEADER ================= */}
-      <div className="pipeline-header">
+      {/* ===== HEADER ===== */}
+      <div className="dashboard-header">
         <div>
-          <p className="pipeline-title">⚡ Order Stream</p>
-          <p className="pipeline-sub">
-            Managing {activeOrders.length} live requests
+          <h1 className="welcome-title">
+            Welcome back, {profileData?.shop_name || profileData?.owner_name || "User"} 👋
+          </h1>
+
+          <p className="welcome-sub">
+            Here's what's happening with your store today.
           </p>
         </div>
-        <span className="priority-badge">PRIORITY ATTENTION</span>
+
+        <div className="search-box">
+          <Search className="search-icon" size={18} />
+
+          <input
+  type="text"
+  placeholder="Search orders..."
+  value={searchText}
+  onChange={(e) => setSearchText(e.target.value)}
+/>
+        </div>
       </div>
 
-      {/* ================= ORDERS ================= */}
+      {/* ===== STATS ===== */}
+      <div className="stats-row">
+
+        <div className="stat-box">
+          <div>
+            <p className="stat-label">New Orders</p>
+            <h2 className="stat-number">
+              <Counter value={orders.length} />
+            </h2>
+          </div>
+
+          <div className="stat-icon-box orange">
+            <Inbox size={28} />
+          </div>
+        </div>
+
+        <div className="stat-box">
+          <div>
+            <p className="stat-label">Orders in Process</p>
+            <h2 className="stat-number">
+              <Counter value={activeOrders.length} />
+            </h2>
+          </div>
+
+          <div className="stat-icon-box coral">
+            <RefreshCcw size={28} />
+          </div>
+        </div>
+
+        <div className="stat-box">
+          <div>
+            <p className="stat-label">Today's Revenue</p>
+            <h2 className="stat-number">
+              ₹<Counter value={totalRevenue} />
+            </h2>
+          </div>
+
+          <div className="stat-icon-box gold">
+            <DollarSign size={28} />
+          </div>
+        </div>
+
+      </div>
+
+      {/* ===== LIVE HEADER ===== */}
+      <div className="live-header">
+        <h2 className="live-title">Live Orders</h2>
+
+        <div className="live-status">
+          <span className="live-dot"></span>
+          Live
+        </div>
+      </div>
+
+      {/* ===== ORDERS GRID ===== */}
       <div className="order-grid">
         {activeOrders.length === 0 ? (
-          <p>No active orders</p>
+          <p>
+  {searchText
+    ? "No matching orders found"
+    : "No active orders"}
+</p>
         ) : (
-          activeOrders.map((order) => (
+          activeOrders.map(order => (
             <OrderCard
-  key={order.id}
-  id={order.id}
-  name={order.customer_name || "Unknown"}
-  amount={order.total_amount || 0}
-  statusFromDB={order.status}
-  items={order.items}
-
-  onComplete={(orderId) => {
-    setOrders((prev) =>
-      prev.map((o) =>
-        o.id === orderId
-          ? { ...o, status: "completed" }
-          : o
-      )
-    );
-  }}
-/>
+              key={order.id}
+              id={order.id}
+              name={order.customer_name || "Unknown"}
+              amount={order.total_amount || 0}
+              statusFromDB={order.status}
+              items={order.items}
+            />
           ))
         )}
       </div>

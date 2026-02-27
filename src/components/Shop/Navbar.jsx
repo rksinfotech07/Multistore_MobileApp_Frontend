@@ -1,23 +1,22 @@
 import { NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { LayoutDashboard, ClipboardList, Box, User } from "lucide-react";
 import ProfileModal from "./ProfileModal";
 import UpdateProfileModal from "./updateProfileModal";
-import "../../App.css";
+import "../../styles/Shop/Navbar.css";
 
-export default function Navbar() {
+export default function Navbar({ shopActive, setShopActive }) {
   const [showOfflinePopup, setShowOfflinePopup] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-  const [shopActive, setShopActive] = useState(true);
   const [showOnlinePopup, setShowOnlinePopup] = useState(false);
 
-
-// 🆕 Now profile data comes from localStorage
+  /* 🔹 PROFILE DATA FROM LOCAL STORAGE */
   const [profileData, setProfileData] = useState(
     JSON.parse(localStorage.getItem("profileData")) || {}
   );
 
-  // 🆕 Listen when profile updates anywhere in app
+  /* 🔹 SYNC PROFILE UPDATES */
   useEffect(() => {
     const updateProfile = () => {
       const latest = JSON.parse(localStorage.getItem("profileData"));
@@ -25,137 +24,106 @@ export default function Navbar() {
     };
 
     window.addEventListener("profileUpdated", updateProfile);
-
-    return () => {
+    return () =>
       window.removeEventListener("profileUpdated", updateProfile);
-    };
   }, []);
 
-  /* TAB STYLE */
+  /* 🔹 TAB STYLE */
   const tabClass = ({ isActive }) =>
-    `px-5 py-2 rounded-full text-sm font-medium transition-all duration-300
-    ${
-      isActive
-        ? shopActive
-          ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-md"
-          : "bg-white text-gray-400 shadow"
-        : shopActive
-        ? "text-gray-500 hover:text-pink-500"
-        : "text-gray-300"
-    }`;
+    `nav-tab ${isActive ? "active" : ""}`;
 
   return (
     <>
-      <header className="h-16 bg-white border-b flex items-center justify-between px-8">
+      <header className="navbar">
 
-        {/* LEFT */}
-        <div className="flex items-center gap-3">
+        {/* ===== LEFT : SHOP BRAND ===== */}
+        <div className="nav-left">
           <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white transition
-            ${
-              shopActive
-                ? "bg-gradient-to-r from-orange-500 to-pink-500"
-                : "bg-gray-300"
+            className={`brand-logo ${
+              shopActive ? "active" : "inactive"
             }`}
           >
-            {profileData?.owner_name?.charAt(0)?.toUpperCase() || "N"} {/* 🆕 */}
+            🍔
           </div>
 
-          <div>
-            <p className="text-sm font-semibold leading-none">
-              {profileData?.owner_name || "User"} {/* 🆕 */}
-            </p>
-          </div>
-
-          <div>
-            <p className="text-[11px] text-gray-400">FOOD PORTAL</p>
-          </div>
+          <span className="brand-name">
+            {profileData?.shop_name ||
+              profileData?.owner_name ||
+              "Flame Kitchen"}
+          </span>
         </div>
 
-        {/* CENTER */}
-        <div className="bg-gray-100 rounded-full p-1 flex gap-1">
+        {/* ===== CENTER : NAV TABS ===== */}
+        <div className="nav-center">
           <NavLink to="/shop-dashboard" end className={tabClass}>
+            <LayoutDashboard size={16} />
             Overview
           </NavLink>
+
           <NavLink to="/shop-dashboard/orders" className={tabClass}>
+            <ClipboardList size={16} />
             Orders
           </NavLink>
+
           <NavLink to="/shop-dashboard/products" className={tabClass}>
+            <Box size={16} />
             Products
           </NavLink>
         </div>
 
-        {/* RIGHT */}
-        <div className="flex items-center gap-5">
-          {/* ✅ WELCOME TEXT ADDED HERE */}
-<span className="text-lg font-semibold bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
+        {/* ===== RIGHT : STATUS + PROFILE ===== */}
+        <div className="nav-right">
 
-    Welcome {profileData?.owner_name || "User"}
-  </span>
+          {/* 🔹 STATUS TOGGLE (OLD LOGIC) */}
+          <div className="status-group">
+          <div
+            onClick={() => {
+              setShopActive((prev) => {
+  const next = !prev;
 
-          {/* STATUS TOGGLE */}
-          <div className="flex items-center gap-3 text-xs w-[150px] justify-end">
+  localStorage.setItem("shopActive", JSON.stringify(next));
+  window.dispatchEvent(
+  new Event("shopStatusChanged")
+);
 
-            {/* ✅ TOGGLE (UI RESTORED, LOGIC SAME) */}
-            <div
-              onClick={() => {
-  setShopActive((prev) => {
-    const next = !prev;
+                if (!next) {
+                  setShowOfflinePopup(true);
+                  setTimeout(() => setShowOfflinePopup(false), 3000);
+                } else {
+                  setShowOnlinePopup(true);
+                  setTimeout(() => setShowOnlinePopup(false), 3000);
+                }
 
-    if (!next) {
-      // OFFLINE
-      setShowOfflinePopup(true);
-      setTimeout(() => setShowOfflinePopup(false), 3000);
-    } else {
-      // ONLINE
-      setShowOnlinePopup(true);
-      setTimeout(() => setShowOnlinePopup(false), 3000);
-    }
-
-    return next;
-  });
-}}
-
-              className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all duration-300
-              ${
-                shopActive
-                  ? "bg-gradient-to-r from-orange-500 to-pink-500"
-                  : "bg-gray-300"
-              }`}
-            >
-              <div
-                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition duration-300
-                ${shopActive ? "translate-x-5" : "translate-x-0"}`}
-              />
-            </div>
-
-            <span
-              className={`font-medium w-[65px] ${
-                shopActive
-                  ? "bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent"
-                  : "text-gray-400"
-              }`}
-            >
-              {shopActive ? "Active" : "Inactive"}
-            </span>
+                return next;
+              });
+            }}
+            className={`status-toggle ${shopActive ? "on" : ""}`}
+          >
+            <div className="toggle-circle" />
           </div>
 
-          {/* PROFILE */}
+          <span
+            className={`status-text ${
+              shopActive ? "active" : ""
+            }`}
+          >
+            {shopActive ? "Active" : "Inactive"}
+          </span>
+          </div>
+
+          {/* 🔹 PROFILE BUTTON (MODAL WORKS) */}
           <div
-            className={`w-9 h-9 rounded-full flex items-center justify-center font-semibold cursor-pointer transition-all duration-300
-            ${
-              shopActive
-                ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white"
-                : "bg-gray-200 text-gray-500"
+            className={`profile-btn ${
+              shopActive ? "active" : "inactive"
             }`}
             onClick={() => setOpenProfile(true)}
           >
-            {profileData?.owner_name?.charAt(0)?.toUpperCase() || " "} {/* 🆕 */}
+            <User size={18} />
           </div>
         </div>
       </header>
 
-      {/* PROFILE MODAL */}
+      {/* ===== PROFILE MODAL ===== */}
       <ProfileModal
         open={openProfile}
         onClose={() => setOpenProfile(false)}
@@ -166,46 +134,37 @@ export default function Navbar() {
         }}
       />
 
-      {/* UPDATE PROFILE */}
+      {/* ===== UPDATE PROFILE ===== */}
       <UpdateProfileModal
         open={openEdit}
         onClose={() => setOpenEdit(false)}
         profile={profileData}
       />
 
-      {/* TOP OFFLINE POPUP */}
+      {/* ===== POPUPS ===== */}
       {showOfflinePopup && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-slide-down">
-          <div className="bg-white border border-gray-200 shadow-lg rounded-lg px-6 py-3 flex items-center gap-3">
-            <span className="text-orange-500 text-lg">⚠</span>
-            <div>
-              <p className="font-semibold text-sm text-gray-800">
-                You are offline
-              </p>
-              <p className="text-xs text-gray-500">
-                New orders won’t be received while your shop is inactive.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {showOnlinePopup && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-slide-down">
-          <div className="bg-white border border-gray-200 shadow-lg rounded-lg px-6 py-3 flex items-center gap-3">
-            <span className="text-green-500 text-lg">✅</span>
-            <div>
-              <p className="font-semibold text-sm text-gray-800">
-                You are now online
-              </p>
-              <p className="text-xs text-gray-500">
-                New orders will be received.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-      
+  <div className="toast modern warning">
+    <div className="toast-icon-box">⚠</div>
+    <div>
+      <p className="toast-title">You are offline</p>
+      <p className="toast-sub">
+        New orders won’t be received
+      </p>
+    </div>
+  </div>
+)}
+
+{showOnlinePopup && (
+  <div className="toast modern success">
+    <div className="toast-icon-box">✓</div>
+    <div>
+      <p className="toast-title">You are online</p>
+      <p className="toast-sub">
+        Ready to receive orders
+      </p>
+    </div>
+  </div>
+)}
     </>
   );
 }

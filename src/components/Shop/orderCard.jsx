@@ -16,6 +16,7 @@ export default function OrderCard({
 }) {
   const [status, setStatus] = useState("received");
   const [loading, setLoading] = useState(false);
+  const [seconds, setSeconds] = useState(0);
 
   /* =========================
      NORMALIZE STATUS FROM DB
@@ -44,6 +45,20 @@ else if (s === "completed")
 
 else setStatus("received");
   }, [statusFromDB]);
+
+   /* =========================
+     ORDER TIMER
+  ========================= */
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSeconds(prev => prev + 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const minutes = Math.floor(seconds / 60);
+
 
   /* =========================
      API CALLS
@@ -111,7 +126,7 @@ const handleDecline = async () => {
      BUTTON UI
   ========================= */
   const renderButton = () => {
-    if (loading) return <div className="status-text">Updating...</div>;
+    if (loading) return <span>Updating...</span>;
 
     // 🔹 NEW ORDER → Accept + Decline side by side
     if (status === "received") {
@@ -161,40 +176,39 @@ const handleDecline = async () => {
     completed: "COMPLETED"
   };
 
+ 
   return (
-    <div className={`order-card ${status}`}>
-      {/* HEADER */}
-      <div className="order-header">
-        <div>
-          <h4>{name || "Customer"}</h4>
-          <span className="order-id">Order #{id}</span>
+    <div className={`order-row-card ${status}`}>
+
+      {/* LEFT SIDE */}
+      <div className="order-left">
+
+        <div className="order-top">
+          <strong>#{id}</strong> {name || "Customer"}
         </div>
 
-        <div className="header-right">
-          <span className="amount">₹{amount}</span>
+        {/* ITEMS INLINE */}
+        <div className="order-items">
+          {items.length === 0
+            ? "No items"
+            : items.map(i => `${i.qty}x ${i.name}`).join(", ")
+          }
         </div>
+
+        {/* META INFO */}
+        <div className="order-meta">
+          <span className="price">₹{amount}</span>
+          <span className="time">⏱ {minutes} min ago</span>
+          <span className="status">{statusText[status]}</span>
+        </div>
+
       </div>
 
-      {/* ITEMS */}
-      <div className="order-body">
-        <div className="items">
-          {items.length === 0 ? (
-            <div className="item-pill">No items</div>
-          ) : (
-            items.map((item, i) => (
-              <div key={i} className="item-pill">
-                {item.qty} × {item.name}
-              </div>
-            ))
-          )}
-        </div>
-      </div>
-
-      {/* FOOTER */}
-      <div className="order-footer">
+      {/* RIGHT SIDE */}
+      <div className="order-right">
         {renderButton()}
-        <div className="status-text">{statusText[status]}</div>
       </div>
+
     </div>
   );
 }

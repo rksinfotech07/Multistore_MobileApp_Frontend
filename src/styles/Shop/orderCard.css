@@ -1,236 +1,151 @@
-/* ===============================
-   CARD BASE
-================================ */
-
-.order-card {
-  width: 280px;
+/* =========================================
+   ⭐ PRODUCTION ROW ORDER CARD
+========================================= */
+.order-row-card {
+  width: 100%;
   background: #ffffff;
+
   border-radius: 18px;
-  padding: 18px;
-  min-height: 300px;
+  padding: 22px 28px;
 
-  display: flex;
-  flex-direction: column;
-  position: relative;
-
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
-  transition: transform 0.25s ease;
-}
-
-.order-card:hover {
-  transform: translateY(-4px);
-}
-
-/* ===============================
-   🔥 LIVE BLINKING (NON-COMPLETED)
-================================ */
-
-.order-card.received,
-.order-card.preparing,
-.order-card.ready {
-  animation: liveGlow 2s infinite ease-in-out;
-}
-
-@keyframes liveGlow {
-  0% {
-    box-shadow:
-      0 0 0 0 rgba(236, 171, 121, 0.25),
-      0 10px 28px rgba(0, 0, 0, 0.08);
-  }
-  50% {
-    box-shadow:
-      0 0 16px 6px rgba(236, 171, 121, 0.55),
-      0 10px 28px rgba(0, 0, 0, 0.08);
-  }
-  100% {
-    box-shadow:
-      0 0 0 0 rgba(236, 171, 121, 0.25),
-      0 10px 28px rgba(0, 0, 0, 0.08);
-  }
-}
-
-/* ===============================
-   HEADER
-================================ */
-
-.order-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+
+  border: 1px solid #f97316;   /* ⭐ subtle full border */
+
+  box-shadow: 0 6px 16px rgba(0,0,0,0.04);
+
+  transition: 0.2s;
+}
+.order-row-card:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 0 0 2px rgba(249,115,22,0.25),
+    0 10px 20px rgba(249,115,22,0.25);
+
+  border-color: #f97316;
 }
 
-.order-header h4 {
-  margin: 0;
-  font-size: 15px;
+/* ===== LEFT SIDE ===== */
+
+.order-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 70%;
+}
+
+.order-top {
+  font-size: 16px;
   font-weight: 700;
   color: #111827;
 }
 
-.order-id {
-  font-size: 11px;
+.order-items {
+  font-size: 14px;
   color: #6b7280;
 }
 
-.amount {
-  font-size: 16px;
+/* META ROW */
+
+.order-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.price {
   font-weight: 700;
-  color: #4f46e5;
+  color: #f97316;
 }
 
-/* ===============================
-   BODY
-================================ */
-
-.order-body {
-  flex: 1;
-  margin-top: 14px;
-}
-
-.items {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.item-pill {
-  background: #eef2f7;
-  padding: 10px 14px;
-  border-radius: 12px;
+.time {
   font-size: 13px;
-  border: 1px solid #d1d5db;
+  color: #6b7280;
 }
 
-/* ===============================
-   FOOTER
-================================ */
-
-.order-footer {
-  margin-top: auto;
-  padding-top: 12px;
-  border-top: 1px solid #e5e7eb;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-/* ===============================
-   ACTION BUTTONS WRAPPER
-================================ */
-
-.action-buttons {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  width: 100%;
-}
-
-/* ===============================
-   BUTTONS (SAME SIZE)
-================================ */
-
-.accept-btn,
-.decline-btn,
-.mark-ready-btn,
-.dispatch-btn {
-  width: 120px;
-  height: 36px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 18px;
-  border: none;
-
+.status {
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.4px;
 
-  color: #ffffff;
-  cursor: pointer;
+  background: #fff7ed;
+  color: #f97316;
+
+  padding: 4px 10px;
+  border-radius: 999px;
 }
 
-/* ACCEPT */
-.accept-btn {
-  background: linear-gradient(135deg, #4f46e5, #1a24ea);
+/* ===== RIGHT SIDE ===== */
+
+.order-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: auto;
+  margin-bottom: 40px;   /* ⭐ keeps layout stable */
 }
 
-/* DECLINE */
-.decline-btn {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-}
+/* ===== BUTTONS — CLEAN COMPACT ===== */
 
-/* MARK READY */
-.mark-ready-btn {
-  background: linear-gradient(135deg, #f97316, #f0a952);
-}
-
-/* COMPLETE */
-.dispatch-btn {
-  background: linear-gradient(135deg, #16a34a, #23ee6d);
-}
-
-/* ===============================
-   STATUS TEXT
-================================ */
-
-.status-text {
-  font-size: 11px;
+.order-right button {
+  height: 40px;
+  padding: 0 18px;      /* auto width */
+  
+  border-radius: 999px;
   font-weight: 600;
-  color: #6b7280;
-  text-align: center;
+  font-size: 14px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  cursor: pointer;
+
+  white-space: nowrap;  /* prevents text break */
+  flex-shrink: 0;       /* ⭐ prevents squeezing */
+}
+.accept-btn {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
 }
 
-/* ===============================
-   COMPLETED STATE
-================================ */
-
-.order-card.completed {
-  animation: none;
-  border-top: 4px solid #22c55e;
+.decline-btn {
+  background: #e5e7eb;
+  color: #374151;
 }
 
-.order-complete {
-  font-size: 13px;
-  font-weight: 700;
-  color: #16a34a;
+.mark-ready-btn {
+  background: linear-gradient(135deg, #fb923c, #f97316);
+  color: white;
 }
 
-/* ===============================
-   MOBILE
-================================ */
+.dispatch-btn {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+}
 
-@media (max-width: 480px) {
-  .action-buttons {
+
+
+/* ===== MOBILE ===== */
+
+@media (max-width: 768px) {
+  .order-row-card {
     flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
   }
 
+  .order-left {
+    max-width: 100%;
+  }
 
-  .decline-btn,
-  .mark-ready-btn,
-  .dispatch-btn {
+  .order-right {
     width: 100%;
+    justify-content: space-between;
   }
 }
-/* ===============================
-   STABLE AUTO-FILL GRID
-================================ */
-
-.order-grid,
-.orders-grid {
-  display: grid;
-
-  /* 🔥 FIXED CARD WIDTH */
-  grid-template-columns: repeat(auto-fill, 280px);
-
-  /* 🔥 CONSTANT GAP (never changes) */
-  gap: 90px;
-
-  /* 🔥 NO CENTERING / NO STRETCH */
-  justify-content: start;
-  align-content: start;
-}
-
-
