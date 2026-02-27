@@ -33,35 +33,47 @@ export default function UpdateProfileModal({ open, onClose, profile }) {
 
   if (!open) return null;
 
-  // ✅ Update handler (same logic + sync added)
-  const handleUpdate = async () => {
-    try {
-      const payload = {
-  ...formData,
-  opening_time: formData.opening_time
-    ? formData.opening_time + ":00"
-    : null,
-  closing_time: formData.closing_time
-    ? formData.closing_time + ":00"
-    : null,
+  const formatTime = (time) => {
+  if (!time) return "00:00:00";
+
+  // If already HH:MM:SS → return as is
+  if (time.split(":").length === 3) return time;
+
+  // If HH:MM → convert
+  return time + ":00";
 };
 
-await updateVendorProfile(payload);
+  // ✅ Update handler (same logic + sync added)
+ const handleUpdate = async () => {
+  try {
 
+    // ⭐ SEND ONLY SAFE FIELDS
+    const payload = {
+      shop_name: formData.shop_name,
+      owner_name: formData.owner_name,
+      address: formData.address,
 
-      // 🆕 NEW: Sync updated profile into localStorage
-      const oldProfile = JSON.parse(localStorage.getItem("profileData")) || {};
-      const updatedProfile = { ...oldProfile, ...formData };
-      localStorage.setItem("profileData", JSON.stringify(updatedProfile));
+      // ⭐ Normalize time safely
+      opening_time: formatTime(formData.opening_time),
+      closing_time: formatTime(formData.closing_time),
+    };
 
-      // 🆕 NEW: Tell Navbar profile changed
-      window.dispatchEvent(new Event("profileUpdated"));
+    console.log("FINAL Payload 👉", payload);
 
-      setShowSuccess(true);   // existing logic
-    } catch (err) {
-      console.error("Update failed", err);
-    }
-  };
+    await updateVendorProfile(payload);
+
+    const oldProfile = JSON.parse(localStorage.getItem("profileData")) || {};
+    const updatedProfile = { ...oldProfile, ...payload };
+    localStorage.setItem("profileData", JSON.stringify(updatedProfile));
+
+    window.dispatchEvent(new Event("profileUpdated"));
+
+    setShowSuccess(true);
+
+  } catch (err) {
+    console.error("Update failed", err);
+  }
+};
 
   return (
     <>

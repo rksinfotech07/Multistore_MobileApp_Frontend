@@ -11,7 +11,7 @@ export const getVendorProfile = async () => {
 export const updateVendorProfile = async (data) => {
   try {
     const res = await api.put("/api/vendor/profile", data);
-    return res.data;
+    return res.data; // Return the response data (backend: { success, data })
   } catch (err) {
     console.log("🔥 BACKEND ERROR:", err.response?.data);
     console.log("🔥 STATUS:", err.response?.status);
