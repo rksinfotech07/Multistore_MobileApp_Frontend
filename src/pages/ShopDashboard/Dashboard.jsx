@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import OrderCard from "../../components/Shop/orderCard";
 import axios from "../../api/axios";
+import { socket } from "../../socket"; // ✅ SOCKET IMPORT
 import "../../styles/Shop/Dashboard.css";
 
 /* ===== COUNTER ===== */
@@ -31,7 +32,6 @@ function Counter({ value }) {
 }
 
 export default function Dashboard() {
-  /* ⭐ GET GLOBAL STATUS FROM LAYOUT */
   const { shopActive } = useOutletContext();
 
   const [orders, setOrders] = useState([]);
@@ -39,11 +39,11 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
   const [searchText, setSearchText] = useState("");
 
-    /* ===== PROFILE DATA ===== */
   const [profileData, setProfileData] = useState(
     JSON.parse(localStorage.getItem("profileData")) || {}
   );
 
+  /* ===== PROFILE UPDATE LISTENER ===== */
   useEffect(() => {
     const updateProfile = () => {
       const latest = JSON.parse(localStorage.getItem("profileData"));
@@ -56,73 +56,86 @@ export default function Dashboard() {
   }, []);
 
   /* =========================
-     FETCH ORDERS -shop
+     FETCH ORDERS
   ========================= */
- const fetchOrders = async () => {
-  try {
-    const res = await axios.get("/api/shop/orders");
+  const fetchOrders = async () => {
+    try {
+      const res = await axios.get("/api/shop/orders");
 
-    console.log("Dashboard Orders 👉", res.data);
-
-    // ⭐ CORRECT — use res.data.data
-    if (res.data?.success && Array.isArray(res.data.data)) {
-      setOrders(res.data.data);
-    } else {
-      setOrders([]);
+      if (res.data?.success && Array.isArray(res.data.data)) {
+        setOrders(res.data.data);
+      } else {
+        setOrders([]);
+      }
+    } catch (err) {
+      console.error("Fetch orders error 👉", err);
+      setError("Unable to load orders");
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error("Fetch orders error 👉", err);
-    setError("Unable to load orders");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
+ /* =========================
+   🔥 SOCKET LISTENER ONLY
+========================= */
+useEffect(() => {
+  const userId =
+    JSON.parse(localStorage.getItem("profileData"))?.id;
+
+  if (!userId) return;
+
+  // 🔹 Join room
+  socket.emit("join_room", `shop_${userId}`);
+
+  // 🔹 Listen new order
+  socket.on("new_order", (newOrder) => {
+    console.log("🔥 New Order Received:", newOrder);
+
+    setOrders((prev) => [newOrder, ...prev]);
+  });
+
+  return () => {
+    socket.off("new_order");
+  };
+}, []);
   /* =========================
      UI STATES
   ========================= */
   if (loading) return <p>Loading dashboard...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
-  
-  /* ===== OFFLINE MODE ===== */
-if (!shopActive) {
-  return (
-    <div className="offline-screen">
-      <div className="offline-card">
-
-        <div className="offline-icon">⏻</div>
-
-        <h2>You're Offline</h2>
-
-        <p>
-          Your store is currently not receiving any new orders.
-          Switch your status to <b>Active</b> to start accepting orders instantly.
-        </p>
-
-        <div className="offline-hint">
-          💡 Turn ON the toggle in the top-right corner to go online
+  if (!shopActive) {
+    return (
+      <div className="offline-screen">
+        <div className="offline-card">
+          <div className="offline-icon">⏻</div>
+          <h2>You're Offline</h2>
+          <p>
+            Your store is currently not receiving any new orders.
+            Switch your status to <b>Active</b> to start accepting orders instantly.
+          </p>
+          <div className="offline-hint">
+            💡 Turn ON the toggle in the top-right corner to go online
+          </div>
         </div>
-
       </div>
-    </div>
+    );
+  }
+
+  const completedIds = JSON.parse(
+    localStorage.getItem("completedOrders") || "[]"
   );
-}
 
- // ⭐ Get completed IDs from localStorage
-const completedIds = JSON.parse(
-  localStorage.getItem("completedOrders") || "[]"
-);
+  const activeOrders = orders.filter(
+    (o) =>
+      o.status !== "completed" &&
+      !completedIds.includes(o.id)
+  );
 
-const activeOrders = orders.filter(
-  (o) =>
-    o.status !== "completed" &&
-    !completedIds.includes(o.id)
-);
   const totalRevenue = orders.reduce(
     (sum, o) => sum + Number(o.total_amount || 0),
     0
@@ -130,11 +143,15 @@ const activeOrders = orders.filter(
 
   return (
     <>
-      {/* ===== HEADER ===== */}
+      {/* HEADER */}
       <div className="dashboard-header">
         <div>
           <h1 className="welcome-title">
-            Welcome back, {profileData?.shop_name || profileData?.owner_name || "User"} 👋
+            Welcome back,{" "}
+            {profileData?.shop_name ||
+              profileData?.owner_name ||
+              "User"}{" "}
+            👋
           </h1>
 
           <p className="welcome-sub">
@@ -144,19 +161,19 @@ const activeOrders = orders.filter(
 
         <div className="search-box">
           <Search className="search-icon" size={18} />
-
           <input
-  type="text"
-  placeholder="Search orders..."
-  value={searchText}
-  onChange={(e) => setSearchText(e.target.value)}
-/>
+            type="text"
+            placeholder="Search orders..."
+            value={searchText}
+            onChange={(e) =>
+              setSearchText(e.target.value)
+            }
+          />
         </div>
       </div>
 
-      {/* ===== STATS ===== */}
+      {/* STATS */}
       <div className="stats-row">
-
         <div className="stat-box">
           <div>
             <p className="stat-label">New Orders</p>
@@ -164,7 +181,6 @@ const activeOrders = orders.filter(
               <Counter value={orders.length} />
             </h2>
           </div>
-
           <div className="stat-icon-box orange">
             <Inbox size={28} />
           </div>
@@ -177,7 +193,6 @@ const activeOrders = orders.filter(
               <Counter value={activeOrders.length} />
             </h2>
           </div>
-
           <div className="stat-icon-box coral">
             <RefreshCcw size={28} />
           </div>
@@ -190,34 +205,31 @@ const activeOrders = orders.filter(
               ₹<Counter value={totalRevenue} />
             </h2>
           </div>
-
           <div className="stat-icon-box gold">
             <DollarSign size={28} />
           </div>
         </div>
-
       </div>
 
-      {/* ===== LIVE HEADER ===== */}
+      {/* LIVE HEADER */}
       <div className="live-header">
         <h2 className="live-title">Live Orders</h2>
-
         <div className="live-status">
           <span className="live-dot"></span>
           Live
         </div>
       </div>
 
-      {/* ===== ORDERS GRID ===== */}
+      {/* ORDERS GRID */}
       <div className="order-grid">
         {activeOrders.length === 0 ? (
           <p>
-  {searchText
-    ? "No matching orders found"
-    : "No active orders"}
-</p>
+            {searchText
+              ? "No matching orders found"
+              : "No active orders"}
+          </p>
         ) : (
-          activeOrders.map(order => (
+          activeOrders.map((order) => (
             <OrderCard
               key={order.id}
               id={order.id}

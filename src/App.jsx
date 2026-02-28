@@ -1,6 +1,8 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { socket } from "./socket"; // ✅ SOCKET IMPORT
+
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -21,12 +23,33 @@ import DeliveryAgents from "./pages/DeliveryAgents";
 const DashboardHome = () => <h2 style={{color:"white"}}>Dashboard Overview</h2>;
 const OrdersPage = () => <h2 style={{color:"white"}}>Orders Page</h2>;
 const SettingsPage = () => <h2 style={{color:"white"}}>Settings Page</h2>;
+
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useContext(AuthContext);
   return isAuthenticated ? children : <Navigate to="/" />;
 };
 
 export default function App() {
+
+  /* =========================
+     🌐 GLOBAL SOCKET CONNECT
+  ========================= */
+  useEffect(() => {
+    socket.connect();
+
+    socket.on("connect", () => {
+      console.log("🌐 Global Socket Connected:", socket.id);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("❌ Socket Disconnected");
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -35,49 +58,50 @@ export default function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPass />} />
 
-
         {/* Register page */}
         <Route path="/register" element={<RegisterPage />} />
 
         {/* 🔐 Shop Dashboard */}
+        <Route
+          path="/shop-dashboard"
+          element={
+            <ProtectedRoute>
+              <ShopLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Dashboard />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="products" element={<Products />} />
+        </Route>
 
-<Route path="/shop-dashboard" element={<ProtectedRoute><ShopLayout /></ProtectedRoute>}>
-  <Route index element={<Dashboard />} />
-  <Route path="orders" element={<Orders />} />
-  <Route path="products" element={<Products />} />
-</Route>
+        {/* 🔐 ADMIN ROUTES WITH SIDEBAR */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="dashboard" element={<Admindb />} />
+          <Route path="shops" element={<AdminDashboard />} />
+          <Route path="add-product" element={<AddProduct />} />
+          <Route path="delivery-agents" element={<DeliveryAgents />} />
+          <Route path="settings" element={<AdminSettings />} />
+        </Route>
 
-
-{/* ADMIN ROUTES WITH SIDEBAR */}
-<Route
-  path="/admin"
-  element={
-    <ProtectedRoute>
-      <AdminLayout />
-    </ProtectedRoute>
-  }
->
-  <Route path="dashboard" element={<Admindb />} />
-  <Route path="shops" element={<AdminDashboard />} />
-  <Route path="add-product" element={<AddProduct />} />
-  <Route path="/admin/delivery-agents" element={<DeliveryAgents />} />
-  <Route path="settings" element={<AdminSettings />} />
-</Route>
-
-
-{/* SHOP VIEW WITHOUT SIDEBAR */}
-<Route
-  path="/shop/:id"
-  element={
-    <ProtectedRoute>
-      <FullPageLayout />
-    </ProtectedRoute>
-  }
->
-  <Route index element={<AdminShopProducts />} />
-</Route>
-
-
+        {/* 🔐 SHOP VIEW WITHOUT SIDEBAR */}
+        <Route
+          path="/shop/:id"
+          element={
+            <ProtectedRoute>
+              <FullPageLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminShopProducts />} />
+        </Route>
 
       </Routes>
     </BrowserRouter>
