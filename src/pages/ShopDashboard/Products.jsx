@@ -90,22 +90,22 @@ export default function Products() {
 
   return (
     <div className="products-page">
-      <div className="catalog-banner">
-        <div>
-          <h2>All Products</h2>
-          <p>ACTIVE LISTINGS : {products.length} PRODUCTS</p>
-        </div>
+   <div className="products-header">
+  <div>
+    <h1 className="products-title">Products</h1>
+    <p className="products-sub">
+      {products.length} products in catalog
+    </p>
+  </div>
 
-        <div className="catalog-actions">
-          <input
-            type="text"
-            className="catalog-search"
-            placeholder="Search by product"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-      </div>
+  <input
+    type="text"
+    className="products-search"
+    placeholder="Search products..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+  />
+</div>
 <div className="products-grid-wrapper">
 
   {filteredProducts.length === 0 ? (

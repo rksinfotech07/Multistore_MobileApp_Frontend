@@ -72,9 +72,9 @@
 }
 
 .nav-tab.active {
-  background: linear-gradient(90deg, #fb923c, #f43f5e);
+  background: linear-gradient(135deg, #ff8a00, #ff6a00);
   color: white;
-  box-shadow: 0 6px 16px rgba(244, 63, 94, 0.25);
+  box-shadow: 0 6px 16px rgba(255, 140, 0, 0.25);
 }
 
 /* ===== RIGHT SIDE ===== */
@@ -106,7 +106,7 @@
 }
 
 .status-toggle.on {
-  background: linear-gradient(90deg, #fb923c, #f43f5e);
+  background: linear-gradient(135deg, #ff8a00, #ff6a00);
 }
 
 .toggle-circle {
@@ -144,7 +144,7 @@
   align-items: center;
   justify-content: center;
 
-  background: linear-gradient(135deg, #fb923c, #f43f5e);
+  background: linear-gradient(135deg, #ff8a00, #ff6a00);
   color: white;
   font-size: 18px;
   cursor: pointer;
