@@ -34,18 +34,28 @@
 
 .products-search {
   width: 280px;
-  height: 44px;
-  border-radius: 16px;
+  height: 48px;
+
+  border-radius: 999px;   /* 🔥 full rounded */
   border: 1px solid #e5e7eb;
-  background: #f9fafb;
-  padding: 0 18px;
-  font-size: 14px;
+
+  background: #ffffff;
+  padding: 0 20px;
+
+  font-size: 15px;
+  color: #374151;
+
   outline: none;
   transition: all 0.2s ease;
+
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
 }
 
+/* ⭐ PERFECT placeholder */
 .products-search::placeholder {
-  color: #9ca3af;
+  color: #9ca3af;      /* soft grey */
+  font-weight: 500;
+  letter-spacing: 0.2px;
 }
 
 .products-search:focus {

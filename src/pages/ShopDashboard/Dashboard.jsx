@@ -5,6 +5,7 @@ import OrderCard from "../../components/Shop/orderCard";
 import axios from "../../api/axios";
 import { socket } from "../../socket"; // ✅ SOCKET IMPORT
 import "../../styles/Shop/Dashboard.css";
+import shopClosedImg from "../../assets/shopClosed.png";
 
 /* ===== COUNTER ===== */
 function Counter({ value }) {
@@ -109,22 +110,31 @@ useEffect(() => {
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   if (!shopActive) {
-    return (
-      <div className="offline-screen">
-        <div className="offline-card">
-          <div className="offline-icon">⏻</div>
-          <h2>You're Offline</h2>
-          <p>
-            Your store is currently not receiving any new orders.
-            Switch your status to <b>Active</b> to start accepting orders instantly.
-          </p>
-          <div className="offline-hint">
-            💡 Turn ON the toggle in the top-right corner to go online
-          </div>
-        </div>
+  return (
+    <div className="offline-screen">
+      <div className="offline-card">
+
+        {/* 🔥 IMAGE ADD HERE */}
+        <img
+          src={shopClosedImg}
+          alt="Shop Closed"
+          className="offline-img"
+        />
+
+       
+        
+
+        <h2>You're Offline</h2>
+
+        <p>
+          Your store is not receiving orders  now.
+          Switch to <b>Active</b> 
+        </p>
+
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   const completedIds = JSON.parse(
     localStorage.getItem("completedOrders") || "[]"
