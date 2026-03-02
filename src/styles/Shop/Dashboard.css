@@ -280,19 +280,27 @@
 }
 
 .offline-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+  background: #ffffff;
+  backdrop-filter: blur(8px);
 
-  padding: 50px 60px;
+  padding: 60px 50px;   /* Equal balanced padding */
+
   border-radius: 26px;
-
   text-align: center;
 
-  box-shadow:
-    0 30px 80px rgba(0,0,0,0.12),
-    0 0 40px rgba(249,115,22,0.25);
+  width: 420px;         /* Fixed square width */
+  min-height: 420px;    /* Make height equal feel */
 
-  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  border: 1px solid #f3f4f6;
+
+  box-shadow:
+    0 25px 60px rgba(0,0,0,0.14),
+    0 12px 30px rgba(0,0,0,0.08),
+    0 0 35px rgba(249,115,22,0.35);
 }
 
 /* ICON */
@@ -401,4 +409,9 @@
 .dashboard-page {
   scrollbar-width: none;    /* Firefox */
   -ms-overflow-style: none; /* IE */
+}
+.offline-img {
+  width: 400px;
+  display: block;
+  margin: 0 auto 28px;
 }
