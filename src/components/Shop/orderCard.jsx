@@ -8,15 +8,27 @@ import {
 
 export default function OrderCard({
   id,
-  name,
+  orderCode,
+  createdAt,
   amount,
   statusFromDB,
   items = [],
   onComplete
 }) {
-  const [status, setStatus] = useState("received");
+  const [status, setStatus] = useState(() => {
+  if (!statusFromDB) return "received";
+
+  const s = statusFromDB.toLowerCase();
+
+  if (s === "pending") return "received";
+  if (s === "accepted") return "accepted";
+  if (s === "assigned") return "preparing";
+  if (s === "ready") return "ready";
+  if (s === "completed") return "completed";
+
+  return "received";
+});
   const [loading, setLoading] = useState(false);
-  const [seconds, setSeconds] = useState(0);
 
   /* =========================
      NORMALIZE STATUS FROM DB
@@ -46,19 +58,36 @@ else if (s === "completed")
 else setStatus("received");
   }, [statusFromDB]);
 
-   /* =========================
-     ORDER TIMER
-  ========================= */
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSeconds(prev => prev + 1);
-    }, 1000);
+  /* 🔥 FORCE UI UPDATE WHEN AGENT ASSIGNED */
+useEffect(() => {
+  if (status === "preparing") {
+    // removes blur instantly
+    document.body.offsetHeight;
+  }
+}, [status]);
 
-    return () => clearInterval(timer);
-  }, []);
+/* =========================
+   REAL ORDER TIME
+========================= */
 
-  const minutes = Math.floor(seconds / 60);
+const getMinutesAgo = () => {
+  if (!createdAt) return "Just now";
 
+  // ⭐ Fix non-ISO date format
+  const safeDate = new Date(
+    createdAt.replace(" ", "T")
+  );
+
+  if (isNaN(safeDate)) return "Just now";
+
+  const diffMs = Date.now() - safeDate.getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+
+  if (diffMin <= 0) return "Just now";
+  if (diffMin === 1) return "1 min ago";
+
+  return `${diffMin} min ago`;
+};
 
   /* =========================
      API CALLS
@@ -68,7 +97,7 @@ else setStatus("received");
     try {
       setLoading(true);
       await acceptOrder(id);
-      setStatus("preparing");
+      setStatus("accepted");
     } catch (err) {
       console.log(err);
     } finally {
@@ -133,7 +162,7 @@ const handleDecline = async () => {
       return (
         <div className="action-buttons">
           <button className="accept-btn" onClick={handleAccept}>
-            Accept Order
+            Accept
           </button>
 
           <button className="decline-btn" onClick={handleDecline}>
@@ -144,8 +173,14 @@ const handleDecline = async () => {
     }
     if (status === "accepted") {
   return (
-    <div className="status-text">
-      Waiting for delivery partner...
+    <div className="preparing-disabled">
+      <button className="mark-ready-btn disabled-btn" disabled>
+        Mark Ready
+      </button>
+
+      <span className="waiting-text">
+        Waiting for delivery partner...
+      </span>
     </div>
   );
 }
@@ -184,8 +219,8 @@ const handleDecline = async () => {
       <div className="order-left">
 
         <div className="order-top">
-          <strong>#{id}</strong> {name || "Customer"}
-        </div>
+          <strong>{orderCode}</strong>
+</div>
 
         {/* ITEMS INLINE */}
         <div className="order-items">
@@ -198,16 +233,24 @@ const handleDecline = async () => {
         {/* META INFO */}
         <div className="order-meta">
           <span className="price">₹{amount}</span>
-          <span className="time">⏱ {minutes} min ago</span>
-          <span className="status">{statusText[status]}</span>
+          <span className="time">⏱ {getMinutesAgo()}</span>
         </div>
 
       </div>
 
       {/* RIGHT SIDE */}
-      <div className="order-right">
-        {renderButton()}
-      </div>
+<div className="order-right">
+
+  {renderButton()}
+
+  {/* ⭐ STATUS BELOW BUTTONS */}
+  {status !== "accepted" && status !== "completed" && (
+    <span className={`status-badge ${status}`}>
+      {statusText[status]}
+    </span>
+  )}
+
+</div>
 
     </div>
   );

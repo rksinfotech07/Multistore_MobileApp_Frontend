@@ -46,7 +46,8 @@ export default function App() {
     });
 
     return () => {
-      socket.disconnect();
+      socket.off("connect");
+      socket.off("disconnect");
     };
   }, []);
 

@@ -2,6 +2,8 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { vendorLogin, adminLogin } from "../services/authService";
+import { getVendorProfile } from "../services/ProfileService";
+import { saveToken } from "../utils/authStorage";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -42,19 +44,49 @@ export default function Login() {
       res = await adminLogin(loginData);
 
       const token = res.data.token;
-      localStorage.setItem("token", token);
+      saveToken(token);
       login({ token, role: "admin" });
       navigate("/admin/dashboard");
       return;
     }
 
     // 🟡 VENDOR LOGIN
-    res = await vendorLogin(loginData);
+    // 🟡 VENDOR LOGIN
+res = await vendorLogin(loginData);
 
-    const token = res.data.token;
-    login({ token, role: "vendor" });
-    navigate("/shop-dashboard");
+console.log("LOGIN RESPONSE 👉", res.data);
 
+const token = res.data.token;
+
+console.log("TOKEN FROM RESPONSE 👉", token);
+
+// ✅ Store token using helper
+saveToken(token);
+
+console.log("TOKEN IN STORAGE 👉", localStorage.getItem("vendor_token"));
+
+// 🔥 NOW CALL PROFILE API
+const shopData = await getVendorProfile();
+
+// ✅ Store full profile including id
+localStorage.setItem(
+  "profileData",
+  JSON.stringify({
+    id: shopData.id,
+    shop_name: shopData.shop_name,
+    owner_name: shopData.owner_name,
+    email: shopData.email,
+    phone: shopData.phone,
+    address: shopData.address,
+    opening_time: shopData.opening_time,
+    closing_time: shopData.closing_time,
+    business_type: shopData.business_type,
+    shop_logo: shopData.shop_logo,
+  })
+);
+
+login({ token, role: "vendor" });
+navigate("/shop-dashboard");
   } catch (err) {
   const status = err.response?.status;
   const message = err.response?.data?.message;

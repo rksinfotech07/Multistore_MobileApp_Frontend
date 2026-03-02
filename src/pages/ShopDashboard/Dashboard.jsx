@@ -56,17 +56,26 @@ export default function Dashboard() {
   }, []);
 
   /* =========================
-     FETCH ORDERS
+     FETCH ORDERS 
   ========================= */
   const fetchOrders = async () => {
     try {
       const res = await axios.get("/api/shop/orders");
 
-      if (res.data?.success && Array.isArray(res.data.data)) {
-        setOrders(res.data.data);
-      } else {
-        setOrders([]);
-      }
+     if (res.data?.success && Array.isArray(res.data.data)) {
+      const mapped = res.data.data.map((o) => ({
+  ...o,                    // ⭐ keep API data exactly as-is
+
+  id: o.id || o.order_id,          // needed internally
+  orderCode: o.order_code, // for display
+  createdAt: o.order_time || o.createdAt || null // for timer
+}));
+
+  setOrders(mapped);
+
+} else {
+  setOrders([]);
+}
     } catch (err) {
       console.error("Fetch orders error 👉", err);
       setError("Unable to load orders");
@@ -79,29 +88,86 @@ export default function Dashboard() {
     fetchOrders();
   }, []);
 
- /* =========================
-   🔥 SOCKET LISTENER ONLY
+ 
+
+/* =========================
+   🔥 SOCKET LISTENER — FINAL
 ========================= */
 useEffect(() => {
-  const userId =
-    JSON.parse(localStorage.getItem("profileData"))?.id;
+  const userId = profileData?.id;
 
-  if (!userId) return;
+  if (!userId) {
+    console.log("❌ No userId found");
+    return;
+  }
 
-  // 🔹 Join room
-  socket.emit("join_room", `shop_${userId}`);
+  const roomName = `vendor_${userId}`;
 
-  // 🔹 Listen new order
-  socket.on("new_order", (newOrder) => {
-    console.log("🔥 New Order Received:", newOrder);
+  // 🔌 Ensure socket is connected
+  if (!socket.connected) {
+    console.log("🔌 Connecting socket...");
+    socket.connect();
+  }
 
-    setOrders((prev) => [newOrder, ...prev]);
+  // 🏪 Join room AFTER connection
+  const joinRoom = () => {
+    socket.emit("joinVendorRoom", userId);
+    console.log("🏪 Joined room:", roomName);
+  };
+
+  if (socket.connected) {
+    joinRoom();
+  } else {
+    socket.on("connect", joinRoom);
+  }
+
+  /* 🔥 DEBUG — SEE ALL EVENTS FROM BACKEND */
+  socket.onAny((event, ...args) => {
+    console.log("📡 SOCKET EVENT:", event, args);
   });
 
+  /* 🎯 Listen for new orders */
+socket.on("new_order", (newOrder) => {
+  console.log("🔥 NEW ORDER RECEIVED:", newOrder);
+
+  const formattedOrder = {
+     id: newOrder.id || newOrder.order_id,              // needed internally
+  orderCode: newOrder.order_code,
+  createdAt: newOrder.created_at || newOrder.order_time || null,
+    total_amount: newOrder.total_amount || 0,
+    status: newOrder.status || "pending",
+
+    items:
+      newOrder.items?.map((item, index) => ({
+        id: index,
+        name: item.product_name,   // ⭐ IMPORTANT
+        qty: item.quantity,
+        price: item.price || 0
+      })) || [],
+  };
+
+  setOrders((prev) => [formattedOrder, ...prev]);
+});
+/* 🎯 STATUS UPDATE FROM BACKEND */
+socket.on("order_update", (update) => {
+  console.log("📦 ORDER UPDATE:", update);
+
+  setOrders((prev) =>
+    prev.map((o) =>
+      o.id === update.order_id
+        ? { ...o, status: update.status }   // ⭐ KEEP RAW STATUS
+        : o
+    )
+  );
+});
   return () => {
     socket.off("new_order");
+    socket.off("order_update");
+    socket.off("connect", joinRoom);
+    socket.offAny(); // ✅ remove debug listener
   };
-}, []);
+}, [profileData?.id]);
+
   /* =========================
      UI STATES
   ========================= */
@@ -231,9 +297,10 @@ useEffect(() => {
         ) : (
           activeOrders.map((order) => (
             <OrderCard
-              key={order.id}
+              key={`${order.id}-${order.status}`}
               id={order.id}
-              name={order.customer_name || "Unknown"}
+               orderCode={order.orderCode}   // ⭐ use mapped value
+  createdAt={order.createdAt}   // ⭐ use mapped value
               amount={order.total_amount || 0}
               statusFromDB={order.status}
               items={order.items}
