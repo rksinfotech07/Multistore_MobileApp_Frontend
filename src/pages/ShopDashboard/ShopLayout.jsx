@@ -6,7 +6,10 @@ import "../../styles/Shop/Dashboard.css";
 export default function ShopLayout() {
 
   /* ⭐ GLOBAL SHOP STATUS (ONLINE / OFFLINE) */
-  const [shopActive, setShopActive] = useState(true);
+  const [shopActive, setShopActive] = useState(() => {
+  const saved = localStorage.getItem("shopActive");
+  return saved ? JSON.parse(saved) : false;
+});
 
   return (
     <div className="shop-container">

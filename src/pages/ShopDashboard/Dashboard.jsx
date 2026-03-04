@@ -56,6 +56,13 @@ export default function Dashboard() {
       window.removeEventListener("profileUpdated", updateProfile);
   }, []);
 
+  /* ===== STOP LOADING WHEN SHOP OFFLINE ===== */
+useEffect(() => {
+  if (!shopActive) {
+    setLoading(false);
+  }
+}, [shopActive]);
+
   /* =========================
      FETCH ORDERS 
   ========================= */
@@ -85,16 +92,17 @@ export default function Dashboard() {
     }
   };
 
-  useEffect(() => {
+ useEffect(() => {
+  if (shopActive) {
     fetchOrders();
-  }, []);
-
- 
+  }
+}, [shopActive]);
 
 /* =========================
    🔥 SOCKET LISTENER — FINAL
 ========================= */
 useEffect(() => {
+  if (!shopActive) return;
   const userId = profileData?.id;
 
   if (!userId) {
@@ -167,7 +175,7 @@ socket.on("order_update", (update) => {
     socket.off("connect", joinRoom);
     socket.offAny(); // ✅ remove debug listener
   };
-}, [profileData?.id]);
+}, [shopActive, profileData?.id]);
 
   /* =========================
      UI STATES
@@ -186,12 +194,7 @@ socket.on("order_update", (update) => {
           alt="Shop Closed"
           className="offline-img"
         />
-
-       
-        
-
         <h2>You're Offline</h2>
-
         <p>
           Your store is not receiving orders  now.
           Switch to <b>Active</b> 

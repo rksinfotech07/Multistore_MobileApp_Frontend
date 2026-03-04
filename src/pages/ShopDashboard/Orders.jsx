@@ -1,10 +1,19 @@
 import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
+import shopClosedImg from "../../assets/shopClosed.png";
 import "../../styles/Shop/Orders.css";
 import axios from "../../api/axios";
 
 export default function Orders() {
+  const { shopActive } = useOutletContext();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+  if (!shopActive) {
+    setLoading(false);
+  }
+}, [shopActive]);
 
   /* =========================
      FETCH COMPLETED ORDERS
@@ -37,10 +46,34 @@ export default function Orders() {
 };
 
   useEffect(() => {
+  if (shopActive) {
     fetchCompletedOrders();
-  }, []);
+  }
+}, [shopActive]);
 
-  if (loading) return <p>Loading completed orders...</p>;
+  if (!shopActive) {
+  return (
+    <div className="offline-screen">
+      <div className="offline-card">
+
+        <img
+          src={shopClosedImg}
+          alt="Shop Closed"
+          className="offline-img"
+        />
+
+        <h2>You're Offline</h2>
+        <p>
+          Your store is not receiving orders now.
+          Switch to <b>Active</b>
+        </p>
+
+      </div>
+    </div>
+  );
+}
+
+if (loading) return <p>Loading completed orders...</p>;
 
   return (
   <div className="completed-page">

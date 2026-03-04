@@ -24,6 +24,7 @@ export default function ProfileModal({ open, onClose, onEdit }) {
   // ✅ Secure Logout
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("shopActive");
     onClose();
     navigate("/"); // change to /login if needed
   };
