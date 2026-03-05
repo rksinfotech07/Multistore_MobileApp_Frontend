@@ -156,8 +156,17 @@
 }
 
 
-.toggle .active {
-  background: linear-gradient(90deg,#36b1de,#468ac5);
+/* VEG ACTIVE */
+.toggle button.active:first-child {
+  background: #22c55e;
+  border-color: #22c55e;
+  color: white;
+}
+
+/* NON VEG ACTIVE */
+.toggle button.active:last-child {
+  background: #ef4444;
+  border-color: #ef4444;
   color: white;
 }
 

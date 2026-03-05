@@ -209,11 +209,18 @@ socket.on("order_update", (update) => {
     localStorage.getItem("completedOrders") || "[]"
   );
 
-  const activeOrders = orders.filter(
-    (o) =>
-      o.status !== "completed" &&
-      !completedIds.includes(o.id)
+  const activeOrders = orders.filter((o) => {
+  const search = searchText.toLowerCase();
+
+  return (
+    o.status !== "completed" &&
+    !completedIds.includes(o.id) &&
+    (
+      (o.orderCode || "").toLowerCase().includes(search) ||
+      String(o.id).includes(search)
+    )
   );
+});
 
   const totalRevenue = orders.reduce(
     (sum, o) => sum + Number(o.total_amount || 0),

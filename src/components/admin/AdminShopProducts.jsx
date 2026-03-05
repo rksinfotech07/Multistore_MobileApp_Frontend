@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "../../styles/AdminShopProducts.css";
+import { ArrowLeft } from "lucide-react";
 import NewProductModal from "../../components/Shop/NewProductModal";
 import { 
   getShopProducts,
@@ -12,6 +13,7 @@ import {
 const AdminShopProducts = () => {
 
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [products, setProducts] = useState([]);
   const [shopName, setShopName] = useState("Shop");
@@ -131,6 +133,10 @@ const handleToggle = async (productId) => {
 
   return (
     <div className="admin-products-page">
+     <button className="back-btn" onClick={() => navigate(-1)}>
+  <ArrowLeft size={18} />
+  Back
+</button>
 
       <div className="shop-banner">
         <div className="shop-banner-content">
