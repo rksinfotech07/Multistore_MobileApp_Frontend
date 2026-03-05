@@ -135,6 +135,8 @@ const categories = [
   { value: "Pharmacy", label: "💊 Pharmacy" },
   { value: "Electronics", label: "📱 Electronics" },
   { value: "Cosmetics", label: "💄 Cosmetics" },
+  { value: "Home Appliances", label: "🏠 Home Appliances" },
+  
 ];
 const dropdownStyle = categoryOpen
   ? (() => {
@@ -201,7 +203,7 @@ const dropdownStyle = categoryOpen
 
   {categoryOpen &&
   createPortal(
-    <div id="shop-category-menu" style={dropdownStyle}className="bg-white rounded-xl shadow-2xl ring-1 ring-black/10">
+    <div id="shop-category-menu" style={dropdownStyle}className="bg-white rounded-xl shadow-2xl ring-1 ring-black/10 overflow-hidden">
       {categories.map((item) => (
 <div
   key={item.value}
@@ -212,6 +214,7 @@ const dropdownStyle = categoryOpen
   className={`
     relative px-4 py-2 flex items-center gap-3 cursor-pointer text-sm
     transition-all duration-200 ease-out
+    whitespace-nowrap
     ${
       formData.category === item.value
         ? "bg-orange-500 text-white font-semibold shadow-sm"
@@ -237,10 +240,6 @@ const dropdownStyle = categoryOpen
 
   {errors.category && <p className="reg-error">{errors.category}</p>}
 </div>
-
-
-
-
           </div>
 
           <div className="field">
