@@ -44,12 +44,12 @@ export default function Orders() {
           createdAt: o.order_time || o.created_at || null,
 
           items:
-            o.items?.map((item, index) => ({
-              id: index,
-              name: item.product_name,
-              qty: item.quantity,
-              price: item.price || 0
-            })) || []
+  o.items?.map((item, index) => ({
+    id: index,
+    name: item.name,
+    qty: item.qty,
+    price: item.price || 0
+  })) || []
         }));
 
         setOrders(mapped);
@@ -105,8 +105,8 @@ export default function Orders() {
         items:
           newOrder.items?.map((item, index) => ({
             id: index,
-            name: item.product_name,
-            qty: item.quantity,
+            name: item.product_name || item.name,
+qty: item.quantity || item.qty,
             price: item.price || 0
           })) || []
       };
