@@ -443,7 +443,7 @@ input:checked + .slider:before {
   /* ⭐ Bottom soft blue shadow */
   box-shadow: 0 12px 24px rgba(76, 124, 255, 0.25);
 }
-.back-btn {
+.admin-products-page .back-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -461,14 +461,14 @@ input:checked + .slider:before {
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   cursor: pointer;
 
-  margin-top: 12px;
-  margin-left: 18px;   /* ⭐ button left edge la irundhu konjam inside varum */
+  margin-top: 2px;
+  margin-left: 18px;
   margin-bottom: 14px;
 
   transition: all 0.2s ease;
 }
 
-.back-btn:hover {
+.admin-products-page .back-btn:hover {
   background: #eef2ff;
   color: #1d4ed8;
   transform: translateX(-2px);
