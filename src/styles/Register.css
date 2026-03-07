@@ -639,3 +639,11 @@ hover:pl-5
   color: #ffffff;
 }
 
+.otp-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  margin: 12px 0;
+  font-size: 14px;
+}

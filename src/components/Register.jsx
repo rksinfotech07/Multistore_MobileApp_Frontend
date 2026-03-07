@@ -2,12 +2,14 @@ import { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { vendorRegister } from "../services/authService";
 import { createPortal } from "react-dom";
-
+import api from "../api/axios";
 
 export default function Register() {
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
+  const [showOtpPopup, setShowOtpPopup] = useState(false);   // ⭐ ADD THIS
+  const [otp, setOtp] = useState("");  
   const [categoryOpen, setCategoryOpen] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -15,13 +17,10 @@ export default function Register() {
     category: "",
     phone: "",
     fullName: "",
-    email: "",
     password: "",
     address: "",
     opensAt: "10:00",
     closesAt: "22:00",
-    latitude: "",
-    longitude: "",
   });
 
    const [errors, setErrors] = useState({});
@@ -52,76 +51,89 @@ export default function Register() {
   // Step 2 validations
   if (step === 2) {
     if (!formData.fullName.trim()) newErrors.fullName = "Full name is required";
-
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Invalid email format";
-    }
-
     if (!formData.password) newErrors.password = "Password is required";
   }
 
   // Step 3 validations
 if (step === 3) {
   if (!formData.address.trim()) newErrors.address = "Address is required";
-  if (!formData.latitude) newErrors.latitude = "Latitude is required";
-  if (!formData.longitude) newErrors.longitude = "Longitude is required";
 }
 
 
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
 };
-
-useEffect(() => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setFormData((prev) => ({
-          ...prev,
-          latitude: pos.coords.latitude,
-          longitude: pos.coords.longitude,
-        }));
-      },
-      (err) => {
-        console.log("Location permission denied");
-      }
+const getLatLngFromAddress = async (address) => {
+  try {
+    const res = await fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+        address
+      )}&key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}`
     );
-  }
-}, []);
 
-  const handleSubmit = async (e) => {
+    const data = await res.json();
+    console.log("GEOCODE RESPONSE:", data);
+
+    if (data.results.length > 0) {
+      const location = data.results[0].geometry.location;
+
+      return {
+        lat: location.lat,
+        lng: location.lng,
+      };
+    }
+
+    return null;
+
+  } catch (error) {
+    console.error("Geocoding error:", error);
+    return null;
+  }
+};
+const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
+    // 1️⃣ Convert address → coordinates
+    const coords = await getLatLngFromAddress(formData.address);
+
+    if (!coords) {
+      alert("Unable to locate this address");
+      return;
+    }
+
+    // 2️⃣ Build payload
     const payload = {
-        shop_name: formData.shopName,
-        owner_name: formData.fullName,
-        email: formData.email,
-        phone: formData.phone,
-        password: formData.password,
-        business_type: formData.category,
-        address: formData.address,
-        opening_time: formData.opensAt,
-        closing_time: formData.closesAt,
-        latitude:  parseFloat(formData.latitude),
-        longitude: parseFloat(formData.longitude),
-      };
+      shop_name: formData.shopName,
+      owner_name: formData.fullName,
+      phone: formData.phone,
+      password: formData.password,
+      business_type: formData.category,
+
+      address: formData.address,
+
+      latitude: coords.lat,
+      longitude: coords.lng,
+
+      opening_time: formData.opensAt || null,
+      closing_time: formData.closesAt || null,
+
+      shop_logo: null,
+      license_doc: null
+    };
+
+    console.log("Register Payload:", payload);
+
+    // 3️⃣ Call register API
     const res = await vendorRegister(payload);
 
     console.log("API Success:", res.data);
 
-    // ✅ Show success popup
-    setShowPopup(true);
-
-    // 🔄 Redirect to login after 2 sec
-    setTimeout(() => {
-      navigate("/");
-    }, 2000);
+    // 4️⃣ Show OTP popup
+    setShowOtpPopup(true);
 
   } catch (err) {
-      console.error("API Error:", err.response?.data || err.message);
+    console.error("API Error:", err.response?.data || err.message);
 
     alert(
       err.response?.data?.message ||
@@ -152,6 +164,20 @@ const dropdownStyle = categoryOpen
       };
     })()
   : {};
+  const verifyOtp = async () => {
+  try {
+    const res = await api.post("/api/vendor/verify-phone", {
+      otp: otp,
+    });
+
+    alert("Phone verified successfully");
+
+    navigate("/");
+
+  } catch (err) {
+    alert("Invalid OTP");
+  }
+};
 
   return (
     <div className={`register-card ${categoryOpen ? "dropdown-open" : ""}`}>
@@ -247,13 +273,16 @@ const dropdownStyle = categoryOpen
             <div className="input-icon">
               <span className="icon">📞</span>
               <input
-                type="text"
-                placeholder="+91 12548-26544"
-                value={formData.phone}
-                onChange={(e) =>
-                  setFormData({ ...formData, phone: e.target.value })
-                }
-              />
+  type="tel"
+  placeholder="9876543210"
+  value={formData.phone}
+  onChange={(e) =>
+    setFormData({
+      ...formData,
+      phone: e.target.value.replace(/\D/g, "")
+    })
+  }
+/>
               </div>
               {errors.phone && <p className="reg-error">{errors.phone}</p>}
 
@@ -293,23 +322,6 @@ const dropdownStyle = categoryOpen
               />
               </div>
               {errors.fullName && <p className="reg-error">{errors.fullName}</p>}
-            
-          </div>
-
-          <div className="field">
-            <label>EMAIL ADDRESS *</label>
-            <div className="input-pro">
-              <span className="icon">✉️</span>
-              <input
-                type="email"
-                placeholder="sarah@urban-grocers.com"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-              />
-              </div>
-              {errors.email && <p className="reg-error">{errors.email}</p>}
             
           </div>
 
@@ -355,40 +367,6 @@ const dropdownStyle = categoryOpen
               </div>
               {errors.address && <p className="reg-error">{errors.address}</p>}
           </div>
-          <div className="field-row">
-  <div className="field">
-    <label>LATITUDE *</label>
-    <div className="input-pro">
-      <span className="icon">📍</span>
-      <input
-        type="text"
-        placeholder="e.g. 11.0168"
-        value={formData.latitude}
-        onChange={(e) =>
-          setFormData({ ...formData, latitude: e.target.value })
-        }
-      />
-    </div>
-    {errors.latitude && <p className="reg-error">{errors.latitude}</p>}
-  </div>
-
-  <div className="field">
-    <label>LONGITUDE *</label>
-    <div className="input-pro">
-      <span className="icon">📍</span>
-      <input
-        type="text"
-        placeholder="e.g. 76.9558"
-        value={formData.longitude}
-        onChange={(e) =>
-          setFormData({ ...formData, longitude: e.target.value })
-        }
-      />
-    </div>
-    {errors.longitude && <p className="reg-error">{errors.longitude}</p>}
-  </div>
-</div>
-
 
           <div className="field-row">
             <div className="field">
@@ -464,6 +442,26 @@ const dropdownStyle = categoryOpen
           </div>
         </div>
       )}
+      {showOtpPopup && (
+  <div className="popup-overlay">
+    <div className="popup-box">
+      <h3>Verify Phone Number</h3>
+      <p>Enter the OTP sent to your phone</p>
+
+      <input
+        type="text"
+        placeholder="Enter OTP"
+        value={otp}
+        onChange={(e) => setOtp(e.target.value)}
+        className="otp-input"
+      />
+
+      <button className="create-btn" onClick={verifyOtp}>
+        Verify OTP
+      </button>
+    </div>
+  </div>
+)}
     </div>
   );
 }
