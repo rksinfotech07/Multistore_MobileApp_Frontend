@@ -136,26 +136,31 @@ useEffect(() => {
   });
 
   /* 🎯 Listen for new orders */
-socket.on("new_order", (newOrder) => {
+socket.on("new_order", (data) => {
+
+  const newOrder = Array.isArray(data) ? data[0] : data;
+
   console.log("🔥 NEW ORDER RECEIVED:", newOrder);
 
   const formattedOrder = {
-     id: newOrder.id || newOrder.order_id,              // needed internally
-  orderCode: newOrder.order_code,
-  createdAt: newOrder.created_at || newOrder.order_time || null,
+    id: newOrder.id || newOrder.order_id,
+    orderCode: newOrder.order_code,
+    createdAt: newOrder.created_at || newOrder.order_time || null,
     total_amount: newOrder.total_amount || 0,
     status: newOrder.status || "pending",
+    order_type: newOrder.order_type,
 
     items:
       newOrder.items?.map((item, index) => ({
         id: index,
-        name: item.product_name,   // ⭐ IMPORTANT
-        qty: item.quantity,
+        name: item.product_name || item.name,
+        qty: item.quantity || item.qty,
         price: item.price || 0
       })) || [],
   };
 
   setOrders((prev) => [formattedOrder, ...prev]);
+
 });
 /* 🎯 STATUS UPDATE FROM BACKEND */
 socket.on("order_update", (update) => {
@@ -209,10 +214,11 @@ socket.on("order_update", (update) => {
     localStorage.getItem("completedOrders") || "[]"
   );
 
-  const activeOrders = orders.filter((o) => {
+const activeOrders = orders.filter((o) => {
   const search = searchText.toLowerCase();
 
   return (
+    o.order_type === "instant" &&   // ⭐ IMPORTANT
     o.status !== "completed" &&
     !completedIds.includes(o.id) &&
     (
@@ -221,7 +227,22 @@ socket.on("order_update", (update) => {
     )
   );
 });
+/* =========================
+   PREBOOKING ORDERS
+========================= */
 
+const prebookingOrders = orders.filter((o) => {
+  const search = searchText.toLowerCase();
+
+  return (
+    o.order_type === "scheduled" &&
+    o.status !== "completed" &&
+    (
+      (o.orderCode || "").toLowerCase().includes(search) ||
+      String(o.id).includes(search)
+    )
+  );
+});
   const totalRevenue = orders.reduce(
     (sum, o) => sum + Number(o.total_amount || 0),
     0
@@ -317,17 +338,68 @@ socket.on("order_update", (update) => {
         ) : (
           activeOrders.map((order) => (
             <OrderCard
-              key={`${order.id}-${order.status}`}
-              id={order.id}
-               orderCode={order.orderCode}   // ⭐ use mapped value
-  createdAt={order.createdAt}   // ⭐ use mapped value
-              amount={order.total_amount || 0}
-              statusFromDB={order.status}
-              items={order.items}
-            />
+  key={`${order.id}-${order.status}`}
+  id={order.id}
+  orderCode={order.orderCode}
+  createdAt={order.createdAt}
+  amount={order.total_amount || 0}
+  statusFromDB={order.status}
+  items={order.items}
+  orderType={order.order_type}
+  onComplete={(orderId) => {
+
+    setOrders((prev) =>
+      prev.map((o) =>
+        o.id === orderId
+          ? { ...o, status: "completed" }
+          : o
+      )
+    );
+
+  }}
+/>
           ))
         )}
       </div>
+      {/* =========================
+   PREBOOKING HEADER
+========================= */}
+<div className="live-header" style={{ marginTop: "30px" }}>
+  <h2 className="live-title">Prebooking Orders</h2>
+</div>
+
+{/* PREBOOKING GRID */}
+<div className="order-grid">
+
+  {prebookingOrders.length === 0 ? (
+    <p>No scheduled orders</p>
+  ) : (
+    prebookingOrders.map((order) => (
+      <OrderCard
+  key={`pre-${order.id}-${order.status}`}
+  id={order.id}
+  orderCode={order.orderCode}
+  createdAt={order.createdAt}
+  amount={order.total_amount || 0}
+  statusFromDB={order.status}
+  items={order.items}
+  orderType={order.order_type}
+  onComplete={(orderId) => {
+
+    setOrders((prev) =>
+      prev.map((o) =>
+        o.id === orderId
+          ? { ...o, status: "completed" }
+          : o
+      )
+    );
+
+  }}
+/>
+    ))
+  )}
+
+</div>
     </>
   );
 }

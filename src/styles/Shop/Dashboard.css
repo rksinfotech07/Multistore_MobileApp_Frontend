@@ -415,3 +415,93 @@
   display: block;
   margin: 0 auto 28px;
 }
+/* ===== COMPLETED ORDERS GRID ===== */
+
+.completed-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 20px;
+}
+
+
+/* ===== COMPLETED ORDER CARD ===== */
+
+.completed-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 22px;
+  border-top: 6px solid #22c55e;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+
+/* ===== TOP SECTION ===== */
+
+.completed-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+
+/* ===== ORDER ID + BADGE ===== */
+
+.completed-id-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.completed-id {
+  font-weight: 600;
+  color: #4b5563;
+  font-size: 16px;
+}
+
+
+/* ===== COMPLETED BADGE ===== */
+
+.completed-badge {
+  background: #dcfce7;
+  color: #16a34a;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+
+
+/* ===== PRICE ===== */
+
+.completed-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #f97316;
+}
+
+
+/* ===== CUSTOMER NAME ===== */
+
+.completed-customer {
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+
+/* ===== ITEMS ===== */
+
+.completed-items {
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+
+/* ===== TIME ===== */
+
+.completed-time {
+  font-size: 13px;
+  color: #9ca3af;
+}

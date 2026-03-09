@@ -179,6 +179,7 @@ const completedIds = JSON.parse(
 
 const liveOrders = orders.filter(
   (o) =>
+    o.order_type === "instant" &&
     o.status !== "completed" &&
     !completedIds.includes(o.id)  &&
     (o.orderCode || "").toLowerCase().includes(searchText.toLowerCase())

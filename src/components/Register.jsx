@@ -65,6 +65,8 @@ if (step === 3) {
 };
 const getLatLngFromAddress = async (address) => {
   try {
+    console.log("ADDRESS SENT TO GOOGLE:", address);
+
     const res = await fetch(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
         address
@@ -94,8 +96,11 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
+    // DEBUG
+console.log("ADDRESS ENTERED BY USER:", formData.address);
     // 1️⃣ Convert address → coordinates
     const coords = await getLatLngFromAddress(formData.address);
+    console.log("COORDINATES RECEIVED:", coords);
 
     if (!coords) {
       alert("Unable to locate this address");

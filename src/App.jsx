@@ -19,6 +19,7 @@ import AdminShopProducts from "./components/admin/AdminShopProducts";
 import AdminSettings from "./pages/AdminSettings";
 import Admindb from "./pages/Admindb";
 import DeliveryAgents from "./pages/DeliveryAgents";
+import Prebooking from "./pages/ShopDashboard/Prebooking";
 
 const DashboardHome = () => <h2 style={{color:"white"}}>Dashboard Overview</h2>;
 const OrdersPage = () => <h2 style={{color:"white"}}>Orders Page</h2>;
@@ -73,6 +74,7 @@ export default function App() {
         >
           <Route index element={<Dashboard />} />
           <Route path="orders" element={<Orders />} />
+          <Route path="prebooking" element={<Prebooking />} />
           <Route path="products" element={<Products />} />
         </Route>
 

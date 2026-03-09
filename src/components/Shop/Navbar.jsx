@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { LayoutDashboard, ClipboardList, Box, User } from "lucide-react";
+import { LayoutDashboard, ClipboardList, CalendarClock, Box, User } from "lucide-react";
 import ProfileModal from "./ProfileModal";
 import UpdateProfileModal from "./updateProfileModal";
 import "../../styles/Shop/Navbar.css";
@@ -64,6 +64,11 @@ export default function Navbar({ shopActive, setShopActive }) {
             <ClipboardList size={16} />
             Orders
           </NavLink>
+          
+          <NavLink to="/shop-dashboard/prebooking" className={tabClass}>
+  <CalendarClock size={16} />
+  Prebooking
+</NavLink>
 
           <NavLink to="/shop-dashboard/products" className={tabClass}>
             <Box size={16} />

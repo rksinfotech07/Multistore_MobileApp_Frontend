@@ -12,10 +12,20 @@ export default function OrderCard({
   createdAt,
   amount,
   statusFromDB,
+  orderType,   // ⭐ add this
   items = [],
   onComplete
 }) {
-  const [status, setStatus] = useState(() => {
+const completed = JSON.parse(
+  localStorage.getItem("completedOrders") || "[]"
+);
+
+const [status, setStatus] = useState(() => {
+
+  if (completed.includes(id)) {
+    return "completed";
+  }
+
   if (!statusFromDB) return "received";
 
   const s = statusFromDB.toLowerCase();
@@ -33,30 +43,47 @@ export default function OrderCard({
   /* =========================
      NORMALIZE STATUS FROM DB
   ========================= */
-  useEffect(() => {
-    if (!statusFromDB) {
-      setStatus("received");
-      return;
+useEffect(() => {
+
+  const completedIds = JSON.parse(
+    localStorage.getItem("completedOrders") || "[]"
+  );
+
+  // ⭐ if completed in localStorage, keep it completed
+  if (completedIds.includes(id)) {
+    setStatus("completed");
+    return;
+  }
+
+  if (!statusFromDB) {
+    setStatus("received");
+    return;
+  }
+
+  const s = statusFromDB.toLowerCase();
+
+  if (s === "pending") setStatus("received");
+
+  else if (s === "accepted") {
+
+    if (orderType === "scheduled") {
+      setStatus("preparing");
+    } else {
+      setStatus("accepted");
     }
 
-    const s = statusFromDB.toLowerCase();
+  }
 
-    if (s === "pending") setStatus("received");
+  else if (s === "assigned")
+    setStatus("preparing");
 
-else if (s === "accepted")
-  setStatus("accepted");   // waiting for agent
+  else if (s === "ready")
+    setStatus("ready");
 
-else if (s === "assigned")
-  setStatus("preparing");  // agent assigned → shop can cook
+  else
+    setStatus("received");
 
-else if (s === "ready")
-  setStatus("ready");
-
-else if (s === "completed")
-  setStatus("completed");
-
-else setStatus("received");
-  }, [statusFromDB]);
+}, [statusFromDB, id, orderType]);
 
   /* 🔥 FORCE UI UPDATE WHEN AGENT ASSIGNED */
 useEffect(() => {
@@ -93,17 +120,24 @@ const getMinutesAgo = () => {
      API CALLS
   ========================= */
 
-  const handleAccept = async () => {
-    try {
-      setLoading(true);
-      await acceptOrder(id);
+const handleAccept = async () => {
+  try {
+    setLoading(true);
+    await acceptOrder(id);
+
+    // ⭐ Scheduled orders skip delivery partner
+    if (orderType === "scheduled") {
+      setStatus("preparing");
+    } else {
       setStatus("accepted");
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
     }
-  };
+
+  } catch (err) {
+    console.log(err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleReady = async () => {
     try {
@@ -192,6 +226,9 @@ const handleDecline = async () => {
         </button>
       );
     }
+    if (status === "completed") {
+  return <div className="order-complete">Order Completed</div>;
+}
 
     if (status === "ready") {
       return (
