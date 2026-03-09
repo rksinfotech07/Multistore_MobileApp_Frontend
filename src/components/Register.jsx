@@ -63,34 +63,39 @@ if (step === 3) {
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
 };
-const getLatLngFromAddress = async (address) => {
-  try {
-    console.log("ADDRESS SENT TO GOOGLE:", address);
+const getLatLngFromAddress = (address) => {
+  return new Promise((resolve, reject) => {
 
-    const res = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-        address
-      )}&key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}`
-    );
-
-    const data = await res.json();
-    console.log("GEOCODE RESPONSE:", data);
-
-    if (data.results.length > 0) {
-      const location = data.results[0].geometry.location;
-
-      return {
-        lat: location.lat,
-        lng: location.lng,
-      };
+    if (!window.google) {
+      reject("Google Maps not loaded");
+      return;
     }
 
-    return null;
+    const geocoder = new window.google.maps.Geocoder();
 
-  } catch (error) {
-    console.error("Geocoding error:", error);
-    return null;
-  }
+    geocoder.geocode({ address: address }, (results, status) => {
+
+      console.log("GEOCODER STATUS:", status);
+      console.log("GEOCODER RESULTS:", results);
+
+      if (status === "OK") {
+
+        const location = results[0].geometry.location;
+
+        resolve({
+          lat: location.lat(),
+          lng: location.lng()
+        });
+
+      } else {
+
+        reject("Unable to find location");
+
+      }
+
+    });
+
+  });
 };
 const handleSubmit = async (e) => {
   e.preventDefault();
