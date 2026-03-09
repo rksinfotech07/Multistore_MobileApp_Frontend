@@ -5,6 +5,7 @@ import {
   markReady,
   declineOrder
 } from "../../api/axios";
+import { CalendarCheck } from "lucide-react";
 
 export default function OrderCard({
   id,
@@ -227,7 +228,12 @@ const handleDecline = async () => {
       );
     }
     if (status === "completed") {
-  return <div className="order-complete">Order Completed</div>;
+  return(
+  <div className="order-complete">
+    <CalendarCheck size={18} style={{ marginRight: "6px" }} />
+    Completed
+  </div>
+);
 }
 
     if (status === "ready") {

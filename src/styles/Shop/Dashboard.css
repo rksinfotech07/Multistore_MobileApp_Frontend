@@ -415,93 +415,50 @@
   display: block;
   margin: 0 auto 28px;
 }
-/* ===== COMPLETED ORDERS GRID ===== */
+/* =========================
+   COMPLETED ORDER STYLE
+========================= */
 
-.completed-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-top: 20px;
+.order-row-card.completed {
+  border: 2px solid #e5e7eb;   /* green border */
+  border-top: 6px solid #22c55e; /* thick top green line */
+  background: #ffffff;         /* white card */
 }
 
+/* completed text */
 
-/* ===== COMPLETED ORDER CARD ===== */
-
-.completed-card {
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 22px;
-  border-top: 6px solid #22c55e;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
-}
-
-
-/* ===== TOP SECTION ===== */
-
-.completed-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-
-/* ===== ORDER ID + BADGE ===== */
-
-.completed-id-badge {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.completed-id {
+.order-row-card.completed .order-complete {
+  color: #16a34a;
   font-weight: 600;
-  color: #4b5563;
-  font-size: 16px;
 }
 
+/* status badge */
 
-/* ===== COMPLETED BADGE ===== */
-
-.completed-badge {
+.order-row-card.completed .status-badge {
   background: #dcfce7;
   color: #16a34a;
-  font-size: 13px;
   font-weight: 600;
-  padding: 5px 12px;
-  border-radius: 999px;
 }
 
+/* price color */
 
-/* ===== PRICE ===== */
-
-.completed-price {
-  font-size: 20px;
-  font-weight: 700;
-  color: #f97316;
+.order-row-card.completed .price {
+  color: #f97316;   /* same orange price */
 }
+/* Remove orange click effect for completed orders */
 
-
-/* ===== CUSTOMER NAME ===== */
-
-.completed-customer {
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 4px;
+.order-row-card.completed:active,
+.order-row-card.completed:focus,
+.order-row-card.completed:hover {
+  border-top-color: #22c55e !important;
+  border-left-color: #e5e7eb !important;
+  border-right-color: #e5e7eb !important;
+  border-bottom-color: #e5e7eb !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
-
-
-/* ===== ITEMS ===== */
-
-.completed-items {
-  color: #6b7280;
-  margin-bottom: 6px;
-}
-
-
-/* ===== TIME ===== */
-
-.completed-time {
-  font-size: 13px;
-  color: #9ca3af;
+.live-title{
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }

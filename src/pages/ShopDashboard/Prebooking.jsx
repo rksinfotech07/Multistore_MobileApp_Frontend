@@ -1,15 +1,22 @@
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import axios from "../../api/axios";
 import { socket } from "../../socket";
 import OrderCard from "../../components/Shop/orderCard";
+import shopClosedImg from "../../assets/shopClosed.png";
 import "../../styles/Shop/Dashboard.css";
 
 export default function Prebooking() {
-
+  const { shopActive } = useOutletContext();
   const [orders, setOrders] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(true);
+  useEffect(() => {
+  if (!shopActive) {
+    setLoading(false);
+  }
+}, [shopActive]);
 
   /* =========================
      FETCH PREBOOKING ORDERS
@@ -50,9 +57,11 @@ export default function Prebooking() {
     }
   };
 
-  useEffect(() => {
+useEffect(() => {
+  if (shopActive) {
     fetchOrders();
-  }, []);
+  }
+}, [shopActive]);
 
   /* =========================
      SOCKET LISTENER
@@ -130,6 +139,28 @@ export default function Prebooking() {
   );
 
 });
+if (!shopActive) {
+  return (
+    <div className="offline-screen">
+      <div className="offline-card">
+
+        <img
+          src={shopClosedImg}
+          alt="Shop Closed"
+          className="offline-img"
+        />
+
+        <h2>You're Offline</h2>
+
+        <p>
+          Your store is not receiving orders now.
+          Switch to <b>Active</b>
+        </p>
+
+      </div>
+    </div>
+  );
+}
 
   if (loading) return <p>Loading prebooking orders...</p>;
 

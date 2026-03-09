@@ -1,4 +1,4 @@
-import { Inbox, RefreshCcw, DollarSign, Search } from "lucide-react";
+import { Inbox, RefreshCcw, DollarSign, Search, Zap, CalendarClock } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import OrderCard from "../../components/Shop/orderCard";
@@ -231,12 +231,14 @@ const activeOrders = orders.filter((o) => {
    PREBOOKING ORDERS
 ========================= */
 
+
 const prebookingOrders = orders.filter((o) => {
   const search = searchText.toLowerCase();
 
   return (
     o.order_type === "scheduled" &&
     o.status !== "completed" &&
+    !completedIds.includes(o.id) &&   // ⭐ important
     (
       (o.orderCode || "").toLowerCase().includes(search) ||
       String(o.id).includes(search)
@@ -320,7 +322,10 @@ const prebookingOrders = orders.filter((o) => {
 
       {/* LIVE HEADER */}
       <div className="live-header">
-        <h2 className="live-title">Live Orders</h2>
+        <h2 className="live-title">
+  <Zap size={20} />
+  Live Orders
+</h2>
         <div className="live-status">
           <span className="live-dot"></span>
           Live
@@ -365,7 +370,14 @@ const prebookingOrders = orders.filter((o) => {
    PREBOOKING HEADER
 ========================= */}
 <div className="live-header" style={{ marginTop: "30px" }}>
-  <h2 className="live-title">Prebooking Orders</h2>
+  <h2 className="live-title">
+  <CalendarClock size={20} />
+  Prebooking Orders
+</h2>
+<div className="live-status">
+          <span className="live-dot"></span>
+          Scheduled
+        </div>
 </div>
 
 {/* PREBOOKING GRID */}
