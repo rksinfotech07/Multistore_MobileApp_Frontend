@@ -35,7 +35,8 @@ export default function Prebooking() {
             ...o,
             id: o.id || o.order_id,
             orderCode: o.order_code,
-            createdAt: o.created_at
+            createdAt: o.created_at,
+            scheduledTime: o.scheduled_time || null 
           }));
 
         setOrders(scheduledOrders);
@@ -80,6 +81,7 @@ useEffect(() => {
       id: newOrder.id || newOrder.order_id,
       orderCode: newOrder.order_code,
       createdAt: newOrder.created_at,
+      scheduledTime: newOrder.scheduled_time || null,
       total_amount: newOrder.total_amount,
       status: newOrder.status,
       items: newOrder.items || []
@@ -221,6 +223,7 @@ if (!shopActive) {
   id={order.id}
   orderCode={order.orderCode}
   createdAt={order.createdAt}
+  scheduledTime={order.scheduledTime || null}
   amount={order.total_amount || 0}
   statusFromDB={order.status}
   orderType={order.order_type}
@@ -281,6 +284,7 @@ if (!shopActive) {
         id={order.id}
         orderCode={order.orderCode}
         createdAt={order.createdAt}
+        scheduledTime={order.scheduledTime || null}
         amount={order.total_amount || 0}
         statusFromDB={order.status}
         orderType={order.order_type}

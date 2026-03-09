@@ -76,7 +76,8 @@ useEffect(() => {
 
   id: o.id || o.order_id,          // needed internally
   orderCode: o.order_code, // for display
-  createdAt: o.order_time || o.createdAt || null // for timer
+  createdAt: o.order_time || o.createdAt || null, // for timer
+  scheduledTime: o.scheduled_time || null 
 }));
 
   setOrders(mapped);
@@ -146,6 +147,7 @@ socket.on("new_order", (data) => {
     id: newOrder.id || newOrder.order_id,
     orderCode: newOrder.order_code,
     createdAt: newOrder.created_at || newOrder.order_time || null,
+    scheduledTime: newOrder.scheduled_time || null,
     total_amount: newOrder.total_amount || 0,
     status: newOrder.status || "pending",
     order_type: newOrder.order_type,
@@ -347,6 +349,7 @@ const prebookingOrders = orders.filter((o) => {
   id={order.id}
   orderCode={order.orderCode}
   createdAt={order.createdAt}
+  scheduledTime={order.scheduledTime} 
   amount={order.total_amount || 0}
   statusFromDB={order.status}
   items={order.items}
@@ -392,6 +395,7 @@ const prebookingOrders = orders.filter((o) => {
   id={order.id}
   orderCode={order.orderCode}
   createdAt={order.createdAt}
+  scheduledTime={order.scheduledTime} 
   amount={order.total_amount || 0}
   statusFromDB={order.status}
   items={order.items}

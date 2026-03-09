@@ -11,6 +11,7 @@ export default function OrderCard({
   id,
   orderCode,
   createdAt,
+  scheduledTime,
   amount,
   statusFromDB,
   orderType,   // ⭐ add this
@@ -97,24 +98,53 @@ useEffect(() => {
 /* =========================
    REAL ORDER TIME
 ========================= */
+const getOrderTime = () => {
 
-const getMinutesAgo = () => {
-  if (!createdAt) return "Just now";
+  // ⭐ Scheduled Orders
+  if (orderType === "scheduled") {
 
-  // ⭐ Fix non-ISO date format
-  const safeDate = new Date(
-    createdAt.replace(" ", "T")
-  );
+    if (!scheduledTime) return "--";
 
-  if (isNaN(safeDate)) return "Just now";
+    const date = new Date(scheduledTime);
+    const today = new Date();
 
-  const diffMs = Date.now() - safeDate.getTime();
+    const isToday =
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear();
+
+    const isTomorrow =
+      date.getDate() === today.getDate() + 1 &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear();
+
+    const time = date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+
+    if (isToday) return `📅 Today • ${time}`;
+    if (isTomorrow) return `📅 Tomorrow • ${time}`;
+
+    const day = date.toLocaleDateString([], {
+      day: "2-digit",
+      month: "short"
+    });
+
+    return `📅 ${day} • ${time}`;
+  }
+
+  // ⭐ Instant Orders
+  if (!createdAt) return "⏱ Just now";
+
+  const date = new Date(createdAt);
+  const diffMs = Date.now() - date.getTime();
   const diffMin = Math.floor(diffMs / 60000);
 
-  if (diffMin <= 0) return "Just now";
-  if (diffMin === 1) return "1 min ago";
+  if (diffMin <= 0) return "⏱ Just now";
+  if (diffMin === 1) return "⏱ 1 min ago";
 
-  return `${diffMin} min ago`;
+  return `⏱ ${diffMin} min ago`;
 };
 
   /* =========================
@@ -276,7 +306,7 @@ const handleDecline = async () => {
         {/* META INFO */}
         <div className="order-meta">
           <span className="price">₹{amount}</span>
-          <span className="time">⏱ {getMinutesAgo()}</span>
+          <span className="time">{getOrderTime()}</span>
         </div>
 
       </div>
