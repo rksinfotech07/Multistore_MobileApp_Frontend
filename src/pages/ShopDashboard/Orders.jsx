@@ -185,14 +185,20 @@ const liveOrders = orders.filter(
     (o.orderCode || "").toLowerCase().includes(searchText.toLowerCase())
 );
 
-const completedOrders = orders.filter(
-  (o) =>
+const completedOrders = orders.filter((o) => {
+
+  const search = searchText.toLowerCase();
+
+  return (
+    o.order_type === "instant" &&   // ⭐ ONLY instant orders
     (o.status === "completed" || completedIds.includes(o.id)) &&
     (
-      (o.orderCode || "").toLowerCase().includes(searchText.toLowerCase()) ||
-      String(o.id).includes(searchText)
+      (o.orderCode || "").toLowerCase().includes(search) ||
+      String(o.id).includes(search)
     )
-);
+  );
+
+});
 
   /* =========================
      UI
@@ -255,58 +261,18 @@ const completedOrders = orders.filter(
         ) : (
           completedOrders.map((order) => (
 
-            <div
-              key={order.id}
-              className="completed-card"
-            >
+  <OrderCard
+    key={`completed-${order.id}`}
+    id={order.id}
+    orderCode={order.orderCode}
+    createdAt={order.createdAt}
+    amount={order.total_amount || 0}
+    statusFromDB="completed"
+    orderType={order.order_type}
+    items={order.items}
+  />
 
-              <div className="completed-card-top">
-
-                <div className="completed-id-badge">
-
-                  <p className="completed-id">
-                    #{order.id}
-                  </p>
-
-                  <span className="completed-badge">
-                    Completed
-                  </span>
-
-                </div>
-
-                <div className="completed-price">
-                  ₹{order.total_amount || 0}
-                </div>
-
-              </div>
-
-              <p className="completed-customer">
-                {order.customer_name || "Customer"}
-              </p>
-
-              <p className="completed-items">
-                {Array.isArray(order.items) &&
-                order.items.length > 0
-                  ? order.items
-                      .map(
-                        (i) =>
-                          `${i.qty || 1}x ${
-                            i.name || "Item"
-                          }`
-                      )
-                      .join(", ")
-                  : "No items"}
-              </p>
-
-              <p className="completed-time">
-                {order.createdAt
-                  ? new Date(order.createdAt).toLocaleString()
-                  : "—"}
-              </p>
-
-            </div>
-
-          ))
+))
         )}
 
       </div>
