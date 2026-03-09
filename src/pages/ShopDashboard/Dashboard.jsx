@@ -6,6 +6,8 @@ import axios from "../../api/axios";
 import { socket } from "../../socket"; // ✅ SOCKET IMPORT
 import "../../styles/Shop/Dashboard.css";
 import shopClosedImg from "../../assets/shopClosed.png";
+import { onMessage } from "firebase/messaging";
+import { messaging } from "../../firebase";
 
 /* ===== COUNTER ===== */
 function Counter({ value }) {
@@ -32,7 +34,40 @@ function Counter({ value }) {
   return <>{count}</>;
 }
 
-export default function Dashboard() {
+
+  export default function Dashboard() {
+
+  /* 🔔 NOTIFICATION PERMISSION */
+  useEffect(() => {
+    Notification.requestPermission().then(permission => {
+      if (permission === "granted") {
+        console.log("✅ Notification permission granted.");
+      } else {
+        console.log("❌ Notification permission denied.");
+      }
+    });
+  }, []);
+  /* 🔥 FCM MESSAGE LISTENER */
+useEffect(() => {
+
+  const unsubscribe = onMessage(messaging, (payload) => {
+    console.log("🔥 FCM MESSAGE RECEIVED:", payload);
+
+    const title = payload?.notification?.title || "New Notification";
+    const body = payload?.notification?.body || "";
+
+    if (Notification.permission === "granted") {
+      new Notification(title, {
+        body: body,
+        icon: "/logo.png"
+      });
+    }
+
+  });
+
+  return () => unsubscribe();
+
+}, []);
   const { shopActive } = useOutletContext();
 
   const [orders, setOrders] = useState([]);

@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import { vendorLogin, adminLogin } from "../services/authService";
 import { getVendorProfile } from "../services/ProfileService";
 import { saveToken } from "../utils/authStorage";
-
+import { getFcmToken } from "../utils/getFcmToken";
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
@@ -64,6 +64,19 @@ console.log("TOKEN FROM RESPONSE 👉", token);
 saveToken(token);
 
 console.log("TOKEN IN STORAGE 👉", localStorage.getItem("vendor_token"));
+// ⭐⭐⭐⭐⭐ NEW FCM LOGIC START ⭐⭐⭐⭐⭐
+ const fcmToken = await getFcmToken(); // ⭐ NEW 
+ console.log("FCM TOKEN 👉", fcmToken); // ⭐ NEW
+ await fetch("/api/vendor/save-fcm-token", { 
+  method: "POST",
+   headers: { 
+    "Content-Type": "application/json",
+     Authorization: `Bearer ${token}`,
+     },
+      body: JSON.stringify({
+         fcm_token: fcmToken, 
+        }),
+       });
 
 // 🔥 NOW CALL PROFILE API
 const shopData = await getVendorProfile();
