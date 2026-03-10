@@ -87,6 +87,7 @@ useEffect(() => {
   // 🔔 Notification states
 const [notifications, setNotifications] = useState([]);
 const [showNotifications, setShowNotifications] = useState(false);
+const [shakeBell, setShakeBell] = useState(false);
 
   const [profileData, setProfileData] = useState(
     JSON.parse(localStorage.getItem("profileData")) || {}
@@ -227,6 +228,16 @@ socket.on("new_order", (data) => {
 
   setOrders((prev) => [formattedOrder, ...prev]);
   fetchNotifications(); // 🔔 fetch latest notifications
+  // 🔔 play notification sound
+const audio = new Audio("/sounds/notificationSound.mp3");
+audio.play();
+
+// 🔔 trigger bell shake
+setShakeBell(true);
+
+setTimeout(() => {
+  setShakeBell(false);
+}, 600);
 
 });
 /* 🎯 STATUS UPDATE FROM BACKEND */
@@ -348,7 +359,7 @@ const prebookingOrders = orders.filter((o) => {
 
   <div className="notification-wrapper">
     <button
-      className="bell-btn"
+      className={`bell-btn ${shakeBell ? "bell-shake" : ""}`}
       onClick={() => setShowNotifications(!showNotifications)}
     >
       🔔
