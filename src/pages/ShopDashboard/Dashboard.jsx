@@ -47,27 +47,37 @@ function Counter({ value }) {
       }
     });
   }, []);
-  /* 🔥 FCM MESSAGE LISTENER */
+/* 🔥 FCM MESSAGE LISTENER */
 useEffect(() => {
+
+  if (!messaging) return;
 
   const unsubscribe = onMessage(messaging, (payload) => {
     console.log("🔥 FCM MESSAGE RECEIVED:", payload);
 
-    const title = payload?.notification?.title || "New Notification";
-    const body = payload?.notification?.body || "";
+    const title = payload?.notification?.title || "New Order";
+    const body = payload?.notification?.body || "You have a new order";
 
     if (Notification.permission === "granted") {
-      new Notification(title, {
+      const notification = new Notification(title, {
         body: body,
         icon: "/logo.png"
       });
+
+      notification.onclick = () => {
+        window.focus();
+      };
     }
+
+    // 🔄 Refresh orders automatically
+    fetchOrders();
 
   });
 
   return () => unsubscribe();
 
 }, []);
+
   const { shopActive } = useOutletContext();
 
   const [orders, setOrders] = useState([]);

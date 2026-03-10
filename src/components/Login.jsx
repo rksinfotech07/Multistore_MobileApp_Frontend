@@ -51,7 +51,6 @@ export default function Login() {
     }
 
     // 🟡 VENDOR LOGIN
-    // 🟡 VENDOR LOGIN
 res = await vendorLogin(loginData);
 
 console.log("LOGIN RESPONSE 👉", res.data);
@@ -64,20 +63,22 @@ console.log("TOKEN FROM RESPONSE 👉", token);
 saveToken(token);
 
 console.log("TOKEN IN STORAGE 👉", localStorage.getItem("vendor_token"));
-// ⭐⭐⭐⭐⭐ NEW FCM LOGIC START ⭐⭐⭐⭐⭐
- const fcmToken = await getFcmToken(); // ⭐ NEW 
- console.log("FCM TOKEN 👉", fcmToken); // ⭐ NEW
- await fetch("/api/vendor/save-fcm-token", { 
-  method: "POST",
-   headers: { 
-    "Content-Type": "application/json",
-     Authorization: `Bearer ${token}`,
-     },
-      body: JSON.stringify({
-         fcm_token: fcmToken, 
-        }),
-       });
+// 🔔 GET FCM TOKEN
+const fcmToken = await getFcmToken();
 
+console.log("FCM TOKEN 👉", fcmToken);
+
+// 📡 SEND FCM TOKEN TO BACKEND
+await fetch("/api/notifications/save-fcm-token", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`
+  },
+  body: JSON.stringify({
+    token: fcmToken
+  })
+});
 // 🔥 NOW CALL PROFILE API
 const shopData = await getVendorProfile();
 
