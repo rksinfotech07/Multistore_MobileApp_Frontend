@@ -29,7 +29,7 @@ export default function Navbar({ shopActive, setShopActive }) {
   }, []);
 
   /* 🔹 TAB STYLE */
-  const tabClass = ({ isActive }) =>
+const tabClass = ({ isActive }) =>  
     `nav-tab ${isActive ? "active" : ""}`;
 
   return (
