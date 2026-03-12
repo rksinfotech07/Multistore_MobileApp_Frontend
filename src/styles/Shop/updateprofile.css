@@ -1,4 +1,6 @@
-/* UPDATE PROFILE STYLING */                                                          /* Overlay – same as profile */
+/* UPDATE PROFILE STYLING */
+
+/* Overlay – same as profile */
 .profile-overlay {
   position: fixed;
   inset: 0;
@@ -11,7 +13,8 @@
 
 /* Card */
 .update-card {
-  width: 420px;
+  width: 460px;
+  max-width: 92vw;
   background: #ffffff;
   border-radius: 22px;
   overflow: hidden;
@@ -38,8 +41,36 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
+/* Header Left (Avatar + Text) */
+.update-header-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+/* Avatar Circle */
+.update-avatar{
+  width:44px;
+  height:44px;
+
+  border-radius:50%;
+  background:rgba(255,255,255,0.25);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:2px solid rgba(255,255,255,0.35);
+}
+
+.update-avatar svg{
+  color:white;
+}
+
+/* Header Text */
 .update-header h3 {
   margin: 0;
   font-size: 18px;
@@ -52,15 +83,11 @@
   opacity: 0.9;
 }
 
-/* FIX CLOSE BUTTON POSITION */
-.update-header {
-  position: relative; /* anchor for close button */
-}
-
+/* Close Button */
 .update-header .close-btn {
   position: absolute;
-  top: 21px;
-  right: 27px;
+  top: 18px;
+  right: 20px;
 
   width: 32px;
   height: 32px;
@@ -77,7 +104,6 @@
 
   font-size: 16px;
   font-weight: 700;
-  line-height: 1;
 
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s ease;
@@ -88,17 +114,18 @@
   transform: scale(1.05);
 }
 
-
 /* Body */
 .update-body {
   padding: 22px;
 }
 
+/* Form Layout */
 .form-row {
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
+/* Form Group */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -106,26 +133,34 @@
   flex: 1;
 }
 
+/* Label with Lucide Icons */
 .form-group label {
-  font-size: 12px;
-  color: #6b7280;
-  margin-bottom: 6px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  font-size:11px;
+  color:#6b7280;
+  margin-bottom:5px;
 }
 
+/* Inputs */
 .form-group input,
 .form-group textarea {
-  padding: 10px 12px;
-  border-radius: 12px;
+  padding: 9px 11px;
+  border-radius: 10px;
   border: 1px solid #e5e7eb;
-  font-size: 14px;
+  font-size: 13px;
   background: #f9fafb;
 }
 
+/* Textarea */
 .form-group textarea {
   resize: none;
-  height: 70px;
+  height: 60px;
 }
 
+/* Focus */
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
@@ -142,6 +177,7 @@
   border-top: 1px solid #f1f5f9;
 }
 
+/* Cancel Button */
 .cancel-btn {
   background: #f3f4f6;
   border: none;
@@ -155,16 +191,32 @@
   background: #e5e7eb;
 }
 
-.save-btn {
-  background: linear-gradient(135deg, #ff7a18, #ff3d6a);
-  color: white;
-  border: none;
-  padding: 10px 22px;
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: 600;
+/* Save Button */
+/* Update Button (Better Style) */
+.save-btn{
+display:flex;
+align-items:center;
+gap:8px;
+
+background:linear-gradient(135deg,#6366f1,#8b5cf6);
+color:white;
+
+border:none;
+
+padding:10px 22px;
+border-radius:14px;
+
+font-size:14px;
+font-weight:600;
+
+cursor:pointer;
+
+box-shadow:0 10px 25px rgba(99,102,241,.35);
+
+transition:all .25s ease;
 }
 
-.save-btn:hover {
-  opacity: 0.95;
+.save-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 14px 30px rgba(99,102,241,.45);
 }

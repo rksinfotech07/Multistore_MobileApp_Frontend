@@ -2,7 +2,14 @@ import { useEffect, useState } from "react";
 import SuccessModal from "../common/SuccessModal";
 import { updateVendorProfile } from "../../services/ProfileService";
 import "../../styles/Shop/updateprofile.css";
-
+import {
+User,
+Store,
+Phone,
+MapPin,
+Clock,
+Save
+} from "lucide-react";
 export default function UpdateProfileModal({ open, onClose, profile }) {
   const [formData, setFormData] = useState({
     shop_name: "",
@@ -81,20 +88,33 @@ export default function UpdateProfileModal({ open, onClose, profile }) {
         <div className="update-card">
 
           {/* HEADER */}
-          <div className="update-header">
-            <div>
-              <h3>Update Profile</h3>
-              <p>{formData.email}</p>
-            </div>
-            <button className="close-btn" onClick={onClose}>✕</button>
-          </div>
+         <div className="update-header">
+
+  <div className="update-header-left">
+
+    <div className="update-avatar">
+      <User size={22}/>
+    </div>
+
+    <div>
+      <h3>Update Profile</h3>
+      <p>{formData.email}</p>
+    </div>
+
+  </div>
+
+  <button className="close-btn" onClick={onClose}>✕</button>
+
+</div>
 
           {/* BODY */}
           <div className="update-body">
 
             <div className="form-row">
               <div className="form-group">
-                <label>Shop Name</label>
+                <label>
+  <Store size={14}/> Shop Name
+</label>
                 <input
                   value={formData.shop_name}
                   onChange={(e) =>
@@ -104,7 +124,9 @@ export default function UpdateProfileModal({ open, onClose, profile }) {
               </div>
 
               <div className="form-group">
-                <label>Owner Name</label>
+                <label>
+  <User size={14}/> Owner Name
+</label>
                 <input
                   value={formData.owner_name}
                   onChange={(e) =>
@@ -115,7 +137,9 @@ export default function UpdateProfileModal({ open, onClose, profile }) {
             </div>
 
             <div className="form-group">
-              <label>Contact</label>
+              <label>
+  <Phone size={14}/> Contact
+</label>
               <input
                 value={formData.phone}
                 onChange={(e) =>
@@ -125,7 +149,9 @@ export default function UpdateProfileModal({ open, onClose, profile }) {
             </div>
 
             <div className="form-group">
-              <label>Address</label>
+             <label>
+  <MapPin size={14}/> Address
+</label>
               <textarea
                 value={formData.address}
                 onChange={(e) =>
@@ -136,7 +162,9 @@ export default function UpdateProfileModal({ open, onClose, profile }) {
 
             <div className="form-row">
               <div className="form-group">
-                <label>Opens At</label>
+              <label>
+  <Clock size={14}/> Opens At
+</label>
                 <input
                   type="time"
                   value={formData.opening_time}
@@ -147,7 +175,9 @@ export default function UpdateProfileModal({ open, onClose, profile }) {
               </div>
 
               <div className="form-group">
-                <label>Closes At</label>
+                <label>
+  <Clock size={14}/> Closes At
+</label>
                 <input
                   type="time"
                   value={formData.closing_time}
@@ -162,10 +192,10 @@ export default function UpdateProfileModal({ open, onClose, profile }) {
 
           {/* FOOTER */}
           <div className="update-footer">
-            <button className="cancel-btn" onClick={onClose}>Cancel</button>
-            <button className="save-btn" onClick={handleUpdate}>
-              Update
-            </button>
+           
+           <button className="save-btn" onClick={handleUpdate}>
+  <Save size={16}/> update
+</button> 
           </div>
 
         </div>

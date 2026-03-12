@@ -2,7 +2,18 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getVendorProfile } from "../../services/ProfileService";
 import "../../styles/Shop/Profile.css";
-
+/* ICONS */
+import {
+User,
+Store,
+MapPin,
+Phone,
+Clock,
+Calendar,
+LogOut,
+ShieldCheck,
+Key
+} from "lucide-react";
 export default function ProfileModal({ open, onClose, onEdit }) {
   const navigate = useNavigate();          // ✅ FIX: hook at top
   const [profile, setProfile] = useState(null);
@@ -39,8 +50,8 @@ export default function ProfileModal({ open, onClose, onEdit }) {
         <div className="profile-header">
           <div className="profile-left">
             <div className="profile-avatar">
-              {profile?.owner_name?.charAt(0)}
-            </div>
+              <User size={26} />
+               </div>
             <div>
               <h3>{profile?.owner_name}</h3>
               <p className="shop-name">{profile?.shop_name}</p>
@@ -53,7 +64,7 @@ export default function ProfileModal({ open, onClose, onEdit }) {
               className="edit-btn"
               onClick={() => onEdit(profile)}
             >
-               Edit
+               ✏️Edit Profile
             </button>
             <button className="close-btn" onClick={onClose}>✕</button>
           </div>
@@ -62,49 +73,64 @@ export default function ProfileModal({ open, onClose, onEdit }) {
     {/* BODY */}
 <div className="profile-body">
 
-  {/* META */}
-  <div className="profile-meta">
-    <div className="meta-box">
-      <span>ACCESS ROLE</span>
-      <strong>🛒 SHOP</strong>
-    </div>
-
-    <div className="meta-box status">
-      <span>ACCOUNT STATUS</span>
-      <strong>✅ APPROVED</strong>
-    </div>
-  </div>
-
   {/* DETAILS */}
   <div className="info-grid">
 
     <div className="info-item">
-      <strong>👤 Owner</strong>
+      <strong>
+        <ShieldCheck size={16} /> Account Status
+      </strong>
+      <p className="status-approved">Approved</p>
+    </div>
+
+    <div className="info-item">
+      <strong>
+        <Key size={16} /> Access Role
+      </strong>
+      <p>Owner</p>
+    </div>
+
+    <div className="info-item">
+      <strong>
+        <User size={16} /> Owner
+      </strong>
       <p>{profile?.owner_name}</p>
     </div>
 
     <div className="info-item">
-      <strong>🏪 Shop Name</strong>
+      <strong>
+        <Store size={16} /> Shop Name
+      </strong>
       <p>{profile?.shop_name}</p>
     </div>
 
     <div className="info-item full">
-      <strong>📍 Address</strong>
+      <strong>
+        <MapPin size={16} /> Address
+      </strong>
       <p>{profile?.address}</p>
     </div>
 
     <div className="info-item">
-      <strong>⏰ Operational Hours</strong>
-      <p>{profile?.opening_time || "-"} – {profile?.closing_time || "-"}</p>
+      <strong>
+        <Clock size={16} /> Operational Hours
+      </strong>
+      <p>
+        {profile?.opening_time || "-"} – {profile?.closing_time || "-"}
+      </p>
     </div>
 
     <div className="info-item">
-      <strong>📞 Contact</strong>
+      <strong>
+        <Phone size={16} /> Contact
+      </strong>
       <p>{profile?.phone}</p>
     </div>
 
     <div className="info-item full">
-      <strong>📅 Registered On</strong>
+      <strong>
+        <Calendar size={16} /> Registered On
+      </strong>
       <p>
         {profile?.created_at
           ? new Date(profile.created_at).toDateString()
@@ -117,9 +143,10 @@ export default function ProfileModal({ open, onClose, onEdit }) {
 
 
         {/* LOGOUT */}
-        <button className="signout-btn" onClick={handleLogout}>
-          🚪 Secure Logout
-        </button>
+       <button className="signout-btn" onClick={handleLogout}>
+  <LogOut size={18} />
+  Logout
+</button>
 
       </div>
     </div>

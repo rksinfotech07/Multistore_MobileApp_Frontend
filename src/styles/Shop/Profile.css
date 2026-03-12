@@ -17,9 +17,11 @@ z-index:999;
 
 /* ===== CARD ===== */
 .profile-card{
-width:520px;
-max-width:95vw;
-height:720px;
+width:460px;        /* smaller width */
+max-width:90vw;
+
+height:auto;        /* remove fixed height */
+max-height:85vh;    /* keep inside screen */
 
 background:#ffffff;
 border-radius:22px;
@@ -29,6 +31,7 @@ box-shadow:0 30px 70px rgba(0,0,0,.35);
 
 display:flex;
 flex-direction:column;
+
 animation:modalSlide .35s ease;
 }
 
@@ -46,7 +49,7 @@ opacity:1;
 /* ===== HEADER ===== */
 .profile-header{
 background:linear-gradient(135deg,#ff7a18,#ff3c41);
-padding:28px 26px;
+padding:24px 22px;
 color:#ffffff;
 position:relative;
 }
@@ -62,13 +65,17 @@ gap:16px;
 width:54px;
 height:54px;
 border-radius:50%;
-background:#ffffff;
-color:#ff3c41;
+background:rgba(255,255,255,0.2);
+
 display:flex;
 align-items:center;
 justify-content:center;
-font-weight:700;
-font-size:20px;
+
+border:2px solid rgba(255,255,255,0.3);
+}
+
+.profile-avatar svg{
+color:#ffffff;
 }
 
 .profile-left h3{
@@ -88,34 +95,30 @@ font-size:12px;
 opacity:.85;
 }
 
-/* ===== SAVE / CANCEL BUTTONS ===== */
+/* ===== ACTION BUTTONS ===== */
 .profile-actions{
 display:flex;
 gap:10px;
 margin-top:14px;
 }
 
-.save-btn{
-background:#ffffff;
-color:#ff3c41;
+.edit-btn{
+margin-top:12px;
+background:rgba(255,255,255,.25);
 border:none;
-padding:8px 16px;
+padding:8px 14px;
 border-radius:20px;
 font-size:13px;
 font-weight:600;
+color:#ffffff;
+display:inline-flex;
+align-items:center;
+gap:6px;
 cursor:pointer;
-box-shadow:0 2px 6px rgba(0,0,0,.12);
 }
 
-.cancel-btn{
-background:rgba(255,255,255,.25);
-color:#ffffff;
-border:none;
-padding:8px 16px;
-border-radius:20px;
-font-size:13px;
-font-weight:600;
-cursor:pointer;
+.edit-btn:hover{
+background:rgba(255,255,255,.35);
 }
 
 /* ===== CLOSE BUTTON ===== */
@@ -123,17 +126,13 @@ cursor:pointer;
 position:absolute;
 top:18px;
 right:18px;
-
 width:36px;
 height:36px;
-
 border-radius:50%;
 border:none;
-
 display:flex;
 align-items:center;
 justify-content:center;
-
 background:rgba(255,255,255,.25);
 color:#ffffff;
 font-size:16px;
@@ -145,10 +144,12 @@ background:rgba(255,255,255,.45);
 }
 
 /* ===== BODY ===== */
+
 .profile-body{
-padding:24px 26px;
+padding:22px;
 overflow-y:auto;
-background:#f3f4f6;
+background:#f8fafc;
+max-height:60vh;
 }
 
 /* SCROLLBAR */
@@ -161,68 +162,129 @@ background:#d1d5db;
 border-radius:10px;
 }
 
+/* ===== META SECTION ===== */
+.profile-meta{
+display:flex;
+gap:14px;
+margin-bottom:18px;
+}
+
+.meta-box{
+background:#f1f5f9;
+padding:10px 14px;
+border-radius:10px;
+font-size:12px;
+display:flex;
+flex-direction:column;
+}
+
+.meta-box span{
+color:#64748b;
+font-size:11px;
+}
+
+.meta-box strong{
+font-size:13px;
+font-weight:600;
+color:#111827;
+}
+
 /* ===== GRID ===== */
 .info-grid{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:18px;
+margin-top:10px;
 }
 
 /* ===== FIELD CARD ===== */
 .info-item{
-background:#e5e7eb;
+background:#f8fafc;
 border-radius:16px;
-padding:14px 16px;
+padding:18px 20px;
 display:flex;
 flex-direction:column;
+gap:4px;
+border:1px solid #e5e7eb;
 }
 
-/* LABEL */
-.info-item label{
+/* ===== LABEL WITH ICON ===== */
+.info-item strong{
+display:flex;
+align-items:center;
+gap:8px;
 font-size:11px;
-font-weight:700;
-letter-spacing:1px;
+font-weight:600;
+letter-spacing:0.8px;
 text-transform:uppercase;
 color:#6b7280;
 margin-bottom:6px;
 }
 
-/* INPUT */
-.info-item input,
-.info-item textarea{
-background:#f9fafb;
-border:1px solid #d1d5db;
-border-radius:12px;
-padding:10px 12px;
-font-size:14px;
-outline:none;
+/* LUCIDE ICON STYLE */
+.info-item strong svg{
+width:16px;
+height:16px;
+color:#6b7280;
 }
 
-/* INPUT FOCUS */
-.info-item input:focus,
-.info-item textarea:focus{
-border-color:#ff7a18;
-box-shadow:0 0 0 2px rgba(255,122,24,.15);
+/* ===== VALUE TEXT ===== */
+.info-item p{
+font-size:12px;
+font-weight:600;
+color:#111827;
+margin-top:2px;
 }
 
-/* FULL WIDTH */
+/* ===== FULL WIDTH CARD ===== */
 .info-item.full{
 grid-column:span 2;
 }
 
-/* ===== LOGOUT ===== */
+/* ===== APPROVED BADGE ===== */
+.status-approved{
+background:#dcfce7;
+color:#16a34a;
+
+padding:3px 10px;
+border-radius:12px;
+
+font-size:12px;
+font-weight:600;
+
+display:inline-flex;
+align-items:center;
+
+width:fit-content;
+}
+
+/* ===== LOGOUT BUTTON ===== */
+
 .signout-btn{
-  margin-top:22px;
-  background:#ef4444;
-  color:#ffffff;
-  border:none;
-  padding:14px;
-  border-radius:12px;
-  font-size:15px;
-  font-weight:600;
-  cursor:pointer;
+margin:18px auto 10px;
+
+background:#ef4444;
+color:#ffffff;
+
+border:none;
+
+padding:10px 18px;
+
+border-radius:12px;
+
+font-size:14px;
+font-weight:600;
+
+cursor:pointer;
+
+width:90%;
+
+display:flex;
+align-items:center;
+justify-content:center;
+gap:8px;
 }
 
 .signout-btn:hover{
-  background:#dc2626;
+background:#dc2626;
 }
