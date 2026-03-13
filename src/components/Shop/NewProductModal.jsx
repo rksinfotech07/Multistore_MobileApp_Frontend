@@ -26,6 +26,8 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   const subCategoryRef = useRef(null);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
+  const [weight, setWeight] = useState("");
+  const [weightUnit, setWeightUnit] = useState("");
 
   useEffect(() => {
     if (product) {
@@ -168,6 +170,8 @@ useEffect(() => {
       final_price: sp,
       discount: discount,
       stock: stock || 0,
+      weight: weight || 0,
+      weight_unit: weightUnit,
       preparing_minutes: time || 0,
       food_type: type === "veg" ? "VEG" : "NON-VEG",
       category: backendCategoryMap[category],
@@ -444,18 +448,46 @@ useEffect(() => {
   </>
 ) : (
   <>
-    <h4>AVAILABLE STOCK *</h4>
-    <div className="stock-wrapper">
-      <input
-        type="number"
-        placeholder="Enter available stock"
-        value={stock}
-        onChange={(e) => setStock(e.target.value)}
-      />
-      {errors.stock && <p className="error">{errors.stock}</p>}
+  <h4>STOCK & WEIGHT *</h4>
+  <div className="row stock-weight-row">
 
-    </div>
-  </>
+  {/* STOCK */}
+  <div className="field">
+    <input
+      type="number"
+      placeholder="Available stock"
+      value={stock}
+      onChange={(e) => setStock(e.target.value)}
+    />
+    {errors.stock && <p className="error">{errors.stock}</p>}
+  </div>
+
+  {/* WEIGHT COMBINED */}
+  <div className="weight-field">
+
+  <input
+    type="number"
+    placeholder="Enter weight"
+    value={weight}
+    onChange={(e)=>setWeight(e.target.value)}
+  />
+
+  <select
+    value={weightUnit}
+    onChange={(e)=>setWeightUnit(e.target.value)}
+  >
+    <option value="" disabled hidden>
+    Select Unit
+  </option>
+    <option value="g">Gram</option>
+    <option value="kg">Kg</option>
+  </select>
+
+</div>
+
+</div>
+
+</>
 )}
           </div>
         </div>

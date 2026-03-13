@@ -583,3 +583,58 @@ line-height: 1.2;
 .dropdown-menu::-webkit-scrollbar-track {
   background: transparent;
 }
+.stock-weight-row{
+  display:flex;
+  gap:12px;
+}
+
+/* stock */
+.stock-weight-row .field{
+  flex:1;
+}
+.weight-field{
+  flex:1;
+  display:flex;
+  align-items:center;
+
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+
+  height:32px;          /* match input height */
+  padding:0 14px;       /* same as inputs */
+
+  background:#fff;
+  transition:all 0.2s ease;
+}
+
+/* focus like other inputs */
+.weight-field:focus-within{
+  border-color:#36b1de;
+  box-shadow:0 0 0 3px rgba(54,177,222,0.15);
+}
+.weight-field select{
+  border:none;
+  background:transparent;
+  font-size:13px;
+  font-weight:600;
+  outline:none;
+  cursor:pointer;
+  padding-bottom: 6px; /* visually center the text with the input */
+}
+
+.weight-field input{
+  border:none;
+  outline:none;
+  flex:1;
+  font-size:13px;
+  background:transparent;
+  padding:0;
+  box-shadow:none;   /* remove inner focus glow */
+}
+
+/* remove browser focus style */
+.weight-field input:focus{
+  outline:none;
+  box-shadow:none;
+  background:transparent;
+}
