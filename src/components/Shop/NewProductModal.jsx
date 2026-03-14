@@ -139,6 +139,12 @@ useEffect(() => {
       if (!time) newErrors.time = "Enter preparation time";
     } else {
       if (!stock) newErrors.stock = "Enter stock quantity";
+      if (!weight) newErrors.weight = "Enter weight";
+
+  if (!weightUnit) newErrors.weightUnit = "Select weight unit";
+
+  if (weight && Number(weight) <= 0)
+    newErrors.weight = "Weight must be greater than 0";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -170,8 +176,8 @@ useEffect(() => {
       final_price: sp,
       discount: discount,
       stock: stock || 0,
-      weight: weight || 0,
-      weight_unit: weightUnit,
+      weight_value: weight || 0,
+      weight_unit: weightUnit || "",
       preparing_minutes: time || 0,
       food_type: type === "veg" ? "VEG" : "NON-VEG",
       category: backendCategoryMap[category],
@@ -463,6 +469,7 @@ useEffect(() => {
   </div>
 
   {/* WEIGHT COMBINED */}
+  <div className="field">
   <div className="weight-field">
 
   <input
@@ -484,7 +491,12 @@ useEffect(() => {
   </select>
 
 </div>
-
+{(errors.weight || errors.weightUnit) && (
+    <p className="error">
+      {errors.weight || errors.weightUnit}
+    </p>
+  )}
+</div>
 </div>
 
 </>
