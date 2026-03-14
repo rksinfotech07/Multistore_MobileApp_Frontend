@@ -644,3 +644,7 @@ line-height: 1.2;
   box-shadow:none;
   background:transparent;
 }
+.field{
+  display:flex;
+  flex-direction:column;
+}
