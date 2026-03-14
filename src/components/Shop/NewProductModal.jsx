@@ -260,7 +260,7 @@ useEffect(() => {
 
           {/* RIGHT FORM */}
           <div className="form-section">
-            <div className="row two-col">
+          <div className="row stock-weight-row">
 {/* 🔥 CATEGORY FIELD */}
 
 {!shopCategory ? (
@@ -449,7 +449,7 @@ useEffect(() => {
 ) : (
   <>
   <h4>STOCK & WEIGHT *</h4>
-  <div className="row stock-weight-row">
+ <div className="row two-col">
 
   {/* STOCK */}
   <div className="field">

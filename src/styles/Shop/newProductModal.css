@@ -588,22 +588,24 @@ line-height: 1.2;
   gap:12px;
 }
 
-/* stock */
-.stock-weight-row .field{
+/* Available stock bigger */
+.stock-weight-row .field:first-child{
   flex:1;
 }
-.weight-field{
-  flex:1;
-  display:flex;
-  align-items:center;
 
+/* Enter weight card smaller */
+.stock-weight-row .field:last-child{
+  flex:0.7;
+}
+.weight-field{
+   display:flex;
+  align-items:center;
   border:1px solid #e5e7eb;
   border-radius:14px;
-
-  height:32px;          /* match input height */
-  padding:0 14px;       /* same as inputs */
-
+  padding:0 14px;     /* remove vertical padding */
+  gap:8px;
   background:#fff;
+  height:36px;        /* same height as other inputs */
   transition:all 0.2s ease;
 }
 
@@ -619,17 +621,21 @@ line-height: 1.2;
   font-weight:600;
   outline:none;
   cursor:pointer;
-  padding-bottom: 6px; /* visually center the text with the input */
+  height:100%;
+  padding:0;
+  width:110px;   /* 🔥 controls Select Unit width */
+  text-align:left;
 }
 
 .weight-field input{
-  border:none;
+ border:none;
   outline:none;
-  flex:1;
+  flex:1;  
   font-size:13px;
   background:transparent;
   padding:0;
-  box-shadow:none;   /* remove inner focus glow */
+  box-shadow:none;
+  height:100%;  /* remove inner focus glow */
 }
 
 /* remove browser focus style */
