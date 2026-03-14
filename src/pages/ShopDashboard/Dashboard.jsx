@@ -8,7 +8,7 @@ import "../../styles/Shop/Dashboard.css";
 import shopClosedImg from "../../assets/shopClosed.png";
 import { onMessage } from "firebase/messaging";
 import { messaging } from "../../firebase";
-
+import { setupFcm } from "../../utils/saveFcmToken";
 /* ===== COUNTER ===== */
 function Counter({ value }) {
   const [count, setCount] = useState(0);
@@ -36,6 +36,14 @@ function Counter({ value }) {
 
 
   export default function Dashboard() {
+     /* ⭐ SETUP FCM TOKEN */
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    setupFcm();
+  }, 300);
+
+  return () => clearTimeout(timer);
+}, []);
 
   /* 🔔 NOTIFICATION PERMISSION */
   useEffect(() => {

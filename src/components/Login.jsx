@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import { vendorLogin, adminLogin } from "../services/authService";
 import { getVendorProfile } from "../services/ProfileService";
 import { saveToken } from "../utils/authStorage";
-import { getFcmToken } from "../utils/getFcmToken";
+
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -66,36 +66,7 @@ console.log("TOKEN FROM RESPONSE 👉", token);
 saveToken(token);
 
 console.log("TOKEN IN STORAGE 👉", localStorage.getItem("vendor_token"));
-// 🔔 GET FCM TOKEN
-const fcmToken = await getFcmToken();
 
-console.log("FCM TOKEN 👉", fcmToken);
-
-
-      /* =========================
-         SAVE FCM TOKEN TO BACKEND
-      ========================= */
-
-      if (fcmToken) {
-
-        await fetch(`${API_URL}/api/notifications/save-fcm-token`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            token: fcmToken
-          })
-        });
-
-        console.log("✅ FCM token saved to backend");
-
-      } else {
-
-        console.warn("⚠️ FCM token not generated");
-
-      }
       
 // 🔥 NOW CALL PROFILE API
 const shopData = await getVendorProfile();
