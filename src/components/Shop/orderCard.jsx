@@ -5,7 +5,7 @@ import {
   markReady,
   declineOrder
 } from "../../api/axios";
-import { CalendarCheck } from "lucide-react";
+import { CalendarCheck, Package } from "lucide-react";
 
 export default function OrderCard({
   id,
@@ -286,7 +286,7 @@ const handleDecline = async () => {
 
  
   return (
-    <div className={`order-row-card ${status}`}>
+<div className={`order-row-card ${status === "received" ? "new-order" : ""}`}>
 
       {/* LEFT SIDE */}
       <div className="order-left">
@@ -319,8 +319,17 @@ const handleDecline = async () => {
   {/* ⭐ STATUS BELOW BUTTONS */}
   {status !== "accepted" && status !== "completed" && (
     <span className={`status-badge ${status}`}>
+
+  {status === "received" ? (
+    <>
+      <Package size={16} style={{ marginRight: "6px" }} />
       {statusText[status]}
-    </span>
+    </>
+  ) : (
+    statusText[status]
+  )}
+
+</span>
   )}
 
 </div>

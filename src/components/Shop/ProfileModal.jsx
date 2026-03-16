@@ -17,7 +17,7 @@ Key
 export default function ProfileModal({ open, onClose, onEdit }) {
   const navigate = useNavigate();          // ✅ FIX: hook at top
   const [profile, setProfile] = useState(null);
-
+const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   useEffect(() => {
     if (open) fetchProfile();
   }, [open]);
@@ -143,10 +143,38 @@ export default function ProfileModal({ open, onClose, onEdit }) {
 
 
         {/* LOGOUT */}
-       <button className="signout-btn" onClick={handleLogout}>
+  <button
+  className="signout-btn"
+  onClick={() => setShowLogoutConfirm(true)}
+>
   <LogOut size={18} />
   Logout
 </button>
+{showLogoutConfirm && (
+  <div className="logout-overlay">
+    <div className="logout-popup">
+
+      <h3>Are you sure you want to logout?</h3>
+
+      <div className="logout-actions">
+        <button
+          className="cancel-btn"
+          onClick={() => setShowLogoutConfirm(false)}
+        >
+          No
+        </button>
+
+        <button
+          className="confirm-btn"
+          onClick={handleLogout}
+        >
+          Yes
+        </button>
+      </div>
+
+    </div>
+  </div>
+)}
 
       </div>
     </div>

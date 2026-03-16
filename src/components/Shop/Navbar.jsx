@@ -45,12 +45,10 @@ const tabClass = ({ isActive }) =>
           >
             🍔
           </div>
-
-          <span className="brand-name">
-            {profileData?.shop_name ||
-              profileData?.owner_name ||
-              "Flame Kitchen"}
-          </span>
+ <span className="brand-name">
+  Mabzo
+</span>
+          
         </div>
 
         {/* ===== CENTER : NAV TABS ===== */}
