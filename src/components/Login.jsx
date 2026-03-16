@@ -47,7 +47,7 @@ export default function Login() {
       res = await adminLogin(loginData);
 
       const token = res.data.token;
-      saveToken(token);
+      localStorage.setItem("admin_token", token);
       login({ token, role: "admin" });
       navigate("/admin/dashboard");
       return;
@@ -56,11 +56,7 @@ export default function Login() {
     // 🟡 VENDOR LOGIN
 res = await vendorLogin(loginData);
 
-console.log("LOGIN RESPONSE 👉", res.data);
-
 const token = res.data.token;
-
-console.log("TOKEN FROM RESPONSE 👉", token);
 
 // ✅ Store token using helper
 saveToken(token);
@@ -70,7 +66,6 @@ console.log("TOKEN IN STORAGE 👉", localStorage.getItem("vendor_token"));
 const fcmToken = await getFcmToken();
 
 console.log("FCM TOKEN 👉", fcmToken);
-
 
       /* =========================
          SAVE FCM TOKEN TO BACKEND
