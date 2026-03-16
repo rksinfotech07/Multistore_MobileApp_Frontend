@@ -11,7 +11,9 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    const token = getToken();
+    const token =
+  localStorage.getItem("admin_token") ||
+  localStorage.getItem("vendor_token");
 
     /* PUBLIC ROUTES (NO TOKEN REQUIRED) */
     const publicRoutes = [

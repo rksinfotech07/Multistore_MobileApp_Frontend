@@ -175,7 +175,6 @@ formData.append("name", name);
 formData.append("description", desc);
 formData.append("price", mrp);
 formData.append("final_price", sp);
-formData.append("discount", discount);
 formData.append("stock", stock || 0);
 formData.append("weight_value", weight || 0);
 formData.append("weight_unit", weightUnit || "");

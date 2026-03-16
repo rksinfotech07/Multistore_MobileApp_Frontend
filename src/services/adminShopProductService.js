@@ -15,16 +15,9 @@ export const getShopProducts = async (shopId) => {
 export const addShopProduct = async (shopId, formData) => {
   try {
 
-    const token = localStorage.getItem("admin_token");
-
     const response = await api.post(
       `/api/products/admin/${shopId}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      }
+      formData
     );
 
     return response.data;
@@ -34,6 +27,7 @@ export const addShopProduct = async (shopId, formData) => {
     throw error;
   }
 };
+
 // 🔹 UPDATE Product (Admin)
 export const updateShopProduct = async (productId, payload) => {
   try {
