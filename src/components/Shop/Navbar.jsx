@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { LayoutDashboard, ClipboardList, CalendarClock, Box, User } from "lucide-react";
+import axios from "../../api/axios";
 import ProfileModal from "./ProfileModal";
 import UpdateProfileModal from "./updateProfileModal";
 import "../../styles/Shop/Navbar.css";
@@ -10,6 +11,51 @@ export default function Navbar({ shopActive, setShopActive }) {
   const [openProfile, setOpenProfile] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [showOnlinePopup, setShowOnlinePopup] = useState(false);
+    // 🔔 Notification states
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [shakeBell, setShakeBell] = useState(false);
+  /* =========================
+   FETCH NOTIFICATIONS
+========================= */
+const fetchNotifications = async () => {
+  try {
+
+    const res = await axios.get("/api/notifications");
+
+    if (res.data?.success) {
+      setNotifications(res.data.data);
+    }
+
+  } catch (err) {
+    console.error("Notification fetch error 👉", err);
+  }
+};
+useEffect(() => {
+  fetchNotifications();
+  
+}, []);
+useEffect(() => {
+  const handleNewNotification = () => {
+    console.log("🔔 Navbar received notification event");
+
+    setTimeout(() => {
+      fetchNotifications();
+    }, 200);
+
+    const audio = new Audio("/sounds/notificationSound.mp3");
+    audio.play().catch(() => {});
+
+    setShakeBell(true);
+    setTimeout(() => setShakeBell(false), 600);
+  };
+
+  window.addEventListener("newNotification", handleNewNotification);
+
+  return () => {
+    window.removeEventListener("newNotification", handleNewNotification);
+  };
+}, []);
 
   /* 🔹 PROFILE DATA FROM LOCAL STORAGE */
   const [profileData, setProfileData] = useState(
@@ -76,6 +122,52 @@ const tabClass = ({ isActive }) =>
 
         {/* ===== RIGHT : STATUS + PROFILE ===== */}
         <div className="nav-right">
+
+  {/* 🔔 NOTIFICATION BELL */}
+          <div className="notification-wrapper">
+    <button
+      className={`bell-btn ${shakeBell ? "bell-shake" : ""}`}
+      onClick={() => setShowNotifications(!showNotifications)}
+    >
+      🔔
+
+      {notifications.length > 0 && (
+        <span className="bell-count">
+          {notifications.length}
+        </span>
+      )}
+    </button>
+
+    {showNotifications && (
+      <div className="notification-popup">
+        <div className="notification-header">
+    <h4>Notifications</h4>
+
+    <button
+      className="notif-close"
+      onClick={() => setShowNotifications(false)}
+    >
+      ✕
+    </button>
+  </div>
+
+        {notifications.length === 0 ? (
+          <p>No notifications</p>
+        ) : (
+          notifications.map((n) => (
+            <div key={n.id} className="notification-item">
+              <b>{n.title}</b>
+              <p>{n.message}</p>
+              <span>
+                {new Date(n.created_at).toLocaleString()}
+              </span>
+            </div>
+          ))
+        )}
+      </div>
+    )}
+
+  </div>
 
           {/* 🔹 STATUS TOGGLE (OLD LOGIC) */}
           <div className="status-group">
