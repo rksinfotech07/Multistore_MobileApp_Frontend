@@ -12,18 +12,22 @@ export const getShopProducts = async (shopId) => {
 };
 
 // 🔹 ADD Product to a particular shop (Admin)
-export const addShopProduct = async (shopId, payload) => {
+export const addShopProduct = async (shopId, formData) => {
   try {
+
     const response = await api.post(
       `/api/products/admin/${shopId}`,
-      payload
+      formData
     );
+
     return response.data;
+
   } catch (error) {
     console.error("Error adding product 👉", error.response?.data || error.message);
     throw error;
   }
 };
+
 // 🔹 UPDATE Product (Admin)
 export const updateShopProduct = async (productId, payload) => {
   try {
@@ -31,6 +35,7 @@ export const updateShopProduct = async (productId, payload) => {
       `/api/products/admin/${productId}`,
       payload
     );
+
     return response.data;
   } catch (error) {
     console.error("Error updating product 👉", error.response?.data || error.message);

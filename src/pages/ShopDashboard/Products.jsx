@@ -134,11 +134,10 @@ export default function Products() {
 
           <div className="products-grid">
             {items.map((p) => {
-              const IMAGE_BASE = import.meta.env.VITE_IMAGE_URL;
               const imageUrl =
-                !p.image || p.image === "default-product.png"
-                  ? "/image.jpg"
-                  : `${IMAGE_BASE}/uploads/${p.image}`;
+  !p.image || p.image === "image.jpg"
+    ? "/image.jpg"
+    : p.image;
 
               const finalPrice =
                 p.final_price !== null && p.final_price !== undefined

@@ -41,7 +41,7 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
       setType(product.food_type === "NON-VEG" ? "nonveg" : "veg");
 
       if (product.image && product.image !== "image.jpg") {
-        setPreview(`${import.meta.env.VITE_IMAGE_URL}/uploads/${product.image}`);
+        setPreview(product.image);
       } else {
         setPreview("/image.jpg");
       }
@@ -169,30 +169,35 @@ useEffect(() => {
 
     const discount = mrp - sp;
 
-    const payload = {
-      name: name,
-      description: desc,
-      price: mrp,
-      final_price: sp,
-      discount: discount,
-      stock: stock || 0,
-      weight_value: weight || 0,
-      weight_unit: weightUnit || "",
-      preparing_minutes: time || 0,
-      food_type: type === "veg" ? "VEG" : "NON-VEG",
-      category: backendCategoryMap[category],
-      subcategory: subCategory || "",
-      is_live: true,
-      image: "image.jpg"
-    };
+    const formData = new FormData();
+
+formData.append("name", name);
+formData.append("description", desc);
+formData.append("price", mrp);
+formData.append("final_price", sp);
+formData.append("stock", stock || 0);
+formData.append("weight_value", weight || 0);
+formData.append("weight_unit", weightUnit || "");
+formData.append("preparing_minutes", time || 0);
+formData.append("food_type", type === "veg" ? "VEG" : "NON-VEG");
+formData.append("category", backendCategoryMap[category]);
+formData.append("subcategory", subCategory || "");
+formData.append("is_live", true);
+
+if (imageFile) {
+  formData.append("image", imageFile);
+}
+for (let pair of formData.entries()) {
+  console.log(pair[0], pair[1]);
+}
 
     try {
 
       // ✅ NEW ADDED UPDATE SUPPORT
       if (product) {
-        await updateShopProduct(product.id, payload);
+        await updateShopProduct(product.id, formData);
       } else {
-        await addShopProduct(shopId, payload);
+        await addShopProduct(shopId, formData);
       }
 
       alert(isEditMode ? "✅ Product Updated Successfully!" : "✅ Product Added Successfully!");
