@@ -15,17 +15,23 @@ export const getShopProducts = async (shopId) => {
 export const addShopProduct = async (shopId, formData) => {
   try {
 
-    const response = await api.post(
-      `/api/products/admin/${shopId}`,
-      formData
-    );
+   const response = await api.post(
+  `/api/products/admin/${shopId}`,
+  formData,
+  {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  }
+);
 
     return response.data;
 
   } catch (error) {
-    console.error("Error adding product 👉", error.response?.data || error.message);
-    throw error;
-  }
+  console.log("🔥 FULL BACKEND ERROR 👉", error.response?.data);
+  console.log("🔥 STATUS 👉", error.response?.status);
+  throw error;
+}
 };
 
 // 🔹 UPDATE Product (Admin)

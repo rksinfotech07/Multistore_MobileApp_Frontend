@@ -18,6 +18,7 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   const [type, setType] = useState("veg");
   const [category, setCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
+  const [subCategoryId, setSubCategoryId] = useState("");
   const [preview, setPreview] = useState(null);
   const [errors, setErrors] = useState({});
   const [openCategory, setOpenCategory] = useState(false);
@@ -175,13 +176,18 @@ formData.append("name", name);
 formData.append("description", desc);
 formData.append("price", mrp);
 formData.append("final_price", sp);
-formData.append("stock", stock || 0);
-formData.append("weight_value", weight || 0);
-formData.append("weight_unit", weightUnit || "");
-formData.append("preparing_minutes", time || 0);
+formData.append("stock", stock || 1);
+formData.append("weight_value", weight ? Number(weight) : 100);
+formData.append("weight_unit", weightUnit || "g");
+if (category === "Food") {
+  formData.append("preparing_minutes", Number(time));
+}
 formData.append("food_type", type === "veg" ? "VEG" : "NON-VEG");
-formData.append("category", backendCategoryMap[category]);
-formData.append("subcategory", subCategory || "");
+formData.append("category_id", shopCategoryId);   // ✅ FROM PROPS
+if (!subCategoryId) {
+  alert("Please select subcategory");
+  return;
+} // ✅ FROM STATE
 formData.append("is_live", true);
 
 if (imageFile) {
@@ -357,6 +363,7 @@ for (let pair of formData.entries()) {
     key={sub.id}
     onClick={() => {
       setSubCategory(sub.name);
+      setSubCategoryId(sub.id); 
       setOpenSubCategory(false);
     }}
   >
