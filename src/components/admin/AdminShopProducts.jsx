@@ -178,7 +178,9 @@ const handleToggle = async (productId) => {
 
             <button
               className="shop-new-btn"
-              onClick={() => setOpenModal(true)}
+              onClick={() => {
+                setEditProduct(null); 
+                setOpenModal(true)}}
             >
               + NEW PRODUCT
             </button>
@@ -234,8 +236,6 @@ const handleToggle = async (productId) => {
 ) : (
   <td>{product.stock}</td>
 )}
-
-
                 <td>
                   <label className="switch">
                     <input
