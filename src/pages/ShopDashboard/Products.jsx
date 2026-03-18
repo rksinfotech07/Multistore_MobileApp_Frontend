@@ -29,7 +29,15 @@ export default function Products() {
     }
   };
 
-  const addProduct = async () => {
+  const addProduct = async (updatedProduct = null) => {
+    if (updatedProduct && updatedProduct.id) {
+      setProducts((prev) =>
+        prev.map((p) => (p.id === updatedProduct.id ? { ...p, ...updatedProduct } : p))
+      );
+      setOpenModal(false);
+      return;
+    }
+
     await loadProducts();
     setOpenModal(false);
   };
@@ -137,7 +145,7 @@ export default function Products() {
               const imageUrl =
   !p.image || p.image === "image.jpg"
     ? "/image.jpg"
-    : p.image;
+    : `${p.image}${p.image.includes("?") ? "&" : "?"}t=${new Date().getTime()}`;
 
               const finalPrice =
                 p.final_price !== null && p.final_price !== undefined
@@ -215,7 +223,6 @@ export default function Products() {
         </div>
       )
     )
-
   )}
 
 </div>
@@ -247,7 +254,6 @@ export default function Products() {
           </div>
         </div>
       )}
-
       <NewProductModal
         open={openModal}
         onClose={() => {

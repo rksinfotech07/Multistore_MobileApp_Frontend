@@ -18,6 +18,7 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   const [type, setType] = useState("veg");
   const [category, setCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
+  const [subCategoryId, setSubCategoryId] = useState("");
   const [preview, setPreview] = useState(null);
   const [errors, setErrors] = useState({});
   const [openCategory, setOpenCategory] = useState(false);
@@ -32,19 +33,23 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   useEffect(() => {
     if (product) {
       setName(product.name || "");
-      setDesc(product.description || "");
-      setBase(product.price || "");
-      setRebate(product.final_price || "");
-      setStock(product.stock || 0);
-      setCategory(product.category || "Food");
-      setSubCategory(product.subcategory || "");
+      setDesc(product.description ?? "");
+      setBase(product.price ?? "");
+      setRebate(product.final_price ?? "");
+      setStock(product.stock ?? 0);
+      setCategory(product.category ?? "Food");
+      setSubCategory(product.subcategory ?? "");
+      setSubCategoryId(product.subcategory_id ?? "");
+      setTime(product.preparing_minutes ?? "");
       setType(product.food_type === "NON-VEG" ? "nonveg" : "veg");
 
-      if (product.image && product.image !== "image.jpg") {
-        setPreview(product.image);
-      } else {
-        setPreview("/image.jpg");
-      }
+      setImageFile(null);
+
+if (product?.image) {
+  setPreview(product.image);
+} else {
+  setPreview("/image.jpg");
+}
     } else {
   setName("");
   setDesc("");
@@ -130,13 +135,15 @@ useEffect(() => {
     let newErrors = {};
 
     if (!name.trim()) newErrors.name = "Product name required";
-    if (!desc.trim()) newErrors.desc = "Description required";
+    if (!isEditMode && !desc.trim()) 
+      newErrors.desc = "Description required";
     if (!subCategory) newErrors.subCategory = "Select sub-category";
     if (!base) newErrors.base = "Enter MRP";
     if (!rebate) newErrors.rebate = "Enter Selling Price";
 
     if (category === "Food") {
-      if (!time) newErrors.time = "Enter preparation time";
+      if (!isEditMode && !time) 
+        newErrors.time = "Enter preparation time";
     } else {
       if (!stock) newErrors.stock = "Enter stock quantity";
       if (!weight) newErrors.weight = "Enter weight";
@@ -172,13 +179,16 @@ useEffect(() => {
     const formData = new FormData();
 
 formData.append("name", name);
-formData.append("description", desc);
+if (desc && desc.trim() !== "")
+   formData.append("description", desc);
 formData.append("price", mrp);
 formData.append("final_price", sp);
 formData.append("stock", stock || 0);
 formData.append("weight_value", weight || 0);
 formData.append("weight_unit", weightUnit || "");
-formData.append("preparing_minutes", time || 0);
+if (category === "Food" && time) {
+  formData.append("preparing_minutes", Number(time) || 0);
+}
 formData.append("food_type", type === "veg" ? "VEG" : "NON-VEG");
 formData.append("category", backendCategoryMap[category]);
 formData.append("subcategory", subCategory || "");
@@ -244,31 +254,31 @@ for (let pair of formData.entries()) {
 
         <div className="big-body">
 
-          {/* LEFT IMAGE */}
-          <div className="image-section">
-            <h4>PRODUCT IMAGE</h4>
+{/* LEFT IMAGE */}
+<div className="image-section">
+  <h4>PRODUCT IMAGE</h4>
 
-  {preview ? (
-    <img src={preview} alt="" />
-  ) : (
-    
-    <label className="upload-box">
-      Click to Upload Product Image
+  <div className="image-wrapper">
+    <img src={preview || "/image.jpg"} alt="" />
+
+    {/* ✏️ Pencil Icon */}
+    <label className="edit-icon">
+      ✏️
       <input
         type="file"
         accept="image/*"
         hidden
         onChange={(e) => {
           const file = e.target.files[0];
-          setImageFile(file);        // file for backend
-          setPreview(URL.createObjectURL(file)); // preview
+          if (!file) return;
+
+          setImageFile(file);
+          setPreview(URL.createObjectURL(file));
         }}
       />
     </label>
-  )}
- 
+  </div>
 </div>
-
           {/* RIGHT FORM */}
           <div className="form-section">
           <div className="row stock-weight-row">

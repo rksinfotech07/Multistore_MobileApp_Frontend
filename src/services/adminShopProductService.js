@@ -14,10 +14,14 @@ export const getShopProducts = async (shopId) => {
 // 🔹 ADD Product to a particular shop (Admin)
 export const addShopProduct = async (shopId, formData) => {
   try {
-
     const response = await api.post(
       `/api/products/admin/${shopId}`,
-      formData
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
 
     return response.data;
@@ -33,7 +37,12 @@ export const updateShopProduct = async (productId, payload) => {
   try {
     const response = await api.put(
       `/api/products/admin/${productId}`,
-      payload
+      payload,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
 
     return response.data;
@@ -79,5 +88,13 @@ export const getSingleShop = async (shopId) => {
     throw error;
   }
 };
-
+export const getProductById = async (id) => {
+  try {
+    const res = await api.get(`/api/products/${id}`);
+    return res.data;
+  } catch (error) {
+    console.error("Get single product error 👉", error);
+    throw error;
+  }
+};
 
