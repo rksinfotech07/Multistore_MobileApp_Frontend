@@ -29,15 +29,7 @@ export default function Products() {
     }
   };
 
-  const addProduct = async (updatedProduct = null) => {
-    if (updatedProduct && updatedProduct.id) {
-      setProducts((prev) =>
-        prev.map((p) => (p.id === updatedProduct.id ? { ...p, ...updatedProduct } : p))
-      );
-      setOpenModal(false);
-      return;
-    }
-
+  const addProduct = async () => {
     await loadProducts();
     setOpenModal(false);
   };
@@ -142,10 +134,11 @@ export default function Products() {
 
           <div className="products-grid">
             {items.map((p) => {
+              const IMAGE_BASE = import.meta.env.VITE_IMAGE_URL;
               const imageUrl =
-  !p.image || p.image === "image.jpg"
-    ? "/image.jpg"
-    : `${p.image}${p.image.includes("?") ? "&" : "?"}t=${new Date().getTime()}`;
+                !p.image || p.image === "default-product.png"
+                  ? "/image.jpg"
+                  : `${IMAGE_BASE}/uploads/${p.image}`;
 
               const finalPrice =
                 p.final_price !== null && p.final_price !== undefined
@@ -223,6 +216,7 @@ export default function Products() {
         </div>
       )
     )
+
   )}
 
 </div>
@@ -254,6 +248,7 @@ export default function Products() {
           </div>
         </div>
       )}
+
       <NewProductModal
         open={openModal}
         onClose={() => {
