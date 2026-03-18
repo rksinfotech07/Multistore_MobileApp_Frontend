@@ -30,18 +30,19 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   const [weightUnit, setWeightUnit] = useState("");
 
   useEffect(() => {
+    if(!open) return;
     if (product) {
       setName(product.name || "");
-      setDesc(product.description || "");
+      setDesc(product.description ?? product.desc ?? "");
       setBase(product.price || "");
       setRebate(product.final_price || "");
       setStock(product.stock || 0);
       setCategory(product.category || "Food");
-      setSubCategory(product.subcategory || "");
       setType(product.food_type === "NON-VEG" ? "nonveg" : "veg");
+      setTime(product.preparing_minutes || ""); 
 
       if (product.image && product.image !== "image.jpg") {
-        setPreview(product.image);
+        setPreview(product.image + "?t=" + new Date().getTime());
       } else {
         setPreview("/image.jpg");
       }
@@ -62,7 +63,7 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   setErrors({});
 }
 
-}, [product, shopCategory]);
+}, [open, product]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -96,6 +97,10 @@ useEffect(() => {
     try {
       const subData = await getSubCategoriesAPI(shopCategoryId);
       setSubCategories(subData);
+      // 🔥 AFTER loading → set subcategory
+      if (product && product.subcategory) {
+        setSubCategory(product.subcategory);
+      }
     } catch (err) {
       console.error("Subcategory fetch error", err);
     }
@@ -104,7 +109,7 @@ useEffect(() => {
   if (open) {
     loadSubs();
   }
-}, [shopCategoryId, open]);
+}, [shopCategoryId, open, product]);
 
 
 
@@ -249,25 +254,29 @@ for (let pair of formData.entries()) {
           <div className="image-section">
             <h4>PRODUCT IMAGE</h4>
 
-  {preview ? (
+  <div className="image-upload-box">
+
+  {preview && (
     <img src={preview} alt="" />
-  ) : (
-    
-    <label className="upload-box">
-      Click to Upload Product Image
-      <input
-        type="file"
-        accept="image/*"
-        hidden
-        onChange={(e) => {
-          const file = e.target.files[0];
-          setImageFile(file);        // file for backend
-          setPreview(URL.createObjectURL(file)); // preview
-        }}
-      />
-    </label>
   )}
- 
+
+  <label className="upload-overlay">
+    Change Image
+    <input
+      type="file"
+      accept="image/*"
+      hidden
+      onChange={(e) => {
+        const file = e.target.files[0];
+        if (file) {
+          setImageFile(file);
+          setPreview(URL.createObjectURL(file));
+        }
+      }}
+    />
+  </label>
+
+</div>
 </div>
 
           {/* RIGHT FORM */}

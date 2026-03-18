@@ -85,5 +85,15 @@ export const getSingleShop = async (shopId) => {
     throw error;
   }
 };
+// 🔹 GET Single Product (Admin)
+export const getSingleProduct = async (productId) => {
+  try {
+    const response = await api.get(`/api/products/${productId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching single product 👉", error.response?.data || error.message);
+    throw error;
+  }
+};
 
 
