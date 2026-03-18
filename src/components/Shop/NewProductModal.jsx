@@ -1,5 +1,6 @@
 import { useState,useEffect, useRef} from "react";
 import "../../styles/Shop/newProductModal.css";
+import toast from "react-hot-toast";
 import { 
   addShopProduct,
   updateShopProduct   // ✅ NEW ADDED
@@ -29,41 +30,48 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   const [subCategories, setSubCategories] = useState([]);
   const [weight, setWeight] = useState("");
   const [weightUnit, setWeightUnit] = useState("");
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
-    if (product) {
-      setName(product.name || "");
-      setDesc(product.description || "");
-      setBase(product.price || "");
-      setRebate(product.final_price || "");
-      setStock(product.stock || 0);
-      setCategory(product.category || "Food");
-      setSubCategory(product.subcategory || "");
-      setType(product.food_type === "NON-VEG" ? "nonveg" : "veg");
+    
 
-      if (product.image && product.image !== "image.jpg") {
-        setPreview(product.image);
-      } else {
-        setPreview("/image.jpg");
-      }
-    } else {
-  setName("");
-  setDesc("");
-  setBase("");
-  setRebate("");
-  setStock("");
-  setTime("");
+    if (!product) return;
+      console.log("DESC 👉", product?.description);
+     
+ setName(product.name ?? "");
+  setDesc(product.description ?? "");
+  setBase(product.price ?? "");
+  setRebate(product.final_price ?? "");
+  setStock(product.stock ?? 0);
+  setCategory(product.category ?? "Food");
+  setSubCategory(product.subcategory ?? "");
+  setSubCategoryId(product.subcategory_id ?? "");
+  setTime(product.preparing_minutes ?? "");
+  setType(product.food_type === "NON-VEG" ? "nonveg" : "veg");
 
-  // ⭐ USE shopCategory for ADD MODE
+  if (product.image && product.image !== "image.jpg") {
+    setPreview(product.image);
+  } else {
+    setPreview("/image.jpg");
+  }
+
+//     } else {
+//   setName("");
+
+//   setBase("");
+//   setRebate("");
+//   setStock("");
+//   setTime("");
+
+//   // ⭐ USE shopCategory for ADD MODE
 
 
-  setSubCategory("");
-  setType("veg");
-  setPreview(null);
-  setErrors({});
-}
+//   setSubCategory("");
+//   setType("veg");
+//   setPreview(null);
+//   setErrors({});
+// }
 
-}, [product, shopCategory]);
+}, [product, open]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -106,6 +114,18 @@ useEffect(() => {
     loadSubs();
   }
 }, [shopCategoryId, open]);
+// 🔥 ADD THIS EXACTLY HERE
+useEffect(() => {
+  if (product && subCategories.length > 0) {
+    const matched = subCategories.find(
+      (s) => s.name === product.subcategory
+    );
+
+    if (matched) {
+      setSubCategoryId(matched.id);
+    }
+  }
+}, [product, subCategories]);
 
 
 
@@ -131,14 +151,18 @@ useEffect(() => {
     let newErrors = {};
 
     if (!name.trim()) newErrors.name = "Product name required";
-    if (!desc.trim()) newErrors.desc = "Description required";
+  if (!isEditMode && !desc.trim()) {
+  newErrors.desc = "Description required";
+}
     if (!subCategory) newErrors.subCategory = "Select sub-category";
     if (!base) newErrors.base = "Enter MRP";
     if (!rebate) newErrors.rebate = "Enter Selling Price";
 
-    if (category === "Food") {
-      if (!time) newErrors.time = "Enter preparation time";
-    } else {
+   if (category === "Food") {
+  if (!isEditMode && !time) {
+    newErrors.time = "Enter preparation time";
+  }
+} else {
       if (!stock) newErrors.stock = "Enter stock quantity";
       if (!weight) newErrors.weight = "Enter weight";
 
@@ -159,12 +183,12 @@ useEffect(() => {
     const sp = parseInt(rebate, 10);
 
     if (isNaN(mrp) || isNaN(sp)) {
-      alert("Enter valid price values");
+     toast.error("Enter valid price values");
       return;
     }
 
     if (sp > mrp) {
-      alert("Selling price cannot be greater than MRP");
+      toast.error("Selling price cannot be greater than MRP");
       return;
     }
 
@@ -173,19 +197,21 @@ useEffect(() => {
     const formData = new FormData();
 
 formData.append("name", name);
-formData.append("description", desc);
+if (desc && desc.trim() !== "") {
+  formData.append("description", desc);
+}
 formData.append("price", mrp);
 formData.append("final_price", sp);
 formData.append("stock", stock || 1);
 formData.append("weight_value", weight ? Number(weight) : 100);
 formData.append("weight_unit", weightUnit || "g");
-if (category === "Food") {
+if (category === "Food" && time) {
   formData.append("preparing_minutes", Number(time));
 }
 formData.append("food_type", type === "veg" ? "VEG" : "NON-VEG");
 formData.append("category_id", shopCategoryId);   // ✅ FROM PROPS
 if (!subCategoryId) {
-  alert("Please select subcategory");
+ toast.error("Please select subcategory");
   return;
 } // ✅ FROM STATE
 formData.append("is_live", true);
@@ -197,23 +223,38 @@ for (let pair of formData.entries()) {
   console.log(pair[0], pair[1]);
 }
 
-    try {
+try {
+  setLoading(true);
 
-      // ✅ NEW ADDED UPDATE SUPPORT
-      if (product) {
-        await updateShopProduct(product.id, formData);
-      } else {
-        await addShopProduct(shopId, formData);
-      }
+  if (product) {
+    await updateShopProduct(product.id, formData);
+  } else {
+    await addShopProduct(shopId, formData);
+  }
 
-      alert(isEditMode ? "✅ Product Updated Successfully!" : "✅ Product Added Successfully!");
-      onDeploy();
-      onClose();
+  // ✅ Close modal first
+  onClose();
 
-    } catch (error) {
-      console.error(error);
-      alert("❌ Failed to process product");
-    }
+  // ✅ Trigger table skeleton + refresh
+  onDeploy();
+
+  // ✅ Reset loading
+  setLoading(false);
+
+  // ✅ Show toast after UI update
+  setTimeout(() => {
+    toast.success(
+      isEditMode 
+        ? "Product Updated Successfully!" 
+        : "Product Added Successfully!"
+    );
+  }, 200);
+
+} catch (error) {
+  console.error(error);
+  setLoading(false);
+  toast.error("Failed to process product");
+}
   };
 
   const categoryIconMap = {
@@ -242,6 +283,14 @@ for (let pair of formData.entries()) {
   return (
     <div className="big-modal-overlay">
       <div className="big-modal-card">
+        {loading && (
+  <div className="skeleton-overlay">
+    <div className="skeleton-line"></div>
+    <div className="skeleton-line"></div>
+    <div className="skeleton-line"></div>
+    <div className="skeleton-line"></div>
+  </div>
+)}
 
         <div className="big-header">
           <h2>{product ? "Edit Product Details" : "Add New Product"}</h2>
@@ -396,11 +445,12 @@ for (let pair of formData.entries()) {
 
 
 
-            <textarea
-              placeholder="Product Description"
-              value={desc}
-              onChange={(e) => setDesc(e.target.value)}
-            />
+         <textarea
+  key={product?.id}
+  placeholder="Product Description"
+  value={desc || ""}
+  onChange={(e) => setDesc(e.target.value)}
+/>   
             {errors.desc && <p className="error">{errors.desc}</p>}
 
 
@@ -518,8 +568,14 @@ for (let pair of formData.entries()) {
 
         <div className="big-footer">
           <button className="cancel" onClick={onClose}>Cancel</button>
-          <button className="deploy" onClick={deploy}>
-  {product ? "Update Product" : "Save Product"}
+          <button 
+  className="deploy" 
+  onClick={deploy}
+  disabled={loading}
+>
+  {loading 
+    ? "Processing..." 
+    : (product ? "Update Product" : "Save Product")}
 </button>
 
         </div>

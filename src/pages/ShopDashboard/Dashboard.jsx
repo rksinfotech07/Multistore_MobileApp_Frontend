@@ -93,7 +93,9 @@ useEffect(() => {
   const [error, setError] = useState(null);
   const [searchText, setSearchText] = useState("");
   // 🔔 Notification states
-
+const [notifications, setNotifications] = useState([]);
+const [showNotifications, setShowNotifications] = useState(false);
+const [shakeBell, setShakeBell] = useState(false);
 
   const [profileData, setProfileData] = useState(
     JSON.parse(localStorage.getItem("profileData")) || {}
@@ -151,10 +153,25 @@ useEffect(() => {
  useEffect(() => {
   if (shopActive) {
     fetchOrders();
-   
+    fetchNotifications(); // 🔔 fetch notifications on load
   }
 }, [shopActive]);
+/* =========================
+   FETCH NOTIFICATIONS
+========================= */
+const fetchNotifications = async () => {
+  try {
 
+    const res = await axios.get("/api/notifications");
+
+    if (res.data?.success) {
+      setNotifications(res.data.data);
+    }
+
+  } catch (err) {
+    console.error("Notification fetch error 👉", err);
+  }
+};
 /* =========================
    🔥 SOCKET LISTENER — FINAL
 ========================= */
@@ -218,10 +235,17 @@ socket.on("new_order", (data) => {
   };
 
   setOrders((prev) => [formattedOrder, ...prev]);
- setTimeout(() => {
-  window.dispatchEvent(new CustomEvent("newNotification"));
-  console.log("🔔 Notification event dispatched");
-}, 50);
+  fetchNotifications(); // 🔔 fetch latest notifications
+  // 🔔 play notification sound
+const audio = new Audio("/sounds/notificationSound.mp3");
+audio.play();
+
+// 🔔 trigger bell shake
+setShakeBell(true);
+
+setTimeout(() => {
+  setShakeBell(false);
+}, 600);
 
 });
 /* 🎯 STATUS UPDATE FROM BACKEND */
@@ -341,7 +365,50 @@ const prebookingOrders = orders.filter((o) => {
     />
   </div>
 
-  
+  <div className="notification-wrapper">
+    <button
+      className={`bell-btn ${shakeBell ? "bell-shake" : ""}`}
+      onClick={() => setShowNotifications(!showNotifications)}
+    >
+      🔔
+
+      {notifications.length > 0 && (
+        <span className="bell-count">
+          {notifications.length}
+        </span>
+      )}
+    </button>
+
+    {showNotifications && (
+      <div className="notification-popup">
+        <div className="notification-header">
+    <h4>Notifications</h4>
+
+    <button
+      className="notif-close"
+      onClick={() => setShowNotifications(false)}
+    >
+      ✕
+    </button>
+  </div>
+
+        {notifications.length === 0 ? (
+          <p>No notifications</p>
+        ) : (
+          notifications.map((n) => (
+            <div key={n.id} className="notification-item">
+              <b>{n.title}</b>
+              <p>{n.message}</p>
+              <span>
+                {new Date(n.created_at).toLocaleString()}
+              </span>
+            </div>
+          ))
+        )}
+      </div>
+    )}
+
+  </div>
 
 </div>
 

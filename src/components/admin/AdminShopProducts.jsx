@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import "../../styles/AdminShopProducts.css";
 import { ArrowLeft } from "lucide-react";
 import NewProductModal from "../../components/Shop/NewProductModal";
+import { getProductById } from "../../services/adminShopProductService";
 import { 
   getShopProducts,
   deleteShopProduct,
@@ -65,10 +66,20 @@ useEffect(() => {
 
 
   // ✅ Edit
-  const handleEdit = (product) => {
-    setEditProduct(product);
+ const handleEdit = async (product) => {
+  try {
+    const fullProduct = await getProductById(product.id); // 🔥 API call
+
+    console.log("FULL PRODUCT 👉", fullProduct);
+
+    setEditProduct(fullProduct);
     setOpenModal(true);
-  };
+
+  } catch (error) {
+    console.error("Failed to fetch product 👉", error);
+    alert("Failed to load product details");
+  }
+};
 
   // 🔥 OPEN DELETE MODAL
   const handleDelete = (productId) => {

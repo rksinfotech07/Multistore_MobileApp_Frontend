@@ -85,5 +85,13 @@ export const getSingleShop = async (shopId) => {
     throw error;
   }
 };
-
+export const getProductById = async (id) => {
+  try {
+    const res = await api.get(`/api/products/${id}`);
+    return res.data;
+  } catch (error) {
+    console.error("Get single product error 👉", error);
+    throw error;
+  }
+};
 

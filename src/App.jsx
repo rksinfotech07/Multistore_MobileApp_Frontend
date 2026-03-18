@@ -1,5 +1,6 @@
 import { useContext, useEffect } from "react";
 import { AuthContext } from "./context/AuthContext";
+import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { socket } from "./socket"; // ✅ SOCKET IMPORT
 
@@ -54,6 +55,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+        <Toaster position="top-center" reverseOrder={false} />
       <Routes>
 
         {/* Login page */}
