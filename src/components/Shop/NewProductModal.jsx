@@ -57,28 +57,10 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   setRebate("");
   setStock("");
   setTime("");
-
-  if (product.image && product.image !== "image.jpg") {
-    setPreview(product.image);
-  } else {
-    setPreview("/image.jpg");
-  }
-
-//     } else {
-//   setName("");
-
-//   setBase("");
-//   setRebate("");
-//   setStock("");
-//   setTime("");
-
-//   // ⭐ USE shopCategory for ADD MODE
-
-
-//   setSubCategory("");
-//   setType("veg");
-//   setPreview(null);
-//   setErrors({});
+ setSubCategory("");
+setType("veg");
+ setPreview(null);
+  setErrors({});
  }
 
 }, [open, product]);
@@ -117,9 +99,10 @@ useEffect(() => {
       setSubCategories(subData);
       // 🔥 AFTER loading → set subcategory
       if (product && product.subcategory) {
-        setSubCategory(product.subcategory);
-      }
-    } catch (err) {
+  setSubCategory(product.subcategory);
+  }
+}
+    catch (err) {
       console.error("Subcategory fetch error", err);
     }
   };
@@ -129,16 +112,11 @@ useEffect(() => {
   }
 }, [shopCategoryId, open, product]);
 
-
-
   useEffect(() => {
     if (category === "Food") {
       setStock("");
     }
   }, [category]);
-
-// ✅ ONLY ONE DECLARATION
-const isEditMode = !!product;
 
 if (!open) return null;
   const backendCategoryMap = {
@@ -148,22 +126,19 @@ if (!open) return null;
     Electronics: "Electronics",
     Cosmetics: "Cosmetics"
   };
-
+const isEditMode = !!product;
   
-
   const deploy = async () => {
     let newErrors = {};
 
     if (!name.trim()) newErrors.name = "Product name required";
-  if (!isEditMode && !desc.trim()) {
-  newErrors.desc = "Description required";
-}
+  if (!desc.trim()) newErrors.desc = "Description required";
     if (!subCategory) newErrors.subCategory = "Select sub-category";
     if (!base) newErrors.base = "Enter MRP";
     if (!rebate) newErrors.rebate = "Enter Selling Price";
 
    if (category === "Food") {
-  if (!isEditMode && !time) {
+  if (!time) {
     newErrors.time = "Enter preparation time";
   }
 } else {
@@ -201,9 +176,7 @@ if (!open) return null;
     const formData = new FormData();
 
 formData.append("name", name);
-if (desc && desc.trim() !== "") {
-  formData.append("description", desc);
-}
+formData.append("description", desc);
 formData.append("price", mrp);
 formData.append("final_price", sp);
 formData.append("discount", discount);
@@ -212,11 +185,8 @@ formData.append("weight_value", weight || 0);
 formData.append("weight_unit", weightUnit || "");
 formData.append("preparing_minutes", time || 0);
 formData.append("food_type", type === "veg" ? "VEG" : "NON-VEG");
-formData.append("category_id", shopCategoryId);   // ✅ FROM PROPS
-if (!subCategoryId) {
- toast.error("Please select subcategory");
-  return;
-} // ✅ FROM STATE
+formData.append("category", backendCategoryMap[category]);
+formData.append("subcategory", subCategory || "");
 formData.append("is_live", true);
 
 if (imageFile) {
@@ -236,6 +206,7 @@ try {
   } else {
     await addShopProduct(shopId, formData);
   }
+  
 
   const elapsed = Date.now() - start;
 
