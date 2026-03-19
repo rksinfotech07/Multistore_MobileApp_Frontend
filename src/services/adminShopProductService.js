@@ -27,9 +27,10 @@ export const addShopProduct = async (shopId, formData) => {
     return response.data;
 
   } catch (error) {
-    console.error("Error adding product 👉", error.response?.data || error.message);
-    throw error;
-  }
+  console.log("🔥 FULL BACKEND ERROR 👉", error.response?.data);
+  console.log("🔥 STATUS 👉", error.response?.status);
+  throw error;
+}
 };
 
 // 🔹 UPDATE Product (Admin)
