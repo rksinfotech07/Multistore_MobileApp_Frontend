@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import "../../styles/AdminShopProducts.css";
 import { ArrowLeft } from "lucide-react";
 import NewProductModal from "../../components/Shop/NewProductModal";
-import { getProductById } from "../../services/adminShopProductService";
+import { getSingleProduct } from "../../services/adminShopProductService";
 import { 
   getShopProducts,
   deleteShopProduct,
@@ -39,6 +39,7 @@ useEffect(() => {
     try {
       // 🔥 1. Fetch products
       const productsData = await getShopProducts(id);
+      console.log("API RESPONSE 👉", productsData);
       setProducts(productsData);
 
       // 🔥 2. Fetch shop details
@@ -49,9 +50,6 @@ useEffect(() => {
         : "";
       setShopCategory(formattedCategory);
       setShopCategoryId(shopData.category_id);
-
- 
-
     } catch (error) {
       console.error("Failed to fetch data 👉", error);
     } finally {
@@ -69,14 +67,15 @@ useEffect(() => {
   try {
     const fullProduct = await getProductById(product.id); // 🔥 API call
 
-    console.log("FULL PRODUCT 👉", fullProduct);
+  // ✅ Edit
+  const handleEdit = async (product) => {
+  try {
+    const fullProduct = await getSingleProduct(product.id);
 
     setEditProduct(fullProduct);
     setOpenModal(true);
-
   } catch (error) {
-    console.error("Failed to fetch product 👉", error);
-    alert("Failed to load product details");
+    console.error(error);
   }
 };
 
@@ -179,8 +178,9 @@ const handleToggle = async (productId) => {
             <button
               className="shop-new-btn"
               onClick={() => {
-                setEditProduct(null); 
-                setOpenModal(true)}}
+                setEditProduct(null);
+                setOpenModal(true);
+              }}
             >
               + NEW PRODUCT
             </button>

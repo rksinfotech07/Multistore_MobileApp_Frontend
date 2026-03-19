@@ -30,19 +30,24 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   const [weightUnit, setWeightUnit] = useState("");
 
   useEffect(() => {
+<<<<<<< HEAD
     if (!open) return;
+=======
+    if(!open) return;
+>>>>>>> b2c41079dc0bc65837adc11f36684abf71f0acbc
     if (product) {
       setName(product.name || "");
-      setDesc(product.description || "");
+      setDesc(product.description ?? product.desc ?? "");
       setBase(product.price || "");
       setRebate(product.final_price || "");
       setStock(product.stock || 0);
       setCategory(product.category || "Food");
-      setSubCategory(product.subcategory || "");
       setType(product.food_type === "NON-VEG" ? "nonveg" : "veg");
+      setTime(product.preparing_minutes || ""); 
 
       if (product.image && product.image !== "image.jpg") {
-        setPreview(product.image);
+        setPreview(null);
+        setPreview(product.image + "?t=" + new Date().getTime());
       } else {
         setPreview("/image.jpg");
       }
@@ -63,7 +68,11 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   setWeightUnit("");  
 }
 
+<<<<<<< HEAD
 }, [product, open, shopCategory]);
+=======
+}, [open, product]);
+>>>>>>> b2c41079dc0bc65837adc11f36684abf71f0acbc
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -98,6 +107,10 @@ useEffect(() => {
     try {
       const subData = await getSubCategoriesAPI(shopCategoryId);
       setSubCategories(subData);
+      // 🔥 AFTER loading → set subcategory
+      if (product && product.subcategory) {
+        setSubCategory(product.subcategory);
+      }
     } catch (err) {
       console.error("Subcategory fetch error", err);
     }
@@ -106,7 +119,7 @@ useEffect(() => {
   if (open) {
     loadSubs();
   }
-}, [shopCategoryId, open]);
+}, [shopCategoryId, open, product]);
 
 
 
@@ -265,25 +278,34 @@ for (let pair of formData.entries()) {
           <div className="image-section">
             <h4>PRODUCT IMAGE</h4>
 
-  {preview ? (
-    <img src={preview} alt="" />
-  ) : (
-    
-    <label className="upload-box">
-      Click to Upload Product Image
-      <input
-        type="file"
-        accept="image/*"
-        hidden
-        onChange={(e) => {
-          const file = e.target.files[0];
-          setImageFile(file);        // file for backend
-          setPreview(URL.createObjectURL(file)); // preview
-        }}
-      />
-    </label>
-  )}
- 
+  <div className="image-upload-box">
+
+{preview ? (
+  <img key={preview} src={preview} alt="" />
+) : (
+  <div className="empty-image">Click to add image</div>
+)}
+
+  <label className="upload-overlay">
+    {product ? "Change Image" : "Click to Add Image"}
+    <input
+      type="file"
+      accept="image/*"
+      hidden
+      onChange={(e) => {
+        const file = e.target.files[0];
+        if (file) {
+          setImageFile(file);
+setPreview(null); // 🔥 clear old image
+setTimeout(() => {
+  setPreview(URL.createObjectURL(file));
+}, 0);
+        }
+      }}
+    />
+  </label>
+
+</div>
 </div>
 
           {/* RIGHT FORM */}
