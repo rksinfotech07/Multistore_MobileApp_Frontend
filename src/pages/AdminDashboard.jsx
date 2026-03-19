@@ -159,11 +159,14 @@ const filterShops = (shopsArray) => {
         <th>S.No</th>
         <th>Shop Name</th>
         <th>Owner</th>
-        <th>Email</th>
+        <th>Address</th>
         <th>Phone</th>
         <th>Business Type</th>
+        <th>Opening Time</th>
+        <th>Closing Time</th>
         <th>Registered On</th>
         <th>Actions</th>
+        
       </tr>
     </thead>
 
@@ -178,11 +181,20 @@ const filterShops = (shopsArray) => {
 
           <td>{shop.owner_name}</td>
 
-          <td>{shop.email}</td>
+          <td 
+  className="address-cell"
+  onClick={() => setViewId(shop.address)}
+>
+  {shop.address?.length > 25 
+    ? shop.address.slice(0, 25) + "..." 
+    : shop.address}
+</td>
 
           <td>{shop.phone || "-"}</td>
 
           <td>{shop.business_type}</td>
+          <td>{shop.opening_time || "-"}</td>
+          <td>{shop.closing_time || "-"}</td>
 
           <td>
             {new Date(shop.created_at).toLocaleString()}
@@ -231,10 +243,13 @@ const filterShops = (shopsArray) => {
           <th>S.No</th>
           <th>Shop Name</th>
           <th>Owner</th>
-          <th>Email</th>
+          <th>Address</th>
           <th>Phone</th>
           <th>Business Type</th>
+           <th>Opening Time</th>
+          <th>Closing Time</th>
           <th>Approved On</th>
+         
         </tr>
       </thead>
 
@@ -249,11 +264,20 @@ const filterShops = (shopsArray) => {
 
             <td>{shop.owner_name}</td>
 
-            <td>{shop.email}</td>
+            <td 
+  className="address-cell"
+  onClick={() => setViewId(shop.address)}
+>
+  {shop.address?.length > 25 
+    ? shop.address.slice(0, 25) + "..." 
+    : shop.address}
+</td>
 
             <td>{shop.phone || "-"}</td>
 
             <td>{shop.business_type}</td>
+            <td>{shop.opening_time || "-"}</td>
+            <td>{shop.closing_time || "-"}</td>
 
             <td>
               {new Date(shop.created_at).toLocaleString()}
@@ -282,10 +306,13 @@ const filterShops = (shopsArray) => {
           <th>S.No</th>
           <th>Shop Name</th>
           <th>Owner</th>
-          <th>Email</th>
+          <th>Address</th>
           <th>Phone</th>
           <th>Business Type</th>
+           <th>Opening Time</th>
+          <th>Closing Time</th>
           <th>Registered On</th>
+         
         </tr>
       </thead>
 
@@ -295,9 +322,18 @@ const filterShops = (shopsArray) => {
             <td>{index + 1}</td>
             <td className="shop-name">{shop.shop_name}</td>
             <td>{shop.owner_name}</td>
-            <td>{shop.email}</td>
+           <td 
+  className="address-cell"
+  onClick={() => setViewId(shop.address)}
+>
+  {shop.address?.length > 25 
+    ? shop.address.slice(0, 25) + "..." 
+    : shop.address}
+</td>
             <td>{shop.phone}</td>
             <td>{shop.business_type}</td>
+            <td>{shop.opening_time || "-"}</td>
+            <td>{shop.closing_time || "-"}</td>
             <td>{new Date(shop.created_at).toLocaleString()}</td>
           </tr>
         ))}
@@ -305,6 +341,21 @@ const filterShops = (shopsArray) => {
     </table>
     </div>
   )
+)}
+{viewId && (
+  <div
+    className="address-popup-overlay"
+    onClick={() => setViewId(null)}
+  >
+    <div
+      className="address-popup"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <h3>Full Address</h3>
+      <p>{viewId}</p>
+      <button onClick={() => setViewId(null)}>Close</button>
+    </div>
+  </div>
 )}
 
     </div>

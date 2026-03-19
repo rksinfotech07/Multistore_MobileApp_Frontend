@@ -1,6 +1,7 @@
 import { useState,useEffect, useRef} from "react";
 import "../../styles/Shop/newProductModal.css";
 import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 import { 
   addShopProduct,
   updateShopProduct   // ✅ NEW ADDED
@@ -135,8 +136,10 @@ useEffect(() => {
     }
   }, [category]);
 
-  if (!open) return null;
+// ✅ ONLY ONE DECLARATION
+const isEditMode = !!product;
 
+if (!open) return null;
   const backendCategoryMap = {
     Food: "Food",
     Grocery: "Grocery",
@@ -145,7 +148,7 @@ useEffect(() => {
     Cosmetics: "Cosmetics"
   };
 
-  const isEditMode = !!product;
+  
 
   const deploy = async () => {
     let newErrors = {};
@@ -224,6 +227,8 @@ for (let pair of formData.entries()) {
 }
 
 try {
+  const start = Date.now(); // 🔥 track time
+
   setLoading(true);
 
   if (product) {
@@ -232,23 +237,26 @@ try {
     await addShopProduct(shopId, formData);
   }
 
-  // ✅ Close modal first
-  onClose();
+  const elapsed = Date.now() - start;
 
-  // ✅ Trigger table skeleton + refresh
-  onDeploy();
+  // 🔥 minimum loader 600ms
+  if (elapsed < 600) {
+    await new Promise(r => setTimeout(r, 600 - elapsed));
+  }
 
-  // ✅ Reset loading
-  setLoading(false);
+  setLoading(false); // ✅ now smooth
 
-  // ✅ Show toast after UI update
+  onDeploy(); // refresh table
+
   setTimeout(() => {
-    toast.success(
-      isEditMode 
-        ? "Product Updated Successfully!" 
-        : "Product Added Successfully!"
-    );
+    onClose(); // smooth close
   }, 200);
+
+  toast.success(
+    isEditMode 
+      ? "Product Updated Successfully!" 
+      : "Product Added Successfully!"
+  );
 
 } catch (error) {
   console.error(error);
@@ -282,15 +290,18 @@ try {
 
   return (
     <div className="big-modal-overlay">
-      <div className="big-modal-card">
-        {loading && (
-  <div className="skeleton-overlay">
-    <div className="skeleton-line"></div>
-    <div className="skeleton-line"></div>
-    <div className="skeleton-line"></div>
-    <div className="skeleton-line"></div>
+     <div className="big-modal-card">
+
+ {loading && (
+  <div className="loader-overlay">
+    <div className="loader-box">
+      <Loader2 className="spin" size={36} />
+      <p className="loader-text">Updating product...</p>
+    </div>
   </div>
 )}
+        
+  
 
         <div className="big-header">
           <h2>{product ? "Edit Product Details" : "Add New Product"}</h2>
