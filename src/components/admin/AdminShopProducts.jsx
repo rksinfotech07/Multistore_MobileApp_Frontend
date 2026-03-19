@@ -62,10 +62,6 @@ useEffect(() => {
   }
 }, [id]);
 
-// ✅ Edit
- const handleEdit = async (product) => {
-  try {
-    const fullProduct = await getProductById(product.id); // 🔥 API call
 
   // ✅ Edit
   const handleEdit = async (product) => {
@@ -130,16 +126,10 @@ const handleToggle = async (productId) => {
 };
 
 
-  const handleDeploy = async (updatedProduct = null) => {
+  const handleDeploy = async () => {
     try {
-      if (updatedProduct && updatedProduct.id) {
-        setProducts((prev) =>
-          prev.map((p) => (p.id === updatedProduct.id ? { ...p, ...updatedProduct } : p))
-        );
-      } else {
-        const data = await getShopProducts(id);
-        setProducts(data);
-      }
+      const data = await getShopProducts(id);
+      setProducts(data);
     } catch (error) {
       console.error("Refresh error 👉", error);
     }
@@ -236,6 +226,8 @@ const handleToggle = async (productId) => {
 ) : (
   <td>{product.stock}</td>
 )}
+
+
                 <td>
                   <label className="switch">
                     <input

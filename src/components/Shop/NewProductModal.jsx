@@ -30,11 +30,7 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   const [weightUnit, setWeightUnit] = useState("");
 
   useEffect(() => {
-<<<<<<< HEAD
-    if (!open) return;
-=======
     if(!open) return;
->>>>>>> b2c41079dc0bc65837adc11f36684abf71f0acbc
     if (product) {
       setName(product.name || "");
       setDesc(product.description ?? product.desc ?? "");
@@ -58,21 +54,17 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   setRebate("");
   setStock("");
   setTime("");
-  setCategory(shopCategory || "");// ⭐ USE shopCategory for ADD MODE
+
+  // ⭐ USE shopCategory for ADD MODE
+
+
   setSubCategory("");
   setType("veg");
   setPreview(null);
   setErrors({});
-  setImageFile(null);                // 🔥 FIX
-  setWeight("");                     // 🔥 FIX
-  setWeightUnit("");  
 }
 
-<<<<<<< HEAD
-}, [product, open, shopCategory]);
-=======
 }, [open, product]);
->>>>>>> b2c41079dc0bc65837adc11f36684abf71f0acbc
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -100,7 +92,6 @@ useEffect(() => {
 
   
   useEffect(() => {
-    if (!open) return;
   const loadSubs = async () => {
     if (!shopCategoryId) return;
 
@@ -191,28 +182,14 @@ formData.append("description", desc);
 formData.append("price", mrp);
 formData.append("final_price", sp);
 formData.append("discount", discount);
+formData.append("stock", stock || 0);
+formData.append("weight_value", weight || 0);
+formData.append("weight_unit", weightUnit || "");
+formData.append("preparing_minutes", time || 0);
 formData.append("food_type", type === "veg" ? "VEG" : "NON-VEG");
 formData.append("category", backendCategoryMap[category]);
+formData.append("subcategory", subCategory || "");
 formData.append("is_live", true);
-if (subCategory) {
-  formData.append("subcategory", subCategory);
-}
-
-if (time) {
-  formData.append("preparing_minutes", time);
-}
-
-if (stock !== "") {
-  formData.append("stock", stock);
-}
-
-if (weight) {
-  formData.append("weight_value", weight);
-}
-
-if (weightUnit) {
-  formData.append("weight_unit", weightUnit);
-}
 
 if (imageFile) {
   formData.append("image", imageFile);
