@@ -42,6 +42,7 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
       setTime(product.preparing_minutes || ""); 
 
       if (product.image && product.image !== "image.jpg") {
+        setPreview(null);
         setPreview(product.image + "?t=" + new Date().getTime());
       } else {
         setPreview("/image.jpg");
@@ -256,12 +257,14 @@ for (let pair of formData.entries()) {
 
   <div className="image-upload-box">
 
-  {preview && (
-    <img src={preview} alt="" />
-  )}
+{preview ? (
+  <img key={preview} src={preview} alt="" />
+) : (
+  <div className="empty-image">Click to add image</div>
+)}
 
   <label className="upload-overlay">
-    Change Image
+    {product ? "Change Image" : "Click to Add Image"}
     <input
       type="file"
       accept="image/*"
@@ -270,7 +273,10 @@ for (let pair of formData.entries()) {
         const file = e.target.files[0];
         if (file) {
           setImageFile(file);
-          setPreview(URL.createObjectURL(file));
+setPreview(null); // 🔥 clear old image
+setTimeout(() => {
+  setPreview(URL.createObjectURL(file));
+}, 0);
         }
       }}
     />

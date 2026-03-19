@@ -68,8 +68,6 @@ useEffect(() => {
   try {
     const fullProduct = await getSingleProduct(product.id);
 
-    console.log("FULL API DATA 👉", fullProduct); // debug
-
     setEditProduct(fullProduct);
     setOpenModal(true);
   } catch (error) {
