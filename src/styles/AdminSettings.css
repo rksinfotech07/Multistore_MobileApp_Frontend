@@ -5,9 +5,10 @@
 .admin-settings-page {
   padding: 50px;
   background: rgb(237, 236, 236);
-  height: 100vh;
-  overflow-y: auto;
-  scroll-behavior: smooth;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 
@@ -16,11 +17,12 @@
 /* ============================= */
 
 .settings-card {
+  max-width: 600px;
+  width: 100%;
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(20px);
   border-radius: 25px;
   padding: 40px;
-  margin-bottom: 40px;
   border: 1px solid rgba(255,255,255,0.4);
   box-shadow: 0 20px 50px rgba(99,102,241,0.15);
   transition: 0.4s ease;
@@ -34,13 +36,13 @@
 .settings-title {
   font-size: 22px;
   font-weight: 700;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   color: #1e293b;
 }
 
 
 /* ============================= */
-/* 🔥 ENHANCED PROFILE SECTION */
+/* 🔥 PROFILE SECTION */
 /* ============================= */
 
 .profile-top {
@@ -87,8 +89,15 @@
 
 
 /* ============================= */
-/* 🔥 PREMIUM INPUT STYLE */
+/* 🔥 INPUT STYLE */
 /* ============================= */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 25px;
+}
 
 .input-style {
   width: 100%;
@@ -98,163 +107,50 @@
   background: rgba(255,255,255,0.6);
   backdrop-filter: blur(10px);
   font-size: 14px;
-  transition: 0.4s ease;
+  transition: 0.3s ease;
 }
 
 .input-style:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 20px rgba(99,102,241,0.25);
+  border-color: #36b1de;
+  box-shadow: 0 0 15px rgba(54,177,222,0.25);
   transform: scale(1.02);
 }
 
 
 /* ============================= */
-/* 🔥 BLUE GLOSSY BUTTON */
+/* 🔥 BUTTON */
 /* ============================= */
 
 .primary-btn {
-  padding: 14px 35px;
+  margin-top: 25px;
+  padding: 14px;
   border-radius: 40px;
   font-weight: 700;
   font-size: 14px;
   color: white;
   border: none;
   cursor: pointer;
-  transition: 0.4s ease;
-  position: relative;
-  overflow: hidden;
+  transition: 0.3s ease;
 
-  background: linear-gradient(135deg, #3b82f6, #06b6d4);
-  box-shadow:
-    0 8px 20px rgba(59,130,246,0.4),
-    inset 0 2px 4px rgba(255,255,255,0.4);
+  background: linear-gradient(135deg, #36b1de, #468ac5);
+  box-shadow: 0 8px 20px rgba(54,177,222,0.4);
 }
 
 .primary-btn:hover {
-  transform: scale(1.08);
-  background: linear-gradient(135deg, #2563eb, #0891b2);
-  box-shadow:
-    0 15px 35px rgba(59,130,246,0.6),
-    inset 0 2px 6px rgba(255,255,255,0.5);
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #2a9bc5, #3b78b3);
+  box-shadow: 0 15px 30px rgba(54,177,222,0.6);
 }
 
 
 /* ============================= */
-/* 🔥 GLASS BUTTON */
+/* 🔥 TITLE ANIMATION */
 /* ============================= */
 
-.glass-btn {
-  padding: 12px 30px;
-  border-radius: 40px;
-  font-weight: 600;
-  color: #1e293b;
-  background: rgba(255,255,255,0.35);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255,255,255,0.6);
-  cursor: pointer;
-  transition: 0.4s ease;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+.fade-in {
+  animation: fadeInUp 0.8s ease forwards;
 }
-
-.glass-btn:hover {
-  transform: scale(1.08);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-}
-
-
-/* ============================= */
-/* 🔥 TOGGLE SWITCH */
-/* ============================= */
-
-.toggle-modern {
-  width: 75px;
-  height: 38px;
-  border-radius: 50px;
-  background: #f1f5f9;
-  padding: 5px;
-  cursor: pointer;
-  position: relative;
-  transition: 0.4s ease;
-  box-shadow:
-    inset 4px 4px 10px rgba(0,0,0,0.08),
-    inset -4px -4px 10px rgba(255,255,255,0.9);
-}
-
-.toggle-modern.active {
-  background: linear-gradient(135deg, #a7f3d0, #34d399);
-  box-shadow:
-    0 8px 20px rgba(52,211,153,0.4),
-    inset 0 2px 4px rgba(255,255,255,0.7);
-}
-
-.toggle-knob {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: white;
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  transition: 0.4s ease;
-  box-shadow:
-    0 6px 15px rgba(0,0,0,0.2);
-}
-
-.toggle-modern.active .toggle-knob {
-  transform: translateX(37px);
-  background: linear-gradient(135deg, #10b981, #059669);
-}
-/* ============================= */
-/* 🔥 TOGGLE ROW ALIGNMENT */
-/* ============================= */
-
-.toggle-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-}
-
-.toggle-label {
-  font-size: 15px;
-  font-weight: 500;
-  color: #1e293b;
-}
-
-
-/* ============================= */
-/* 🔥 SIDE BY SIDE GRID */
-/* ============================= */
-
-.settings-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-}
-
-.full-width-card {
-  margin-top: 20px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-
-/* Responsive */
-@media (max-width: 1000px) {
-  .settings-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-
-/* ============================= */
-/* 🔥 FADE ANIMATION */
-/* ============================= */
 
 @keyframes fadeInUp {
   from {
@@ -265,8 +161,4 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.fade-in {
-  animation: fadeInUp 0.8s ease forwards;
 }
