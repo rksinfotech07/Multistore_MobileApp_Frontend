@@ -134,11 +134,19 @@ export default function Products() {
 
           <div className="products-grid">
             {items.map((p) => {
-              const IMAGE_BASE = import.meta.env.VITE_IMAGE_URL;
-              const imageUrl =
-                !p.image || p.image === "default-product.png"
-                  ? "/image.jpg"
-                  : `${IMAGE_BASE}/uploads/${p.image}`;
+             const IMAGE_BASE = import.meta.env.VITE_IMAGE_URL;
+
+let imageUrl = "/image.jpg";
+
+if (p.image && p.image !== "default-product.png") {
+  if (p.image.startsWith("http")) {
+    imageUrl = p.image;
+  } else if (p.image.startsWith("/uploads")) {
+    imageUrl = `${IMAGE_BASE}${p.image}`;
+  } else {
+    imageUrl = `${IMAGE_BASE}/uploads/${p.image}`;
+  }
+}
 
               const finalPrice =
                 p.final_price !== null && p.final_price !== undefined
