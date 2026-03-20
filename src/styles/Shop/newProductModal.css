@@ -748,3 +748,17 @@ line-height: 1.2;
     transform: scale(1);
   }
 }
+.image-upload-box {
+  position: relative;
+}
+
+.image-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.6);
+  z-index: 5;
+  border-radius: 12px;
+}

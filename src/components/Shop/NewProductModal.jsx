@@ -32,6 +32,7 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   const [weight, setWeight] = useState("");
   const [weightUnit, setWeightUnit] = useState("");
   const [loading, setLoading] = useState(false);
+  const [imgLoading, setImgLoading] = useState(false);
   useEffect(() => {
     if(!open) return;
     if (product) {
@@ -45,7 +46,7 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
       setTime(product.preparing_minutes || ""); 
 
       if (product.image && product.image !== "image.jpg") {
-        setPreview(null);
+        setImgLoading(true);
         setPreview(product.image + "?t=" + new Date().getTime());
       } else {
         setPreview("/image.jpg");
@@ -286,12 +287,24 @@ try {
             <h4>PRODUCT IMAGE</h4>
 
   <div className="image-upload-box">
-
+    {/* 🔥 IMAGE LOADER */}
+{imgLoading && (
+  <div className="image-loader">
+    <Loader2 className="spin" size={40} />
+  </div>
+)}
 {preview ? (
-  <img key={preview} src={preview} alt="" />
+  <img
+    key={preview}
+    src={preview}
+    alt=""
+    onLoad={() => setImgLoading(false)}   // ✅ stop loader
+    onError={() => setImgLoading(false)}  // safety
+  />
 ) : (
   <div className="empty-image">Click to add image</div>
 )}
+
 
   <label className="upload-overlay">
     {product ? "Change Image" : "Click to Add Image"}
@@ -302,11 +315,10 @@ try {
       onChange={(e) => {
         const file = e.target.files[0];
         if (file) {
+          setImgLoading(true);
           setImageFile(file);
-setPreview(null); // 🔥 clear old image
-setTimeout(() => {
   setPreview(URL.createObjectURL(file));
-}, 0);
+
         }
       }}
     />
