@@ -8,7 +8,7 @@ export default function Register() {
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
-  const [showOtpPopup, setShowOtpPopup] = useState(false);   // ⭐ ADD THIS
+  // const [showOtpPopup, setShowOtpPopup] = useState(false);   // ⭐ ADD THIS
   const [otp, setOtp] = useState("");  
   const [categoryOpen, setCategoryOpen] = useState(false);
 
@@ -140,7 +140,9 @@ console.log("ADDRESS ENTERED BY USER:", formData.address);
     console.log("API Success:", res.data);
 
     // 4️⃣ Show OTP popup
-    setShowOtpPopup(true);
+    //setShowOtpPopup(true);
+    // setShowOtpPopup(true);
+setShowPopup(true); // ✅ show success instead
 
   } catch (err) {
     console.error("API Error:", err.response?.data || err.message);
@@ -174,6 +176,7 @@ const dropdownStyle = categoryOpen
       };
     })()
   : {};
+  /*
   const verifyOtp = async () => {
   try {
     const res = await api.post("/api/vendor/verify-phone", {
@@ -188,6 +191,7 @@ const dropdownStyle = categoryOpen
     alert("Invalid OTP");
   }
 };
+*/
 
   return (
     <div className={`register-card ${categoryOpen ? "dropdown-open" : ""}`}>
@@ -452,6 +456,7 @@ const dropdownStyle = categoryOpen
           </div>
         </div>
       )}
+{/*
       {showOtpPopup && (
   <div className="popup-overlay">
     <div className="popup-box">
@@ -472,6 +477,7 @@ const dropdownStyle = categoryOpen
     </div>
   </div>
 )}
+*/}
     </div>
   );
 }
