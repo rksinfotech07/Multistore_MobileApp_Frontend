@@ -143,6 +143,9 @@ console.log("ADDRESS ENTERED BY USER:", formData.address);
     //setShowOtpPopup(true);
     // setShowOtpPopup(true);
 setShowPopup(true); // ✅ show success instead
+setTimeout(() => {
+  navigate("/");
+}, 2000); // 2 seconds
 
   } catch (err) {
     console.error("API Error:", err.response?.data || err.message);
