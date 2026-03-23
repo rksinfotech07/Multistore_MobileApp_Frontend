@@ -762,3 +762,23 @@ line-height: 1.2;
   z-index: 5;
   border-radius: 12px;
 }
+.product-type-select {
+  height: 36px;
+  border-radius: 14px;
+  padding: 0 32px 0 14px;   /* 🔥 extra right padding for arrow */
+  font-size: 13px;
+  border: 1px solid #e5e7eb;
+  width: 100%;
+  background-color: #fff;
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  /* 🔥 ADD ARROW */
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%236b7280' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'><path d='M5.5 7l4.5 5 4.5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
+}

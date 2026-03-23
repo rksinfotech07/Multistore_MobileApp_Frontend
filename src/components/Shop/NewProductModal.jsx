@@ -36,7 +36,9 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   const [imgLoading, setImgLoading] = useState(false);
   const [productTypes, setProductTypes] = useState([]);
   const [productType, setProductType] = useState("");
-  
+  const [openProductType, setOpenProductType] = useState(false);
+const productTypeRef = useRef(null);
+
   useEffect(() => {
     if(!open) return;
     if (product) {
@@ -64,9 +66,12 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   setStock("");
   setTime("");
  setSubCategory("");
+ 
 setType("veg");
  setPreview(null);
   setErrors({});
+  setProductType("");  
+setProductTypes([]);   
  }
 
 }, [open, product]);
@@ -161,6 +166,7 @@ useEffect(() => {
   useEffect(() => {
   if (!product) {
     setProductType("");
+    setProductTypes([]);
   }
 }, [category]);
 
@@ -457,7 +463,7 @@ try {
     {selectedSubIcon} &nbsp;{subCategory}
   </span>
 ) : (
-  <span className="placeholder">Select Sub-Category</span>
+  <span className="placeholder">Choose Sub-Category</span>
 )}
 
     <span className="arrow">▾</span>
@@ -490,10 +496,30 @@ try {
     <h4>PRODUCT TYPE *</h4>
 
     <select
-      value={productType}
-      onChange={(e) => setProductType(e.target.value)}
-    >
-      <option value="">Select Product Type</option>
+    className="product-type-select"
+  value={productType}
+  onMouseDown={(e) => {
+    if (!subCategoryId) {
+      e.preventDefault(); // 🚫 stop dropdown
+
+      setErrors((prev) => ({
+        ...prev,
+        productType: "Select sub-category first"
+      }));
+    }
+  }}
+  onChange={(e) => {
+    if (!subCategoryId) return;
+
+    setProductType(e.target.value);
+
+    setErrors((prev) => ({
+      ...prev,
+      productType: ""
+    }));
+  }}
+>
+      <option value="" disabled hidden>Select Type</option>
       {productTypes.map((pt) => (
   <option key={pt.id} value={pt.id}>
     {pt.name}
