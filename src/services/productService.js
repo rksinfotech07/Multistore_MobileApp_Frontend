@@ -37,7 +37,9 @@ export const getSubCategoriesAPI = async (categoryId) => {
   const res = await axios.get(`/api/common/categories/${categoryId}/subcategories`);
   return res.data;
 };
-
-
+export const getProductTypesAPI = async (subCategoryId) => {
+  const res = await axios.get(`/api/common/subcategories/${subCategoryId}/product-types`);
+  return res.data;
+};
 
 

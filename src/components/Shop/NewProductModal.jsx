@@ -1,3 +1,5 @@
+import ReactCrop from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 import { useState,useEffect, useRef} from "react";
 import "../../styles/Shop/newProductModal.css";
 import toast from "react-hot-toast";
@@ -7,6 +9,7 @@ import {
   updateShopProduct   // ✅ NEW ADDED
 } from "../../services/adminShopProductService";
 import { getCategoriesAPI, getSubCategoriesAPI } from "../../services/productService";
+import { getProductTypesAPI } from "../../services/productService";
 
 export default function NewProductModal({ open, onClose, onDeploy, product, shopId,shopCategory,shopCategoryId }) {
 
@@ -33,6 +36,20 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   const [weightUnit, setWeightUnit] = useState("");
   const [loading, setLoading] = useState(false);
   const [imgLoading, setImgLoading] = useState(false);
+  const [productTypes, setProductTypes] = useState([]);
+  const [productType, setProductType] = useState("");
+  const [openProductType, setOpenProductType] = useState(false);
+const productTypeRef = useRef(null);
+const [showCrop, setShowCrop] = useState(false);
+const [selectedImage, setSelectedImage] = useState(null);
+const [crop, setCrop] = useState({
+  unit: "px",
+  width: 50,
+  height: 50,
+  x: 25,
+  y: 25
+});
+
   useEffect(() => {
     if(!open) return;
     if (product) {
@@ -44,6 +61,7 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
       setCategory(product.category || "Food");
       setType(product.food_type === "NON-VEG" ? "nonveg" : "veg");
       setTime(product.preparing_minutes || ""); 
+      setProductType(product.product_type_id || "");
 
       if (product.image && product.image !== "image.jpg") {
         setImgLoading(true);
@@ -59,9 +77,14 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   setStock("");
   setTime("");
  setSubCategory("");
+ setSubCategoryId("");
+ 
 setType("veg");
  setPreview(null);
   setErrors({});
+  setProductType("");  
+setProductTypes([]);  
+setOpenProductType(false); 
  }
 
 }, [open, product]);
@@ -100,8 +123,15 @@ useEffect(() => {
       setSubCategories(subData);
       // 🔥 AFTER loading → set subcategory
       if (product && product.subcategory) {
-  setSubCategory(product.subcategory);
+  const matched = subData.find(
+    (s) => s.name === product.subcategory
+  );
+
+  if (matched) {
+    setSubCategory(matched.name);
+    setSubCategoryId(matched.id);   // 🔥 MUST ADD THIS
   }
+}
 }
     catch (err) {
       console.error("Subcategory fetch error", err);
@@ -112,12 +142,47 @@ useEffect(() => {
     loadSubs();
   }
 }, [shopCategoryId, open, product]);
+useEffect(() => {
+  const loadProductTypes = async () => {
+    if (
+      (category === "Grocery" || category === "Electronics") &&
+      subCategoryId   // ✅ VERY IMPORTANT
+    ) {
+      try {
+        const data = await getProductTypesAPI(subCategoryId);
+        console.log("🔥 Product Types:", data);
+        setProductTypes(data);
+      } catch (err) {
+        console.error("Product type fetch error", err);
+      }
+    } else {
+      setProductTypes([]);
+    }
+  };
+
+  if (open) {
+    loadProductTypes();
+  }
+}, [category, subCategoryId, open]);
+
+useEffect(() => {
+  if (product && productTypes.length > 0) {
+    setProductType(product.product_type_id || "");
+  }
+}, [productTypes]);
 
   useEffect(() => {
     if (category === "Food") {
       setStock("");
     }
   }, [category]);
+  useEffect(() => {
+  if (!product) {
+    setProductType("");
+    setProductTypes([]);
+    setOpenProductType(false);
+  }
+}, [category]);
 
 if (!open) return null;
   const backendCategoryMap = {
@@ -150,6 +215,12 @@ const isEditMode = !!product;
 
   if (weight && Number(weight) <= 0)
     newErrors.weight = "Weight must be greater than 0";
+    // 🔥 ADD THIS BLOCK
+  if (category === "Grocery" || category === "Electronics") {
+    if (!productType) {
+      newErrors.productType = "Select product type";
+    }
+  }
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -189,6 +260,11 @@ formData.append("food_type", type === "veg" ? "VEG" : "NON-VEG");
 formData.append("category", backendCategoryMap[category]);
 formData.append("subcategory", subCategory || "");
 formData.append("is_live", true);
+const selectedType = productTypes.find(
+  (pt) => pt.id == productType
+);
+
+formData.append("product_type", selectedType?.name || "");
 
 if (imageFile) {
   formData.append("image", imageFile);
@@ -259,7 +335,51 @@ try {
       console.error("Subcategory fetch error", err);
     }
   };
+const handleCrop = async () => {
+  const image = new Image();
+  image.src = selectedImage;
 
+  image.onload = () => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+
+    const cropX = crop.x * scaleX;
+    const cropY = crop.y * scaleY;
+    const cropSize = Math.min(crop.width, crop.height) * scaleX; // 🔥 FORCE SQUARE
+
+    const OUTPUT_SIZE = 220;
+
+    canvas.width = OUTPUT_SIZE;
+    canvas.height = OUTPUT_SIZE;
+
+    ctx.drawImage(
+      image,
+      cropX,
+      cropY,
+      cropSize,
+      cropSize,
+      0,
+      0,
+      OUTPUT_SIZE,
+      OUTPUT_SIZE
+    );
+
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+
+      const file = new File([blob], "cropped.jpg", {
+        type: "image/jpeg",
+      });
+
+      setImageFile(file);
+      setPreview(URL.createObjectURL(file));
+      setShowCrop(false);
+    }, "image/jpeg");
+  };
+};
   return (
     <div className="big-modal-overlay">
      <div className="big-modal-card">
@@ -313,14 +433,14 @@ try {
       accept="image/*"
       hidden
       onChange={(e) => {
-        const file = e.target.files[0];
-        if (file) {
-          setImgLoading(true);
-          setImageFile(file);
-  setPreview(URL.createObjectURL(file));
+  const file = e.target.files[0];
+  if (file) {
+    const imageUrl = URL.createObjectURL(file);
 
-        }
-      }}
+    setSelectedImage(imageUrl);   // 🔥 NEW
+    setShowCrop(true);            // 🔥 NEW (open crop modal)
+  }
+}}
     />
   </label>
 </div>
@@ -401,7 +521,7 @@ try {
     {selectedSubIcon} &nbsp;{subCategory}
   </span>
 ) : (
-  <span className="placeholder">Select Sub-Category</span>
+  <span className="placeholder">Choose Sub-Category</span>
 )}
 
     <span className="arrow">▾</span>
@@ -428,6 +548,48 @@ try {
 
   {errors.subCategory && <p className="error">{errors.subCategory}</p>}
 </div>
+{/* 🔥 PRODUCT TYPE (ONLY FOR ELECTRONICS & GROCERY) */}
+{(category === "Grocery" || category === "Electronics") && (
+  <div className="field">
+    <h4>PRODUCT TYPE *</h4>
+
+    <select
+    className="product-type-select"
+  value={productType}
+  onMouseDown={(e) => {
+    if (!subCategoryId) {
+      e.preventDefault(); // 🚫 stop dropdown
+
+      setErrors((prev) => ({
+        ...prev,
+        productType: "Select sub-category first"
+      }));
+    }
+  }}
+  onChange={(e) => {
+    if (!subCategoryId) return;
+
+    setProductType(e.target.value);
+
+    setErrors((prev) => ({
+      ...prev,
+      productType: ""
+    }));
+  }}
+>
+      <option value="" disabled hidden>Select Type</option>
+      {productTypes.map((pt) => (
+  <option key={pt.id} value={pt.id}>
+    {pt.name}
+  </option>
+))}
+    </select>
+
+    {errors.productType && (
+      <p className="error">{errors.productType}</p>
+    )}
+  </div>
+)}
 
 
   
@@ -544,15 +706,26 @@ try {
   />
 
   <select
-    value={weightUnit}
-    onChange={(e)=>setWeightUnit(e.target.value)}
-  >
-    <option value="" disabled hidden>
+  value={weightUnit}
+  onChange={(e)=>setWeightUnit(e.target.value)}
+>
+  <option value="" disabled hidden>
     Select Unit
   </option>
-    <option value="g">Gram</option>
-    <option value="kg">Kg</option>
-  </select>
+
+  {category === "Food" && 
+   (subCategory === "Juice" || subCategory === "Shake") ? (
+    <>
+      <option value="ml">ML</option>
+      <option value="l">Litre</option>
+    </>
+  ) : (
+    <>
+      <option value="g">Gram</option>
+      <option value="kg">Kg</option>
+    </>
+  )}
+</select>
 
 </div>
 {(errors.weight || errors.weightUnit) && (
@@ -581,9 +754,51 @@ try {
 </button>
 
         </div>
+        {showCrop && (
+  <div className="crop-overlay">
+    <div className="crop-card">
+
+  {/* HEADER */}
+  <div className="crop-header">
+    <div className="crop-title">
+      <div>
+        <h3>Crop Image</h3>
+      </div>
+    </div>
+
+    <button className="crop-close" onClick={() => setShowCrop(false)}>✕</button>
+  </div>
+
+  {/* IMAGE */}
+  <div className="crop-area">
+  <ReactCrop crop={crop} onChange={(c) => setCrop(c)} aspect={1}>
+    <img
+      src={selectedImage}
+      alt="crop"
+      crossOrigin="anonymous"
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "contain"   // 🔥 MOST IMPORTANT FIX
+      }}
+    />
+  </ReactCrop>
+</div>
+
+
+  {/* ACTIONS */}
+  <div className="crop-actions">
+
+    <button className="save-btn" onClick={handleCrop}>
+      ✔ Save
+    </button>
+  </div>
+
+</div>
+  </div>
+)}
 
       </div>
     </div>
   );
 }
-//Shobika culprit
