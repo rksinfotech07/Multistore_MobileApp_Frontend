@@ -25,11 +25,13 @@ useEffect(() => {
   const fetchData = async () => {
     try {
       const shopRes = await getRegisteredShops();
+      console.log("shopRes:", shopRes); // 🔥 ADD THIS LINE
+  
       const countRes = await getCategoryCounts();
 
       if (isMounted) {
-        setShops(shopRes);
-        setCategoryCounts(countRes);
+       setShops(shopRes || []);
+      setCategoryCounts(countRes || []);
       }
 
     } catch (err) {
@@ -156,7 +158,7 @@ useEffect(() => {
             <thead>
               <tr>
                 <th>Shop Name</th>
-                <th>Email</th>
+               <th>Contact</th>
                 <th>Category</th>
                 <th>No of Products</th>
                 <th>Action</th>
@@ -180,7 +182,9 @@ useEffect(() => {
                 filteredShops.map((shop) => (
                   <tr key={shop.id}>
                     <td>{shop.shop_name}</td>
-                    <td>{shop.email}</td>
+                     <td>
+                      {shop.email || shop.phone || "-"}
+                      </td>
                     <td>{shop.business_type}</td>
                     <td>{shop.product_count}</td>
                     <td>
