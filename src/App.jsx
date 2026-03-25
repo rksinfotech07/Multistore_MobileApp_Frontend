@@ -21,6 +21,7 @@ import AdminSettings from "./pages/AdminSettings";
 import Admindb from "./pages/Admindb";
 import DeliveryAgents from "./pages/DeliveryAgents";
 import Prebooking from "./pages/ShopDashboard/Prebooking";
+import AdminOrders from "./pages/AdminOrders";
 
 const DashboardHome = () => <h2 style={{color:"white"}}>Dashboard Overview</h2>;
 const OrdersPage = () => <h2 style={{color:"white"}}>Orders Page</h2>;
@@ -91,6 +92,7 @@ export default function App() {
         >
           <Route path="dashboard" element={<Admindb />} />
           <Route path="shops" element={<AdminDashboard />} />
+        <Route path="orders" element={<AdminOrders />} />
           <Route path="add-product" element={<AddProduct />} />
           <Route path="delivery-agents" element={<DeliveryAgents />} />
           <Route path="settings" element={<AdminSettings />} />
