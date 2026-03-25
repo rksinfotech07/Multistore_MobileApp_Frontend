@@ -892,16 +892,35 @@ line-height: 1.2;
   align-items: center;
   gap: 10px;
 }
-
 .zoom-row input {
   flex: 1;
 }
-
-
 .save-btn {
   background: #1abc9c;
   color: white;
   border: none;
   padding: 8px 18px;
   border-radius: 8px;
+}
+/* already you have two-col */
+.row.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* 🔥 ADD THIS */
+.row.three-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+/* 🔥 ONLY for Juice/Shake quantity */
+.quantity-field input {
+  width: 60%;
+}
+
+.quantity-field select {
+  width: 40%;
+  border-left: 1px solid #e2e8f0;
 }

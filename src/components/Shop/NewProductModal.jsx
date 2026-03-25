@@ -50,6 +50,7 @@ const [crop, setCrop] = useState({
   y: 25
 });
 
+
   useEffect(() => {
     if(!open) return;
     if (product) {
@@ -85,6 +86,8 @@ setType("veg");
   setProductType("");  
 setProductTypes([]);  
 setOpenProductType(false); 
+setWeight("");        
+setWeightUnit("");   
  }
 
 }, [open, product]);
@@ -206,6 +209,12 @@ const isEditMode = !!product;
    if (category === "Food") {
   if (!time) {
     newErrors.time = "Enter preparation time";
+  }
+
+  // 🔥 ADD THIS
+  if (subCategory === "Juice" || subCategory === "Shake") {
+    if (!weight) newErrors.weight = "Enter quantity";
+    if (!weightUnit) newErrors.weightUnit = "Select unit";
   }
 } else {
       if (!stock) newErrors.stock = "Enter stock quantity";
@@ -643,9 +652,11 @@ const handleCrop = async () => {
 {category === "Food" ? (
   <>
     <h4>PREPARATION DETAILS *</h4>
-    <div className="row two-col">
+
+    <div className={`row ${subCategory === "Juice" || subCategory === "Shake" ? "three-col" : "two-col"}`}>
+
+      {/* PREP TIME */}
       <div className="field">
-         <div className="input-group">
         <label>Preparation Time (MIN)</label>
         <input
           className="food-input"
@@ -654,9 +665,9 @@ const handleCrop = async () => {
           onChange={(e) => setTime(e.target.value)}
         />
         {errors.time && <p className="error">{errors.time}</p>}
-</div>
       </div>
 
+      {/* FOOD TYPE */}
       <div className="field">
         <label>Food Type</label>
         <div className="toggle">
@@ -676,6 +687,38 @@ const handleCrop = async () => {
           </button>
         </div>
       </div>
+
+      {/* 🔥 QUANTITY INLINE */}
+      {(subCategory === "Juice" || subCategory === "Shake") && (
+        <div className="field">
+          <label>Quantity *</label>
+
+          <div className="weight-field quantity-field">
+            <input
+              type="number"
+              placeholder="Quantity"
+              value={weight}
+              onChange={(e)=>setWeight(e.target.value)}
+            />
+
+            <select
+              value={weightUnit}
+              onChange={(e)=>setWeightUnit(e.target.value)}
+            >
+              <option value="" disabled hidden>Unit</option>
+              <option value="ml">ML</option>
+              <option value="l">Litre</option>
+            </select>
+          </div>
+
+          {(errors.weight || errors.weightUnit) && (
+            <p className="error">
+              {errors.weight || errors.weightUnit}
+            </p>
+          )}
+        </div>
+      )}
+
     </div>
   </>
 ) : (
