@@ -1,3 +1,5 @@
+import ReactCrop from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 import { useState,useEffect, useRef} from "react";
 import "../../styles/Shop/newProductModal.css";
 import toast from "react-hot-toast";
@@ -38,6 +40,15 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   const [productType, setProductType] = useState("");
   const [openProductType, setOpenProductType] = useState(false);
 const productTypeRef = useRef(null);
+const [showCrop, setShowCrop] = useState(false);
+const [selectedImage, setSelectedImage] = useState(null);
+const [crop, setCrop] = useState({
+  unit: "px",
+  width: 50,
+  height: 50,
+  x: 25,
+  y: 25
+});
 
   useEffect(() => {
     if(!open) return;
@@ -66,12 +77,14 @@ const productTypeRef = useRef(null);
   setStock("");
   setTime("");
  setSubCategory("");
+ setSubCategoryId("");
  
 setType("veg");
  setPreview(null);
   setErrors({});
   setProductType("");  
-setProductTypes([]);   
+setProductTypes([]);  
+setOpenProductType(false); 
  }
 
 }, [open, product]);
@@ -167,6 +180,7 @@ useEffect(() => {
   if (!product) {
     setProductType("");
     setProductTypes([]);
+    setOpenProductType(false);
   }
 }, [category]);
 
@@ -321,7 +335,51 @@ try {
       console.error("Subcategory fetch error", err);
     }
   };
+const handleCrop = async () => {
+  const image = new Image();
+  image.src = selectedImage;
 
+  image.onload = () => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+
+    const cropX = crop.x * scaleX;
+    const cropY = crop.y * scaleY;
+    const cropSize = Math.min(crop.width, crop.height) * scaleX; // 🔥 FORCE SQUARE
+
+    const OUTPUT_SIZE = 220;
+
+    canvas.width = OUTPUT_SIZE;
+    canvas.height = OUTPUT_SIZE;
+
+    ctx.drawImage(
+      image,
+      cropX,
+      cropY,
+      cropSize,
+      cropSize,
+      0,
+      0,
+      OUTPUT_SIZE,
+      OUTPUT_SIZE
+    );
+
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+
+      const file = new File([blob], "cropped.jpg", {
+        type: "image/jpeg",
+      });
+
+      setImageFile(file);
+      setPreview(URL.createObjectURL(file));
+      setShowCrop(false);
+    }, "image/jpeg");
+  };
+};
   return (
     <div className="big-modal-overlay">
      <div className="big-modal-card">
@@ -375,14 +433,14 @@ try {
       accept="image/*"
       hidden
       onChange={(e) => {
-        const file = e.target.files[0];
-        if (file) {
-          setImgLoading(true);
-          setImageFile(file);
-  setPreview(URL.createObjectURL(file));
+  const file = e.target.files[0];
+  if (file) {
+    const imageUrl = URL.createObjectURL(file);
 
-        }
-      }}
+    setSelectedImage(imageUrl);   // 🔥 NEW
+    setShowCrop(true);            // 🔥 NEW (open crop modal)
+  }
+}}
     />
   </label>
 </div>
@@ -696,9 +754,51 @@ try {
 </button>
 
         </div>
+        {showCrop && (
+  <div className="crop-overlay">
+    <div className="crop-card">
+
+  {/* HEADER */}
+  <div className="crop-header">
+    <div className="crop-title">
+      <div>
+        <h3>Crop Image</h3>
+      </div>
+    </div>
+
+    <button className="crop-close" onClick={() => setShowCrop(false)}>✕</button>
+  </div>
+
+  {/* IMAGE */}
+  <div className="crop-area">
+  <ReactCrop crop={crop} onChange={(c) => setCrop(c)} aspect={1}>
+    <img
+      src={selectedImage}
+      alt="crop"
+      crossOrigin="anonymous"
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "contain"   // 🔥 MOST IMPORTANT FIX
+      }}
+    />
+  </ReactCrop>
+</div>
+
+
+  {/* ACTIONS */}
+  <div className="crop-actions">
+
+    <button className="save-btn" onClick={handleCrop}>
+      ✔ Save
+    </button>
+  </div>
+
+</div>
+  </div>
+)}
 
       </div>
     </div>
   );
 }
-//Shobika culprit
