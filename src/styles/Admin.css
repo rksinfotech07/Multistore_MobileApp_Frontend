@@ -237,14 +237,27 @@
 
 /* ===== SIDEBAR (GLOBAL — DO NOT SCOPE) ===== */
 .sidebar {
-  width: 230px;
-  background: linear-gradient(180deg, var(--primary-dark), #142c4d);
-  color: #ffffff;
-  height: 100vh;
   position: fixed;
+  top: 20px;
+  left: 20px;
+  bottom: 20px;
+
+  width: 200px; /* 🔥 small like modern UI */
+
+  background: #1D3A68;;
+
+  border-radius: 20px;
+
   display: flex;
   flex-direction: column;
-  padding: 20px 15px;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 20px 10px;
+
+  box-shadow: 
+    0 20px 40px rgba(0,0,0,0.15),
+    inset 0 0 0 1px rgba(255,255,255,0.1);
 }
 
 .sidebar-logo {
@@ -255,29 +268,74 @@
 }
 
 .side-link {
-  display: block;
-  padding: 10px 12px;
-  border-radius: 8px;
-  color: #cbd5e1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 14px;
+  border-radius: 10px;
+
+  color: white;
   text-decoration: none;
+
   margin-bottom: 8px;
-  transition: 0.2s;
+
+  transition: 0.25s;
 }
 
 .side-link:hover {
-  background: var(--secondary-blue);
+  background: rgba(255,255,255,0.1);
   color: white;
 }
 
 .side-link.active {
-  background: #5ab2d1;
-  color: white;
+  background: white;
+  color: #0f172a;
+  font-weight: 600;
 }
 
 .sidebar-footer {
   margin-top: auto;
   font-size: 14px;
   color: #94a3b8;
+}
+.signout-btn {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 12px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: linear-gradient(135deg, #ef4444, #f87171);
+  color: white;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+
+  margin-top: 20px;
+}
+
+.signout-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(239,68,68,0.4);
+}
+
+.signout-btn svg {
+  transition: 0.3s;
+}
+
+.signout-btn:hover svg {
+  transform: translateX(3px);
 }
 /* 🔍 SEARCH BAR */
 .admin-search {
