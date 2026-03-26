@@ -4,6 +4,14 @@ import { getDeclinedShops } from "../services/adminService";
 import "../styles/Admin.css";
 import SkeletonDashboard from "../components/common/SkeletonDashboard";
 import "../styles/common/common.css";
+import {
+  Check,
+  X,
+  Clock,
+  CheckCircle,
+  XCircle,
+  Search
+} from "lucide-react";
 
 const AdminDashboard = () => {
   const [shops, setShops] = useState([]);
@@ -127,9 +135,10 @@ return (
       {/* STATUS NAVBAR */}
       {/* 🔍 SEARCH BAR */}
 <div className="admin-search">
+  <Search className="search-icon" size={18} />
   <input
     type="text"
-    placeholder="🔍Search by shop, owner, email, phone..."
+    placeholder="Search by shop, owner, email, phone..."
     value={searchTerm}
     onChange={(e) => setSearchTerm(e.target.value)}
   />
@@ -138,25 +147,25 @@ return (
 <div className="status-navbar">
 
   <button
-    className={`tab ${activeTab === "pending" ? "active" : ""}`}
-    onClick={() => setActiveTab("pending")}
-  >
-    🟡 New Requests <span>{shops.length}</span>
-  </button>
+  className={`tab ${activeTab === "pending" ? "active" : ""}`}
+  onClick={() => setActiveTab("pending")}
+>
+  <Clock size={16} /> New Requests <span>{shops.length}</span>
+</button>
 
-  <button
-    className={`tab ${activeTab === "approved" ? "active" : ""}`}
-    onClick={() => setActiveTab("approved")}
-  >
-    🟢 Approved <span>{approvedShops.length}</span>
-  </button>
+<button
+  className={`tab ${activeTab === "approved" ? "active" : ""}`}
+  onClick={() => setActiveTab("approved")}
+>
+  <CheckCircle size={16} /> Approved <span>{approvedShops.length}</span>
+</button>
 
-  <button
-    className={`tab ${activeTab === "declined" ? "active" : ""}`}
-    onClick={() => setActiveTab("declined")}
-  >
-    🔴 Declined <span>{declinedShops.length}</span>
-  </button>
+<button
+  className={`tab ${activeTab === "declined" ? "active" : ""}`}
+  onClick={() => setActiveTab("declined")}
+>
+  <XCircle size={16} /> Declined <span>{declinedShops.length}</span>
+</button>
 
 </div>
 
@@ -206,7 +215,15 @@ return (
 
           <td>{shop.phone || "-"}</td>
 
-          <td>{shop.business_type}</td>
+          <td>
+  <span className={`business-badge ${
+    shop.business_type === "Food"
+      ? "badge-food"
+      : "badge-grocery"
+  }`}>
+    {shop.business_type}
+  </span>
+</td>
           <td>{shop.opening_time || "-"}</td>
           <td>{shop.closing_time || "-"}</td>
 
@@ -220,14 +237,14 @@ return (
               onClick={() => handleApprove(shop.id)}
               className="approve-btn"
             >
-              ✔
+              <Check size={18} />
             </button>
 
             <button
               onClick={() => handleDecline(shop.id)}
               className="decline-btn"
             >
-              ✖
+              <X size={18} />
             </button>
 
           </td>
@@ -289,7 +306,15 @@ return (
 
             <td>{shop.phone || "-"}</td>
 
-            <td>{shop.business_type}</td>
+            <td>
+  <span className={`business-badge ${
+    shop.business_type === "Food"
+      ? "badge-food"
+      : "badge-grocery"
+  }`}>
+    {shop.business_type}
+  </span>
+</td>
             <td>{shop.opening_time || "-"}</td>
             <td>{shop.closing_time || "-"}</td>
 
@@ -345,7 +370,15 @@ return (
     : shop.address}
 </td>
             <td>{shop.phone}</td>
-            <td>{shop.business_type}</td>
+            <td>
+  <span className={`business-badge ${
+    shop.business_type === "Food"
+      ? "badge-food"
+      : "badge-grocery"
+  }`}>
+    {shop.business_type}
+  </span>
+</td>
             <td>{shop.opening_time || "-"}</td>
             <td>{shop.closing_time || "-"}</td>
             <td>{new Date(shop.created_at).toLocaleString()}</td>
