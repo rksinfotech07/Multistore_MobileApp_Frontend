@@ -29,7 +29,11 @@ const SettingsPage = () => <h2 style={{color:"white"}}>Settings Page</h2>;
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useContext(AuthContext);
-  return isAuthenticated ? children : <Navigate to="/" />;
+ if (isAuthenticated === null) {
+  return <div>Loading...</div>;
+}
+
+return isAuthenticated ? children : <Navigate to="/" />;
 };
 
 export default function App() {
