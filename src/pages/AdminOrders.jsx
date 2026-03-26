@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Search, Pencil, Package } from "lucide-react";
 import { getAllOrders, updateOrderNote } from "../services/adminOrderService";
 import "../styles/AdminOrders.css";
+import SkeletonDashboard from "../components/common/SkeletonDashboard";
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [noteInput, setNoteInput] = useState("");
@@ -9,13 +10,16 @@ export default function AdminOrders() {
 const [showModal, setShowModal] = useState(false);
 const [saved, setSaved] = useState(false);
 const [searchTerm, setSearchTerm] = useState("");
+const [loading, setLoading] = useState(true);
   useEffect(() => {
     fetchOrders();
   }, []);
 
   const fetchOrders = async () => {
+     setLoading(true); // 🔥 add this
     const data = await getAllOrders();
     setOrders(data);
+    setLoading(false);
   };
 
   const handleSaveNote = async () => {
@@ -24,6 +28,10 @@ const [searchTerm, setSearchTerm] = useState("");
     setNoteInput("");
     fetchOrders();
   };
+  
+  if (loading) {
+  return <SkeletonDashboard />;
+}
 
  return (
   <div className="orders-container">
