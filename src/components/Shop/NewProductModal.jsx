@@ -42,8 +42,9 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
 const productTypeRef = useRef(null);
 const [showCrop, setShowCrop] = useState(false);
 const [selectedImage, setSelectedImage] = useState(null);
+const imgRef = useRef(null);
 const [crop, setCrop] = useState({
-  unit: "px",
+  unit: "%",
   width: 50,
   height: 50,
   x: 25,
@@ -266,7 +267,14 @@ const selectedType = productTypes.find(
 
 formData.append("product_type", selectedType?.name || "");
 
-if (imageFile) {
+// 🔥 NEW PRODUCT → image MUST
+if (!product && !imageFile) {
+  toast.error("Please upload and crop image");
+  return;
+}
+
+// 🔥 IMAGE IRUNDHA MATUM SEND
+if (imageFile instanceof File) {
   formData.append("image", imageFile);
 }
 for (let pair of formData.entries()) {
@@ -336,10 +344,9 @@ try {
     }
   };
 const handleCrop = async () => {
-  const image = new Image();
-  image.src = selectedImage;
+   const image = imgRef.current; 
 
-  image.onload = () => {
+ 
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
@@ -348,7 +355,7 @@ const handleCrop = async () => {
 
     const cropX = crop.x * scaleX;
     const cropY = crop.y * scaleY;
-    const cropSize = Math.min(crop.width, crop.height) * scaleX; // 🔥 FORCE SQUARE
+  // 🔥 FORCE SQUARE
 
     const OUTPUT_SIZE = 220;
 
@@ -359,8 +366,8 @@ const handleCrop = async () => {
       image,
       cropX,
       cropY,
-      cropSize,
-      cropSize,
+      crop.width * scaleX,    // ✅ changed
+  crop.height * scaleY,   // ✅ changed
       0,
       0,
       OUTPUT_SIZE,
@@ -375,11 +382,12 @@ const handleCrop = async () => {
       });
 
       setImageFile(file);
+      console.log("Cropped File:", file);
       setPreview(URL.createObjectURL(file));
       setShowCrop(false);
     }, "image/jpeg");
   };
-};
+
   return (
     <div className="big-modal-overlay">
      <div className="big-modal-card">
@@ -771,18 +779,24 @@ const handleCrop = async () => {
 
   {/* IMAGE */}
   <div className="crop-area">
-  <ReactCrop crop={crop} onChange={(c) => setCrop(c)} aspect={1}>
-    <img
-      src={selectedImage}
-      alt="crop"
-      crossOrigin="anonymous"
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "contain"   // 🔥 MOST IMPORTANT FIX
-      }}
-    />
-  </ReactCrop>
+  <ReactCrop
+  crop={crop}
+  onChange={(c) => setCrop(c)}
+  onComplete={(c) => setCrop(c)}   // ✅ IMPORTANT FIX
+  aspect={1}
+>
+  <img
+    ref={imgRef}                   // ✅ ADD THIS
+    src={selectedImage}
+    alt="crop"
+    crossOrigin="anonymous"
+    style={{
+      width: "100%",
+      height: "100%",
+      objectFit: "cover"
+    }}
+  />
+</ReactCrop>
 </div>
 
 
@@ -800,5 +814,5 @@ const handleCrop = async () => {
 
       </div>
     </div>
-  );
-}
+  )
+};
