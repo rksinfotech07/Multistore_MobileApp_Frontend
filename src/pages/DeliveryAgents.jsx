@@ -7,6 +7,7 @@ import {
 } from "../services/deliveryAgentService";
 import { FaSearch } from "react-icons/fa";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import SkeletonDashboard from "../components/common/SkeletonDashboard";
 
 
 const DeliveryAgents = () => {
@@ -17,6 +18,7 @@ const DeliveryAgents = () => {
   const [deleteAgentId, setDeleteAgentId] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [editingCreds, setEditingCreds] = useState(null);
   const [credData, setCredData] = useState({
@@ -26,6 +28,7 @@ const DeliveryAgents = () => {
 
   // 🔹 FETCH FUNCTION (Moved ABOVE useEffect — only change)
   const fetchAgents = async () => {
+    setLoading(true);
   try {
     const res = await getDeliveryAgents();
 
@@ -40,6 +43,7 @@ const DeliveryAgents = () => {
     console.error("Error fetching agents:", error);
     setAgents([]);
   }
+   setLoading(false); 
 };
 
 
@@ -132,6 +136,9 @@ const DeliveryAgents = () => {
     agent.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     agent.phone?.includes(searchTerm)
   );
+  if (loading) {
+  return <SkeletonDashboard />;
+}
 
   return (
     <div className="agents-page">

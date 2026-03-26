@@ -1,7 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/AdminSettings.css";
+import SkeletonDashboard from "../components/common/SkeletonDashboard";
 
 const AdminSettings = () => {
+
+  // ✅ ADD THIS
+  const [loading, setLoading] = useState(true);
+
+  // ✅ MOVE INSIDE COMPONENT
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  }, []);
+
+  // ✅ CORRECT PLACE
+  if (loading) {
+    return <SkeletonDashboard />;
+  }
+
   return (
     <div className="admin-settings-page">
 
@@ -9,7 +26,6 @@ const AdminSettings = () => {
         Admin Settings
       </h1>
 
-      {/* 🔹 ADMIN PROFILE */}
       <div className="settings-card profile-enhanced">
 
         <div className="profile-top">
@@ -27,26 +43,10 @@ const AdminSettings = () => {
         </div>
 
         <div className="form-group mt-6">
-          <input
-            className="input-style"
-            placeholder="Admin Name"
-          />
-
-          <input
-            className="input-style"
-            placeholder="Admin Email"
-          />
-
-          <input
-            className="input-style"
-            placeholder="Phone Number"
-          />
-
-          <input
-            type="password"
-            className="input-style"
-            placeholder="Change Password"
-          />
+          <input className="input-style" placeholder="Admin Name" />
+          <input className="input-style" placeholder="Admin Email" />
+          <input className="input-style" placeholder="Phone Number" />
+          <input type="password" className="input-style" placeholder="Change Password" />
         </div>
 
         <button className="primary-btn mt-6">

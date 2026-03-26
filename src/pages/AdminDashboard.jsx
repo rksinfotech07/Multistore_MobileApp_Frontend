@@ -10,6 +10,8 @@ import {
   XCircle,
   Search
 } from "lucide-react";
+import SkeletonDashboard from "../components/common/SkeletonDashboard";
+import "../styles/common/common.css";
 
 const AdminDashboard = () => {
   const [shops, setShops] = useState([]);
@@ -18,14 +20,22 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("pending");
   const [declinedShops, setDeclinedShops] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-
+const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    loadPendingShops();
-    loadApprovedShops();
-    loadDeclinedShops(); 
-  }, []);
+  const loadAll = async () => {
+    await Promise.all([
+      loadPendingShops(),
+      loadApprovedShops(),
+      loadDeclinedShops()
+    ]);
+
+    setLoading(false); // 🔥 after data loaded
+  };
+
+  loadAll();
+}, []);
 
   const loadPendingShops = async () => {
     try {
@@ -115,8 +125,12 @@ const filterShops = (shopsArray) => {
 
 
 
-  return (
-    <div className="admin-container admin-dashboard-page">
+  if (loading) {
+  return <SkeletonDashboard />; // 🔥 ADD THIS
+}
+
+return (
+  <div className="admin-container admin-dashboard-page">
       <h1 className="admin-title">Approval Dashboard</h1>
       {/* STATUS NAVBAR */}
       {/* 🔍 SEARCH BAR */}
