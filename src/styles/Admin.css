@@ -1475,8 +1475,8 @@
   width: 200px; /* 🔥 small like modern UI */
 
   background: #1D3A68;;
-
-  border-radius: 20px;
+  font-size: 14px;
+  border-radius: 10px;
 
   display: flex;
   flex-direction: column;

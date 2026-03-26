@@ -54,9 +54,10 @@ useEffect(() => {
   
   // ✅ CLEAN & SIMPLE FILTER (FIXED)
   const filteredShops = shops.filter((shop) => {
+    console.log("SHOP DATA:", shop);
     const shopName = shop.shop_name?.toLowerCase() || "";
     const email = shop.email?.toLowerCase() || "";
-    const category = shop.business_type?.toLowerCase() || "";
+    const category = shop.category?.toLowerCase() || "";
 
     return (
       shopName.includes(shopSearch.toLowerCase()) &&
