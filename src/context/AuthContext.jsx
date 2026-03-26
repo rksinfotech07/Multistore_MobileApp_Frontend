@@ -4,12 +4,12 @@ import { getToken, saveToken, removeToken } from "../utils/authStorage";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
-  useEffect(() => {
-    const token = getToken();
-    setIsAuthenticated(!!token);
-  }, []);
+ useEffect(() => {
+  const token = getToken();
+  setIsAuthenticated(!!token);
+}, []);
 
   const login = (data) => {
   saveToken(data.token);   // backend token
