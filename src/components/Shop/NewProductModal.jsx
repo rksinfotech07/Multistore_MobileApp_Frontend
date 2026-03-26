@@ -397,7 +397,9 @@ const handleCrop = async () => {
   <div className="loader-overlay">
     <div className="loader-box">
       <Loader2 className="spin" size={36} />
-      <p className="loader-text">Updating product...</p>
+      <p className="loader-text">
+  {isEditMode ? "Updating product..." : "Adding product..."}
+</p>
     </div>
   </div>
 )}
