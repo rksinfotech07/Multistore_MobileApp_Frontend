@@ -17,48 +17,49 @@ const Sidebar = () => {
     <div className="sidebar-top">
 
   <div className="sidebar-header">
-    <button 
-      className="toggle-btn"
-      onClick={() => setCollapsed(!collapsed)}
-    >
-      ☰
-    </button>
-
-    <div className="sidebar-logo">
-      <span>Mabzo</span>
-    </div>
+   
+  <div className="sidebar-logo">
+  {!collapsed && <span>Mabzo</span>}
+</div>
   </div>
 
         <NavLink to="/admin/dashboard" className="side-link">
   <LayoutDashboard size={18} />
-  <span>Dashboard</span>
+  {!collapsed && <span>Dashboard</span>}
 </NavLink>
 
 <NavLink to="/admin/shops" className="side-link">
   <Store size={18} />
-  <span>Shops</span>
+  {!collapsed && <span>Shops</span>}
 </NavLink>
 
 <NavLink to="/admin/orders" className="side-link">
   <Package size={18} />
-  <span>Orders</span>
+  {!collapsed && <span>Orders</span>}
 </NavLink>
 
 <NavLink to="/admin/add-product" className="side-link">
   <PlusCircle size={18} />
-  <span>Add Product</span>
+  {!collapsed && <span>Add Product</span>}
 </NavLink>
 
 <NavLink to="/admin/delivery-agents" className="side-link">
   <Truck size={18} />
-  <span>Delivery Agents</span>
+  {!collapsed && <span>Delivery Agents</span>}
 </NavLink>
 
 <NavLink to="/admin/settings" className="side-link">
   <Settings size={18} />
-  <span>Settings</span>
+  {!collapsed && <span>Settings</span>}
 </NavLink>
       </div>
+      
+      <button
+  className="collapse-btn"
+  onClick={() => setCollapsed(!collapsed)}
+>
+  {!collapsed ? "← Collapse" : "→"}
+</button>
 
       <button
   type="button"
@@ -69,7 +70,7 @@ const Sidebar = () => {
   }}
 >
   <LogOut size={18} />
-  <span>Log Out</span>
+  {!collapsed && <span>Log Out</span>}
 </button>
     </div>
   );

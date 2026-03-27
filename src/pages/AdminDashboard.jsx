@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { getPendingShops, approveShop, getApprovedShops, declineShop } from "../services/adminService";
 import { getDeclinedShops } from "../services/adminService";
 import "../styles/Admin.css";
+import SkeletonDashboard from "../components/common/SkeletonDashboard";
+import "../styles/common/common.css";
 import {
   Check,
   X,
@@ -10,7 +12,6 @@ import {
   XCircle,
   Search
 } from "lucide-react";
-import SkeletonDashboard from "../components/common/SkeletonDashboard";
 import "../styles/common/common.css";
 
 const AdminDashboard = () => {
