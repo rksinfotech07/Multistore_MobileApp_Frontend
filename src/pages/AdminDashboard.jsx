@@ -23,6 +23,7 @@ const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
 const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
+  const [selectedRow, setSelectedRow] = useState(null);
 
   useEffect(() => {
   const loadAll = async () => {
@@ -132,43 +133,45 @@ const filterShops = (shopsArray) => {
 
 return (
   <div className="admin-container admin-dashboard-page">
-      <h1 className="admin-title">Approval Dashboard</h1>
-      {/* STATUS NAVBAR */}
-      {/* 🔍 SEARCH BAR */}
-<div className="admin-search">
-  <Search className="search-icon" size={18} />
-  <input
-    type="text"
-    placeholder="Search by shop, owner, email, phone..."
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-  />
+     
+     
+<div className="admin-header">
+
+  <div className="status-navbar">
+    <button
+      className={`tab ${activeTab === "pending" ? "active" : ""}`}
+      onClick={() => setActiveTab("pending")}
+    >
+      <Clock size={16} /> New Requests <span>{shops.length}</span>
+    </button>
+
+    <button
+      className={`tab ${activeTab === "approved" ? "active" : ""}`}
+      onClick={() => setActiveTab("approved")}
+    >
+      <CheckCircle size={16} /> Approved <span>{approvedShops.length}</span>
+    </button>
+
+    <button
+      className={`tab ${activeTab === "declined" ? "active" : ""}`}
+      onClick={() => setActiveTab("declined")}
+    >
+      <XCircle size={16} /> Declined <span>{declinedShops.length}</span>
+    </button>
+  </div>
+
+  <div className="admin-search">
+    <Search className="search-icon" size={18} />
+    <input
+      type="text"
+      placeholder="Search by shop name"
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+    />
+  </div>
+
 </div>
-
-<div className="status-navbar">
-
-  <button
-  className={`tab ${activeTab === "pending" ? "active" : ""}`}
-  onClick={() => setActiveTab("pending")}
->
-  <Clock size={16} /> New Requests <span>{shops.length}</span>
-</button>
-
-<button
-  className={`tab ${activeTab === "approved" ? "active" : ""}`}
-  onClick={() => setActiveTab("approved")}
->
-  <CheckCircle size={16} /> Approved <span>{approvedShops.length}</span>
-</button>
-
-<button
-  className={`tab ${activeTab === "declined" ? "active" : ""}`}
-  onClick={() => setActiveTab("declined")}
->
-  <XCircle size={16} /> Declined <span>{declinedShops.length}</span>
-</button>
-
-</div>
+  
 
 
       {activeTab === "pending" && (
@@ -196,7 +199,11 @@ return (
 
     <tbody>
       {filterShops(shops).map((shop, index) => (
-        <tr key={shop.id}>
+       <tr
+  key={shop.id}
+  onClick={() => setSelectedRow(shop.id)}
+  className={selectedRow === shop.id ? "active-row" : ""}
+>
 
           <td>{index + 1}</td>
           <td className="shop-name">
@@ -205,9 +212,12 @@ return (
 
           <td>{shop.owner_name}</td>
 
-          <td 
+            <td 
   className="address-cell"
-  onClick={() => setViewId(shop.address)}
+  onClick={(e) => {
+    e.stopPropagation();   // 🔥 IMPORTANT
+    setViewId(shop.address);
+  }}
 >
   {shop.address?.length > 25 
     ? shop.address.slice(0, 25) + "..." 
@@ -217,13 +227,13 @@ return (
           <td>{shop.phone || "-"}</td>
 
           <td>
-  <span className={`business-badge ${
-    shop.business_type === "Food"
-      ? "badge-food"
-      : "badge-grocery"
-  }`}>
-    {shop.business_type}
-  </span>
+ <span
+  className={`business-badge badge-${shop.business_type
+    ?.toLowerCase()
+    .replace(/\s+/g, "-")}`}
+>
+  {shop.business_type}
+</span>
 </td>
           <td>{shop.opening_time || "-"}</td>
           <td>{shop.closing_time || "-"}</td>
@@ -296,9 +306,12 @@ return (
 
             <td>{shop.owner_name}</td>
 
-            <td 
+           <td 
   className="address-cell"
-  onClick={() => setViewId(shop.address)}
+  onClick={(e) => {
+    e.stopPropagation();   // 🔥 IMPORTANT
+    setViewId(shop.address);
+  }}
 >
   {shop.address?.length > 25 
     ? shop.address.slice(0, 25) + "..." 
@@ -309,12 +322,12 @@ return (
 
             <td>
   <span className={`business-badge ${
-    shop.business_type === "Food"
-      ? "badge-food"
-      : "badge-grocery"
-  }`}>
-    {shop.business_type}
-  </span>
+  shop.business_type === "Food"
+    ? "badge-food"
+    : "badge-grocery"
+}`}>
+  {shop.business_type}
+</span>
 </td>
             <td>{shop.opening_time || "-"}</td>
             <td>{shop.closing_time || "-"}</td>
@@ -362,9 +375,12 @@ return (
             <td>{index + 1}</td>
             <td className="shop-name">{shop.shop_name}</td>
             <td>{shop.owner_name}</td>
-           <td 
+          <td 
   className="address-cell"
-  onClick={() => setViewId(shop.address)}
+  onClick={(e) => {
+    e.stopPropagation();   // 🔥 VERY IMPORTANT
+    setViewId(shop.address);
+  }}
 >
   {shop.address?.length > 25 
     ? shop.address.slice(0, 25) + "..." 
@@ -372,13 +388,13 @@ return (
 </td>
             <td>{shop.phone}</td>
             <td>
-  <span className={`business-badge ${
-    shop.business_type === "Food"
-      ? "badge-food"
-      : "badge-grocery"
-  }`}>
-    {shop.business_type}
-  </span>
+ <span
+  className={`business-badge badge-${shop.business_type
+    ?.toLowerCase()
+    .replace(/\s+/g, "-")}`}
+>
+  {shop.business_type}
+</span>
 </td>
             <td>{shop.opening_time || "-"}</td>
             <td>{shop.closing_time || "-"}</td>
