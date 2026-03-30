@@ -1823,3 +1823,33 @@
   width: 90%;
   align-self: center;
 }
+/* ========================= */
+/* 🔥 GLOBAL RESPONSIVE */
+/* ========================= */
+
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* MOBILE SIDEBAR */
+@media (max-width: 768px) {
+  .sidebar {
+    left: -220px;
+    position: fixed;
+    z-index: 1000;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
+  .admin-content {
+    margin-left: 0 !important;
+    padding: 15px;
+  }
+}

@@ -1,63 +1,42 @@
-/* sowdha */
-/* 🔥 Banner Styling */
-.addproduct-banner {
-  @apply mt-6 py-6 shadow-xl rounded-[40px];
+/* ========================= */
+/* 🔥 NEW HEADER */
+/* ========================= */
 
-  width: 93%;
-  margin: 24px auto;
+.page-header {
+  display: flex;
+  align-items: center;
 
-  background: linear-gradient(
-    135deg,
-    #152b4f 0%,
-    #244a7f 35%,
-    #2f5d8f 65%,
-    #152a47 100%
-  );
-
-  box-shadow:
-    0 10px 40px rgba(29, 58, 104, 0.35),
-    inset 0 0 30px rgba(184, 237, 244, 0.08);
-
-  position: relative;
-  z-index: 0;
+  padding: 10px 65px 0;
+  margin-bottom: 20px;
+}
+.page-left {
+  display: flex;
+  flex-direction: column;
+}
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* Glow Effect */
-.addproduct-banner::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -30%;
-  width: 60%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(184,237,244,0.25), transparent 70%);
-  transform: rotate(25deg);
-  pointer-events: none;
-  z-index: -1;
+.page-subtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 4px;
 }
 
-/* Banner Layout */
-.banner-content {
-  @apply max-w-6xl mx-auto;
+.page-actions {
+  display: flex;
+  gap: 12px;
+  margin-left: auto;
 }
 
-.banner-row {
-  @apply flex flex-col lg:flex-row
-         lg:items-center lg:justify-between
-         gap-6;
+.search-input {
+  width: 180px;
 }
-
-/* Title */
-.banner-title {
-  @apply text-3xl font-bold text-white mb-6 tracking-wide
-         transition-all duration-300;
-}
-
-/* Right Side Search */
-.banner-right {
-  @apply flex flex-col sm:flex-row gap-4;
-}
-
 .search-group {
   @apply relative w-full md:w-1/2;
   display: flex;
@@ -66,20 +45,18 @@
 
 /* Search Input */
 .search-input {
- @apply w-full py-3 rounded-xl 
-         bg-[#D7EAF4]
-         border border-[#5891A5]
-         focus:outline-none focus:ring-2 focus:ring-[#5891A5]
-         text-[#1D3A68]
-         placeholder-gray-500
-         transition-all duration-300 ease-in-out;
+  background: #f1f5f9;
+  border: 1px solid #e5e7eb;
 
-  padding-left: 40px;   /* 🔥 space for icon */
+  border-radius: 10px;
+  padding: 10px 12px 10px 35px;
+
+  font-size: 14px;
 }
 
 /* Hover Effect */
 .search-group:hover .search-input {
-  @apply border-orange-400 shadow-lg shadow-orange-500/20;
+  @apply border-gray-400 shadow-lg shadow-gray-500/20;
 }
 
 /* Search Icon */
@@ -103,61 +80,125 @@
 /* ========================= */
 
 .stats-section {
-  @apply max-w-6xl mx-auto mt-5 px-9
-         grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5
-         gap-9;
+  @apply w-full px-16 mt-0
+         grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6
+         gap-6;
+}
+.category-card {
+  position: relative;
+  border-radius: 16px;
+  padding: 20px;
+  min-height: 110px;
+
+  color: white;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.stat-card {
-  @apply bg-white rounded-2xl p-4
-         flex items-center gap-5
-         shadow-md border border-[#5891A5]
-         transition-all duration-300 ease-in-out;
-         max-width: 180px;
+.category-card:hover {
+  transform: scale(1.05);
 }
 
-.stat-card:hover {
-  @apply shadow-xl -translate-y-2;
-  box-shadow: 0 15px 30px rgba(17, 116, 221, 0.15);
+/* TEXT */
+.category-card h3 {
+  font-size: 18px;
+  font-weight: 600;
 }
 
-/* Icon Circle */
-.stat-icon {
-  @apply flex items-center justify-center
-         text-5xl transition-all duration-300;
-}
-.food-icon {
-  color: #ff7a00;
-  text-shadow: 0 0 15px rgba(255, 122, 0, 0.7);
-}
-.grocery-icon {
-  color: #16a34a;
-  text-shadow: 0 0 15px rgba(22, 163, 74, 0.7);
+.category-card span {
+  font-size: 14px;
+  opacity: 0.8;
 }
 
-.pharmacy-icon {
-  color: #3b82f6;
-  text-shadow: 0 0 15px rgba(59, 130, 246, 0.7);
+/* ICON */
+.category-card .icon {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  font-size: 26px;
 }
 
-.electronics-icon {
-  color: #a855f7;
-  text-shadow: 0 0 15px rgba(168, 85, 247, 0.7);
+/* DECORATION */
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
 }
 
-.cosmetics-icon {
-  color: #ef4444;
-  text-shadow: 0 0 15px rgba(239, 68, 68, 0.7);
+.circle.big {
+  width: 80px;
+  height: 80px;
+  right: -20px;
+  bottom: -20px;
 }
 
-/* Text Styling */
-.stat-label {
-  @apply text-sm text-gray-500;
+.circle.small {
+  width: 30px;
+  height: 30px;
+  top: 10px;
+  right: 40px;
+}
+/* Tiny circle */
+.circle.tiny {
+  width: 10px;
+  height: 10px;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.25);
 }
 
-.stat-number {
-  @apply text-xl font-bold text-gray-800;
+/* Sparkles */
+.sparkle {
+  position: absolute;
+  color: rgba(255,255,255,0.4);
+  pointer-events: none;
 }
+
+/* Top sparkle */
+.sparkle-1 {
+  top: 8px;
+  left: 45%;
+  font-size: 10px;
+}
+
+/* Bottom sparkle */
+.sparkle-2 {
+  bottom: 20px;
+  left: 20px;
+  font-size: 8px;
+}
+/* GRADIENTS */
+.gradient-food {
+  background: linear-gradient(135deg, #db961e, #f67f2a);
+}
+
+.gradient-grocery {
+  background: linear-gradient(135deg, #0ea5e9, #14b8a6);
+}
+
+.gradient-electronics {
+  background: linear-gradient(135deg, #7c3aed, #9333ea);
+}
+
+.gradient-home {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+}
+
+.gradient-pharmacy {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+}
+
+.gradient-cosmetics {
+  background: linear-gradient(135deg, #ec4899, #f43f5e);
+}
+
 /* ========================= */
 /* 🔥 PREVENT PAGE SCROLL */
 /* ========================= */
@@ -166,7 +207,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background-color: #f3f4f6;
+  background-color: white;
 }
 
 
@@ -175,8 +216,7 @@
 /* ========================= */
 
 .shop-table-section {
-  @apply w-full px-16 mt-6;   /* moved slightly up (was mt-10) */
-
+  @apply w-full px-16 mt-6; 
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -214,30 +254,81 @@
 
 .shop-table {
   @apply w-full text-left border-separate;
-  border-spacing: 0 6px;   /* spacing between rows */
+   width: 100%;
+   border-collapse: collapse;
+}
+/* 🔥 COLUMN WIDTH FIX */
+.shop-table {
+  table-layout: fixed;
+}
+
+/* Shop Name → more space */
+.shop-table th:nth-child(1),
+.shop-table td:nth-child(1) {
+  width: 35%;
+  text-align: left;
+}
+
+/* Contact → less space */
+.shop-table th:nth-child(2),
+.shop-table td:nth-child(2) {
+  width: 18%;
+}
+
+/* Category */
+.shop-table th:nth-child(3),
+.shop-table td:nth-child(3) {
+  width: 20%;
+}
+
+/* No of Products → small */
+.shop-table th:nth-child(4),
+.shop-table td:nth-child(4) {
+  width: 12%;
+  text-align: center;
+}
+
+/* Action */
+.shop-table th:nth-child(5),
+.shop-table td:nth-child(5) {
+  width: 15%;
+  text-align: center;
 }
 
 .shop-table thead {
-  @apply bg-gradient-to-r from-[#1D3A68] to-[#142c4d]
-         text-white sticky top-0 z-10;
+  background: #1e3a8a; /* solid blue */
+  color: white;
 }
-
 .shop-table th {
-  @apply px-10 py-4 text-sm font-semibold tracking-wide;
+  padding: 16px;
+  font-size: 13.5px;
+  font-weight: 500;              /* 🔥 lighter */
+  letter-spacing: 0.3px;
+  font-family: "Poppins", sans-serif;
 }
-
 .shop-table td {
-  @apply px-10 py-3 text-gray-700;
-}
+  padding: 14px;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: middle;
 
+  font-size: 14.5px;
+  font-weight: 400;              /* 🔥 softer text */
+  color: #475569;                /* 🔥 premium grey */
+  letter-spacing: 0.2px;
+  font-family: "Poppins", sans-serif;
+  line-height: 1.6;
+}
+.shop-table td:first-child {
+  white-space: nowrap;      
+  overflow: hidden;
+  text-overflow: ellipsis;    
+}
 .shop-table tbody tr {
   @apply border-b border-gray-200 transition-all duration-300;
 }
-
 .shop-table tbody tr:hover {
-  @apply bg-[#B8EDF4];
+  background: #f1f5f9;
 }
-
 
 /* ========================= */
 /* 🔥 VIEW BUTTON */
@@ -249,17 +340,15 @@
          transition-all duration-300;
 
   background: linear-gradient(135deg, #5891A5, #1D3A68);
+   display: flex;          /* 🔥 ADD */
+  align-items: center;    /* 🔥 ADD */
+  gap: 6px;  
 }
-
-
 .view-btn:hover {
   transform: scale(1.06);
   box-shadow: 0 10px 25px rgba(29, 58, 104, 0.35);
   background: linear-gradient(135deg, #6fa9bd, #1D3A68);
 }
-
-
-
 /* ========================= */
 /* 🔥 CUSTOM SCROLLBAR */
 /* ========================= */
@@ -302,4 +391,9 @@
 
 .table-wrapper::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, #ea580c, #dc2626);
+}
+/* 🔥 FORCE LEFT ALIGN (FINAL FIX) */
+.shop-table td:first-child,
+.shop-table th:first-child {
+  text-align: left !important;
 }

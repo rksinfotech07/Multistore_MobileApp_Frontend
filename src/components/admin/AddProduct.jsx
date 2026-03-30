@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/AddProduct.css";
 import { getRegisteredShops, getCategoryCounts } from "../../services/shopService";
+import { Search, Eye, PackagePlus, Apple, ShoppingCart, Cpu, Home, Pill, Sparkles } from "lucide-react";
 
 const AddProduct = () => {
 
@@ -54,101 +55,83 @@ useEffect(() => {
   
   // ✅ CLEAN & SIMPLE FILTER (FIXED)
   const filteredShops = shops.filter((shop) => {
-    console.log("SHOP DATA:", shop);
-    const shopName = shop.shop_name?.toLowerCase() || "";
-    const email = shop.email?.toLowerCase() || "";
-    const category = shop.category?.toLowerCase() || "";
+  const search = shopSearch.toLowerCase();
 
-    return (
-      shopName.includes(shopSearch.toLowerCase()) &&
-      category.includes(categorySearch.toLowerCase())
-    );
-  });
+  const shopName = shop.shop_name?.toLowerCase() || "";
+  const phone = shop.phone?.toString() || "";
+  const email = shop.email?.toLowerCase() || "";
+  const category = shop.business_type?.toLowerCase() || "";
+
+  return (
+    shopName.includes(search) ||
+    phone.includes(search) ||
+    email.includes(search) ||
+    category.includes(search)
+  );
+});
 
   return (
     <div className="addproduct-page">
+      {/* 🔥 NEW HEADER */}
+<div className="page-header">
 
-      {/* 🔥 Banner */}
-      <div className="addproduct-banner">
-        <div className="banner-content banner-row">
+  <div className="page-left"> 
+    <h2 className="page-title"><PackagePlus size={20} />Products Insights</h2>
+    <p className="page-subtitle">
+      Explore shop products and categories
+    </p>
+  </div>
+<div className="page-actions">
 
-          <div className="banner-left">
-            <h1 className="banner-title">Add Product Panel</h1>
-          </div>
+  <div className="search-group">
+    <input
+      type="text"
+      placeholder="Search"
+      className="search-input"
+      value={shopSearch}
+      onChange={(e) => setShopSearch(e.target.value)}
+    />
+    <Search className="search-icon" size={16} />
+  </div>
 
-          <div className="banner-right">
+</div>
 
-            <div className="search-group">
-              <input
-                type="text"
-                placeholder="Search Shop Name..."
-                className="search-input"
-                value={shopSearch}
-                onChange={(e) => setShopSearch(e.target.value)}
-              />
-              <span className="search-icon">🔍</span>
-            </div>
-
-            <div className="search-group">
-              <input
-                type="text"
-                placeholder="Search Category..."
-                className="search-input"
-                value={categorySearch}
-                onChange={(e) => setCategorySearch(e.target.value)}
-              />
-              <span className="search-icon">📂</span>
-            </div>
-
-          </div>
-
-        </div>
-      </div>
+</div>
 
       {/* 🔥 State Cards */}
       <div className="stats-section">
+{[
+  { title: "Food", icon: Apple, gradient: "gradient-food", count: getCount("Food") },
+  { title: "Grocery", icon: ShoppingCart, gradient: "gradient-grocery", count: getCount("Grocery") },
+  { title: "Electronics", icon: Cpu, gradient: "gradient-electronics", count: getCount("Electronics") },
+  { title: "Home Appliances", icon: Home, gradient: "gradient-home", count: getCount("Home Appliances") },
+  { title: "Pharmacy", icon: Pill, gradient: "gradient-pharmacy", count: getCount("Pharmacy") },
+  { title: "Cosmetics", icon: Sparkles, gradient: "gradient-cosmetics", count: getCount("Cosmetics") },
+].map((item) => {
+  const Icon = item.icon;   // ✅ MOVE HERE
 
-        <div className="stat-card">
-          <div className="stat-icon food-icon">🍔</div>
-          <div>
-            <p className="stat-label">Food</p>
-            <h2 className="stat-number">{getCount("Food")}</h2>
-          </div>
-        </div>
+  return (
+    <div key={item.title} className={`category-card ${item.gradient}`}>
+      
+      <div className="circle big"></div>
+      <div className="circle small"></div>
+      <div className="circle tiny"></div>
 
-        <div className="stat-card">
-          <div className="stat-icon grocery-icon">🛒</div>
-          <div>
-            <p className="stat-label">Grocery</p>
-            <h2 className="stat-number">{getCount("Grocery")}</h2>
-          </div>
-        </div>
+<div className="sparkle sparkle-1">✦</div>
+<div className="sparkle sparkle-2">✦</div>
 
-        <div className="stat-card">
-          <div className="stat-icon pharmacy-icon">💊</div>
-          <div>
-            <p className="stat-label">Pharmacy</p>
-            <h2 className="stat-number">{getCount("Pharmacy")}</h2>
-          </div>
-        </div>
+      <h3>{item.title}</h3>
+      <span>{item.count} shops</span>
 
-        <div className="stat-card">
-          <div className="stat-icon electronics-icon">💻</div>
-          <div>
-            <p className="stat-label">Electronics</p>
-            <h2 className="stat-number">{getCount("Electronics")}</h2>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon cosmetics-icon">💄</div>
-          <div>
-            <p className="stat-label">Cosmetics</p>
-            <h2 className="stat-number">{getCount("Cosmetics")}</h2>
-          </div>
-        </div>
-
+      <div className="icon">
+        <Icon size={28} strokeWidth={1.5} />
       </div>
+
+    </div>
+  );
+})}
+
+</div>
 
       {/* 🔥 TABLE */}
       <div className="shop-table-section">
@@ -197,6 +180,7 @@ useEffect(() => {
                           })
                         }
                       >
+                        <Eye size={16} />
                         View
                       </button>
                     </td>

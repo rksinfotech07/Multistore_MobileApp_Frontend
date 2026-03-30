@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../styles/AdminShopProducts.css";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft,Search, Pencil, Trash2, PlusCircle } from "lucide-react";
 import NewProductModal from "../../components/Shop/NewProductModal";
+import ProductEmptyState from "../../components/Shop/ProductEmptyState";
 import { getSingleProduct } from "../../services/adminShopProductService";
 import { 
   getShopProducts,
@@ -46,8 +47,8 @@ useEffect(() => {
       const shopData = await getSingleShop(id);
       setShopName(shopData.shop_name);
       const formattedCategory = shopData.category
-        ? shopData.category.charAt(0).toUpperCase() + shopData.category.slice(1).toLowerCase()
-        : "";
+  ? shopData.category.toLowerCase()
+  : "";
       setShopCategory(formattedCategory);
       setShopCategoryId(shopData.category_id);
     } catch (error) {
@@ -135,15 +136,52 @@ const handleToggle = async (productId) => {
     }
     setOpenModal(false);
   };
+const getBannerClass = () => {
+  switch (shopCategory) {
+    case "food":
+      return "banner-food";
+    case "grocery":
+      return "banner-grocery";
+    case "electronics":
+      return "banner-electronics";
+    case "home appliances":
+      return "banner-home";
+    case "pharmacy":
+      return "banner-pharmacy";
+    case "cosmetics":
+      return "banner-cosmetics";
+    default:
+      return "banner-default";
+  }
+};
+const getTableClass = () => {
+  switch (shopCategory) {
+    case "food":
+      return "banner-food";
+    case "grocery":
+      return "banner-grocery";
+    case "electronics":
+      return "banner-electronics";
+    case "home appliances":
+      return "banner-home";
+    case "pharmacy":
+      return "banner-pharmacy";
+    case "cosmetics":
+      return "banner-cosmetics";
+    default:
+      return "banner-default";
+  }
+};
 
   return (
     <div className="admin-products-page">
-     <button className="back-btn" onClick={() => navigate(-1)}>
-  <ArrowLeft size={18} />
-  Back
-</button>
 
-      <div className="shop-banner">
+      <div className={`shop-banner ${getBannerClass()}`}>
+        <button className="banner-back-btn" onClick={() => navigate(-1)}>
+  <ArrowLeft size={18} />
+</button>
+        <div className="circle-1"></div>
+  <div className="circle-2"></div>
         <div className="shop-banner-content">
 
           <div>
@@ -157,14 +195,16 @@ const handleToggle = async (productId) => {
           </div>
 
           <div className="shop-banner-actions">
-            <input
-              type="text"
-              placeholder="Search by product"
-              className="shop-search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-
+            <div className="search-box">
+  <Search size={16} className="search-icon" />
+  <input
+    type="text"
+    placeholder="Search products..."
+    className="shop-search"
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+  />
+  </div>
             <button
               className="shop-new-btn"
               onClick={() => {
@@ -172,7 +212,8 @@ const handleToggle = async (productId) => {
                 setOpenModal(true);
               }}
             >
-              + NEW PRODUCT
+              <PlusCircle size={18} />
+              NEW PRODUCT
             </button>
           </div>
 
@@ -181,9 +222,13 @@ const handleToggle = async (productId) => {
 
       <div className="products-table-section">
         <h3 className="table-title">Product List</h3>
-
-        <table className="products-table">
-          <thead>
+        <div className="table-wrapper">
+  {products.length === 0 ? (
+    <ProductEmptyState onAdd={() => setOpenModal(true)} />
+  ) : (
+    <div className="table-scroll">
+      <table className="products-table">
+          <thead className={getTableClass()}>
             <tr>
               <th>S.No</th>
               <th>Product Name</th>
@@ -245,13 +290,13 @@ const handleToggle = async (productId) => {
                       className="table-edit-btn"
                       onClick={() => handleEdit(product)}
                     >
-                      ✏️
+                      <Pencil size={16} />
                     </button>
                     <button
                       className="icon-btn delete-icon"
                       onClick={() => handleDelete(product.id)}
                     >
-                      🗑️
+                      <Trash2 size={16} />
                     </button>
                   </div>
                 </td>
@@ -260,6 +305,9 @@ const handleToggle = async (productId) => {
           </tbody>
 
         </table>
+        </div>
+  )}
+        </div>
       </div>
 
       {/* 🔥 DELETE MODAL */}
