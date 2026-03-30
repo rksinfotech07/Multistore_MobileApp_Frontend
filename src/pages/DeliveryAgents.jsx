@@ -1,12 +1,25 @@
 import React, { useState, useEffect } from "react";
 import "../styles/DeliveryAgents.css";
-import { FaTrash, FaEdit } from "react-icons/fa";
 import {
   getDeliveryAgents,
   deleteDeliveryAgent
 } from "../services/deliveryAgentService";
-import { FaSearch } from "react-icons/fa";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import {
+  Trash2,
+  Pencil,
+  Search,
+  Phone,
+  Mail,
+  FileText,
+  IdCard,
+  CreditCard,
+  Bike,
+  Car,
+  Eye,
+  EyeOff,
+  Key,
+  Check
+} from "lucide-react";
 import SkeletonDashboard from "../components/common/SkeletonDashboard";
 
 
@@ -151,7 +164,7 @@ const DeliveryAgents = () => {
 
         <div className="search-box">
 
-  <FaSearch className="search-icon" />
+  <Search size={16} className="search-icon" />
 
   <input
     type="text"
@@ -174,7 +187,7 @@ const DeliveryAgents = () => {
               className="delete-btn"
               onClick={() => setDeleteAgentId(agent.id)}
             >
-              🗑
+              <Trash2 size={16} />
             </button>
 
             {/* HEADER */}
@@ -184,9 +197,9 @@ const DeliveryAgents = () => {
 
             {/* CONTACT ROW */}
             <div className="agent-contact">
-              <span>📞 {agent.phone}</span>
+              <span><Phone size={14} /> {agent.phone}</span>
               <span>|</span>
-              <span>✉️ {agent.email}</span>
+              <span><Mail size={14} /> {agent.email}</span>
               <span>|</span>
 
               <a
@@ -195,19 +208,19 @@ const DeliveryAgents = () => {
                 rel="noreferrer"
                 className="license-link"
               >
-                📄 View License
+                <FileText size={14} /> View License
               </a>
             </div>
 
             {/* DETAILS ROW */}
             <div className="agent-info-row">
-              <span>🪪 {agent.aadhar_number}</span>
+              <span><IdCard size={14} /> {agent.aadhar_number}</span>
               <span>|</span>
-              <span>🧾 {agent.pan_number}</span>
+              <span><CreditCard size={14} /> {agent.pan_number}</span>
               <span>|</span>
-              <span>🏍️ {agent.vehicle_type}</span>
+              <span><Bike size={14} /> {agent.vehicle_type}</span>
               <span>|</span>
-              <span>🚗 {agent.vehicle_number}</span>
+              <span><Car size={14} /> {agent.vehicle_number}</span>
             </div>
 
             {/* GENERATE BUTTON */}
@@ -228,7 +241,7 @@ const DeliveryAgents = () => {
                   className="edit-icon"
                   onClick={() => handleEditCreds(agent)}
                 >
-                  ✏️
+                  <Pencil size={14} />
                 </button>
               </div>
             )}
@@ -262,7 +275,7 @@ const DeliveryAgents = () => {
     className="eye-btn"
     onClick={() => setShowPassword(!showPassword)}
   >
-    {showPassword ? <FaEyeSlash /> : <FaEye />}
+    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
   </button>
 
 </div>
@@ -272,7 +285,7 @@ const DeliveryAgents = () => {
   className="generate-pass-btn"
   onClick={generatePassword}
 >
-  🔐 Generate New Password
+  <Key size={14} /> Generate New Password
 </button>
 
 
@@ -289,7 +302,7 @@ const DeliveryAgents = () => {
                 className="save-btn"
                 onClick={handleSaveCreds}
               >
-                ✔ Save Changes
+                <Check size={16} /> Save Changes
               </button>
             </div>
 
