@@ -191,6 +191,15 @@
 .agent-info-row a:hover {
   text-decoration: underline;
 }
+.agent-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #073068;
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -390,6 +399,10 @@
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
+  display: flex;            
+  align-items: center;        
+  justify-content: center;    
+  gap: 8px;
 }
 
 .generate-pass-btn:hover {

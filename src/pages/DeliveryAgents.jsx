@@ -18,7 +18,8 @@ import {
   Eye,
   EyeOff,
   Key,
-  Check
+  Check,
+  BadgeCheck
 } from "lucide-react";
 import SkeletonDashboard from "../components/common/SkeletonDashboard";
 
@@ -159,6 +160,7 @@ const DeliveryAgents = () => {
       <div className="agents-header">
 
         <h2 className="agent-title">
+          <BadgeCheck size={20} />
           Verified Delivery Agents
         </h2>
 
