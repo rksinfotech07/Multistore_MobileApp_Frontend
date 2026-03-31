@@ -67,7 +67,12 @@ export default function Register() {
 
   // Step 3 validations
 if (step === 3) {
-  if (!formData.address.trim()) newErrors.address = "Address is required";
+  if (!formData.address.trim()) 
+    newErrors.address = "Address is required";
+
+  // 🔥 ADD THIS
+  if (!formData.shopImage) 
+    newErrors.shopImage = "Shop image is required";
 }
 
 
@@ -432,6 +437,9 @@ const dropdownStyle = categoryOpen
       setFormData({ ...formData, shopImage: e.target.files[0] })
     }
   />
+  {errors.shopImage && (
+    <p className="reg-error">{errors.shopImage}</p>
+  )}
 </div>
 
           <div className="btn-row">
