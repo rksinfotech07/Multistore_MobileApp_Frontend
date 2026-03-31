@@ -3,7 +3,7 @@ import "react-image-crop/dist/ReactCrop.css";
 import { useState,useEffect, useRef} from "react";
 import "../../styles/Shop/newProductModal.css";
 import toast from "react-hot-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, Check } from "lucide-react";
 import { 
   addShopProduct,
   updateShopProduct   // ✅ NEW ADDED
@@ -852,7 +852,7 @@ const handleCrop = async () => {
   <div className="crop-actions">
 
     <button className="save-btn" onClick={handleCrop}>
-      ✔ Save
+      <Check size={16} /> Save
     </button>
   </div>
 
