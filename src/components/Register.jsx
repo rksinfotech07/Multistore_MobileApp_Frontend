@@ -138,7 +138,7 @@ form.append("opening_time", formData.opensAt);
 form.append("closing_time", formData.closesAt);
 
 if (formData.shopImage) {
-  form.append("shop_image", formData.shopImage);
+  form.append("image", formData.shopImage);
 }
 
     // 3️⃣ Call register API
