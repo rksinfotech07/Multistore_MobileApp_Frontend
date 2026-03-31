@@ -149,12 +149,11 @@ useEffect(() => {
 useEffect(() => {
   const loadProductTypes = async () => {
     if (
-      (category === "Grocery" || category === "Electronics") &&
-      subCategoryId   // ✅ VERY IMPORTANT
+      (category?.toLowerCase() === "grocery" || category?.toLowerCase() === "electronics") &&
+      subCategoryId   
     ) {
       try {
         const data = await getProductTypesAPI(subCategoryId);
-        console.log("🔥 Product Types:", data);
         setProductTypes(data);
       } catch (err) {
         console.error("Product type fetch error", err);
@@ -180,13 +179,7 @@ useEffect(() => {
       setStock("");
     }
   }, [category]);
-  useEffect(() => {
-  if (!product) {
-    setProductType("");
-    setProductTypes([]);
-    setOpenProductType(false);
-  }
-}, [category]);
+  
 
 if (!open) return null;
   const backendCategoryMap = {
@@ -207,16 +200,13 @@ const isEditMode = !!product;
     if (!base) newErrors.base = "Enter MRP";
     if (!rebate) newErrors.rebate = "Enter Selling Price";
 
-   if (category === "Food") {
+   if (category?.toLowerCase() === "food") {
   if (!time) {
     newErrors.time = "Enter preparation time";
   }
 
-  // 🔥 ADD THIS
-  if (subCategory === "Juice" || subCategory === "Shake") {
     if (!weight) newErrors.weight = "Enter quantity";
     if (!weightUnit) newErrors.weightUnit = "Select unit";
-  }
 } else {
       if (!stock) newErrors.stock = "Enter stock quantity";
       if (!weight) newErrors.weight = "Enter weight";
@@ -234,6 +224,7 @@ const isEditMode = !!product;
     }
 
     if (Object.keys(newErrors).length > 0) {
+      console.log("ERRORS:", newErrors);
       setErrors(newErrors);
       return;
     }
@@ -264,7 +255,12 @@ formData.append("final_price", sp);
 formData.append("discount", discount);
 formData.append("stock", stock || 0);
 formData.append("weight_value", weight || 0);
-formData.append("weight_unit", weightUnit || "");
+let finalUnit = weightUnit;
+// convert pcs → unit
+if (weightUnit === "pcs") {
+  finalUnit = "unit";
+}
+formData.append("weight_unit", finalUnit);
 formData.append("preparing_minutes", time || 0);
 formData.append("food_type", type === "veg" ? "VEG" : "NON-VEG");
 formData.append("category", backendCategoryMap[category]);
@@ -285,9 +281,6 @@ if (!product && !imageFile) {
 // 🔥 IMAGE IRUNDHA MATUM SEND
 if (imageFile instanceof File) {
   formData.append("image", imageFile);
-}
-for (let pair of formData.entries()) {
-  console.log(pair[0], pair[1]);
 }
 
 try {
@@ -341,17 +334,19 @@ try {
   const selectedSubIcon =
     subCategories.find(s => s.name === subCategory)?.icon;
 
-  const handleCategorySelect = async (cat) => {
-    setCategory(cat.name);
-    setSubCategory("");
+const handleCategorySelect = async (cat) => {
+  setCategory(cat.name);
+  setSubCategory("");
+  setSubCategoryId(""); // ✅ ADD THIS LINE
 
-    try {
-      const subData = await getSubCategoriesAPI(cat.id);
-      setSubCategories(subData);
-    } catch (err) {
-      console.error("Subcategory fetch error", err);
-    }
-  };
+  try {
+    const subData = await getSubCategoriesAPI(cat.id);
+    setSubCategories(subData);
+  } catch (err) {
+    console.error("Subcategory fetch error", err);
+  }
+};
+
 const handleCrop = async () => {
    const image = imgRef.current; 
 
@@ -391,7 +386,6 @@ const handleCrop = async () => {
       });
 
       setImageFile(file);
-      console.log("Cropped File:", file);
       setPreview(URL.createObjectURL(file));
       setShowCrop(false);
     }, "image/jpeg");
@@ -567,8 +561,8 @@ const handleCrop = async () => {
 
   {errors.subCategory && <p className="error">{errors.subCategory}</p>}
 </div>
-{/* 🔥 PRODUCT TYPE (ONLY FOR ELECTRONICS & GROCERY) */}
-{(category === "Grocery" || category === "Electronics") && (
+{/*  PRODUCT TYPE (ONLY FOR ELECTRONICS & GROCERY) */}
+{(category?.toLowerCase() === "grocery" || category?.toLowerCase() === "electronics") && (
   <div className="field">
     <h4>PRODUCT TYPE *</h4>
 
@@ -663,7 +657,7 @@ const handleCrop = async () => {
   <>
     <h4>PREPARATION DETAILS *</h4>
 
-    <div className={`row ${subCategory === "Juice" || subCategory === "Shake" ? "three-col" : "two-col"}`}>
+    <div className="row three-col">
 
       {/* PREP TIME */}
       <div className="field">
@@ -699,35 +693,44 @@ const handleCrop = async () => {
       </div>
 
       {/* 🔥 QUANTITY INLINE */}
-      {(subCategory === "Juice" || subCategory === "Shake") && (
-        <div className="field">
-          <label>Quantity *</label>
+      <div className="field">
+  <label>Quantity *</label>
 
-          <div className="weight-field quantity-field">
-            <input
-              type="number"
-              placeholder="Quantity"
-              value={weight}
-              onChange={(e)=>setWeight(e.target.value)}
-            />
+  <div className="weight-field quantity-field">
+    <input
+      type="number"
+      placeholder="Quantity"
+      value={weight}
+      onChange={(e)=>setWeight(e.target.value)}
+    />
 
-            <select
-              value={weightUnit}
-              onChange={(e)=>setWeightUnit(e.target.value)}
-            >
-              <option value="" disabled hidden>Unit</option>
-              <option value="ml">ML</option>
-              <option value="l">Litre</option>
-            </select>
-          </div>
+    <select
+      value={weightUnit}
+      onChange={(e)=>setWeightUnit(e.target.value)}
+    >
+      <option value="" disabled hidden>Unit</option>
 
-          {(errors.weight || errors.weightUnit) && (
-            <p className="error">
-              {errors.weight || errors.weightUnit}
-            </p>
-          )}
-        </div>
+      {(subCategory === "Juice" || subCategory === "Shake") ? (
+        <>
+          <option value="ml">ML</option>
+          <option value="l">Litre</option>
+        </>
+      ) : (
+        <>
+          <option value="unit">Pieces</option>
+          <option value="g">Gram</option>
+          <option value="kg">Kg</option>
+        </>
       )}
+    </select>
+  </div>
+
+  {(errors.weight || errors.weightUnit) && (
+    <p className="error">
+      {errors.weight || errors.weightUnit}
+    </p>
+  )}
+</div>
 
     </div>
   </>
