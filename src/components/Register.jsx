@@ -3,6 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { vendorRegister } from "../services/authService";
 import { createPortal } from "react-dom";
 import api from "../api/axios";
+import {
+  Store,
+  Phone,
+  User,
+  Lock,
+  MapPin,
+  Clock,
+  CheckCircle,
+  AlertCircle
+} from "lucide-react";
 
 export default function Register() {
   const [step, setStep] = useState(1);
@@ -21,6 +31,7 @@ export default function Register() {
     address: "",
     opensAt: "10:00",
     closesAt: "22:00",
+    shopImage: null,
   });
 
    const [errors, setErrors] = useState({});
@@ -113,29 +124,29 @@ console.log("ADDRESS ENTERED BY USER:", formData.address);
     }
 
     // 2️⃣ Build payload
-    const payload = {
-      shop_name: formData.shopName,
-      owner_name: formData.fullName,
-      phone: formData.phone,
-      password: formData.password,
-      business_type: formData.category,
+    const form = new FormData();
 
-      address: formData.address,
+form.append("shop_name", formData.shopName);
+form.append("owner_name", formData.fullName);
+form.append("phone", formData.phone);
+form.append("password", formData.password);
+form.append("business_type", formData.category);
+form.append("address", formData.address);
+form.append("latitude", coords.lat);
+form.append("longitude", coords.lng);
+form.append("opening_time", formData.opensAt);
+form.append("closing_time", formData.closesAt);
 
-      latitude: coords.lat,
-      longitude: coords.lng,
-
-      opening_time: formData.opensAt || null,
-      closing_time: formData.closesAt || null,
-
-      shop_logo: null,
-      license_doc: null
-    };
-
-    console.log("Register Payload:", payload);
+if (formData.shopImage) {
+  form.append("shop_image", formData.shopImage);
+}
 
     // 3️⃣ Call register API
-    const res = await vendorRegister(payload);
+    const res = await api.post("/api/vendor/register", form, {
+  headers: {
+    "Content-Type": "multipart/form-data"
+  }
+});
 
     console.log("API Success:", res.data);
 
@@ -216,7 +227,7 @@ const dropdownStyle = categoryOpen
             <div className="field">
               <label>SHOP NAME *</label>
               <div className="input-icon">
-                <span className="icon">🏬</span>
+                <Store size={18} className="icon" />
                 <input
                   type="text"
                   placeholder="e.g.Urban Grocers"
@@ -288,7 +299,7 @@ const dropdownStyle = categoryOpen
           <div className="field">
             <label>BUSINESS CONTACT *</label>
             <div className="input-icon">
-              <span className="icon">📞</span>
+              <Phone size={18} className="icon" />
               <input
   type="tel"
   placeholder="9876543210"
@@ -328,7 +339,7 @@ const dropdownStyle = categoryOpen
           <div className="field">
             <label>FULL NAME *</label>
             <div className="input-pro">
-              <span className="icon">👤</span>
+              <User size={18} className="icon" />
               <input
                 type="text"
                 placeholder="e.g.Sarah"
@@ -345,7 +356,7 @@ const dropdownStyle = categoryOpen
           <div className="field">
             <label>PASSWORD *</label>
             <div className="input-pro">
-              <span className="icon">🔒</span>
+              <Lock size={18} className="icon" />
               <input
                 type="password"
                 placeholder="••••••••"
@@ -372,7 +383,7 @@ const dropdownStyle = categoryOpen
           <div className="field">
             <label>PHYSICAL ADDRESS *</label>
             <div className="input-pro">
-              <span className="icon">📍</span>
+              <MapPin size={18} className="icon" />
               <input
                 type="text"
                 placeholder="123,Market Square,Downtown"
@@ -412,6 +423,16 @@ const dropdownStyle = categoryOpen
               </div>
             </div>
           </div>
+          <div className="field">
+  <label>SHOP IMAGE *</label>
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) =>
+      setFormData({ ...formData, shopImage: e.target.files[0] })
+    }
+  />
+</div>
 
           <div className="btn-row">
             <button className="back-btn" onClick={prev}>← Back</button>
@@ -422,31 +443,62 @@ const dropdownStyle = categoryOpen
 
       {step === 4 && (
         <>
-          <div className="success-icon">✓</div>
-          <h2>Everything looks great!</h2>
+          <div className="success-icon">
+  <CheckCircle size={22} />
+</div>
+          <h2 className="confirm-title">Everything looks great!</h2>
           <p className="confirm-sub"> Review your shop card preview before submitting for approval. </p>
-
           <div className="preview-card">
             <div className="preview-img">
-              <span>🏪</span>
-              <div className="status-tag">REVIEWING</div>
-            </div>
+  {formData.shopImage ? (
+    <img
+      src={URL.createObjectURL(formData.shopImage)}
+      alt="Shop"
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "cover"
+      }}
+    />
+  ) : (
+    <span>🏪</span>
+  )}
+
+  <div className="status-tag">REVIEWING</div>
+</div>
 
             <div className="preview-body">
               <h3>{formData.shopName}</h3>
-              <p className="category">{formData.category}</p>
               <div className="preview-meta">
-                <span>📍 {formData.address}</span>
-                <span>🕒 {formData.opensAt} – {formData.closesAt}</span>
-              </div>
+
+  {/* 🔹 ROW 1 */}
+  <div className="meta-row">
+    <span className="category">{formData.category}</span>
+
+    <span className="meta-item">
+      <Clock size={14} className="meta-icon" />
+      {formData.opensAt} – {formData.closesAt}
+    </span>
+  </div>
+
+  {/* 🔹 ROW 2 */}
+  <div className="meta-address">
+    <MapPin size={14} className="meta-icon" />
+    {formData.address}
+  </div>
+
+</div>
             </div>
           </div>
-          {/* INFO BOX */} <div className="info-box"> ℹ Our team usually reviews new shop applications within <b> 24–48 hours.</b> You will receive an email notification as soon as your shop is ready to go live. </div>
+          {/* INFO BOX */} 
+          <div className="info-box">
+            <AlertCircle size={16} />
+             We review new shop applications within 24–48 hours. You’ll be notified once your shop is live. </div>
 
           <div className="btn-row">
             <button className="back-btn" onClick={() => setStep(3)}>← Back</button>
             <button className="submit-btn" onClick={handleSubmit}>
-              Finish & Submit Application ✈
+              Finish & Submit ✈
             </button>
           </div>
         </>

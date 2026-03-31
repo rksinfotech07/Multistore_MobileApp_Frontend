@@ -136,6 +136,7 @@ min-width: 180px;
   gap: 8px;
   align-items: center;
   justify-content: center;
+  flex-wrap: nowrap;
 }
 
 .admin-dashboard-page .actions .approve-btn,
@@ -436,6 +437,12 @@ min-width: 180px;
   height: calc(100vh - 100px);   /* 🔥 MAIN FIX */
   overflow-y: auto;
 }
+.admin-dashboard-page .shop-table th,
+.admin-dashboard-page .shop-table td {
+  padding: 12px 14px;
+  text-align: left;
+  white-space: normal;   /* 🔥 THIS FIXES ALIGNMENT */
+}
 
 .tab {
   display: flex;
@@ -679,7 +686,6 @@ min-width: 180px;
   background: rgba(255,255,255,0.2);
   color: white;
 }
-
 /* 🔥 LOGOUT ALIGN FIX */
 .signout-btn {
   width: 90%;
@@ -687,4 +693,16 @@ min-width: 180px;
 }
 .admin-dashboard-page .shop-table {
   table-layout: auto !important;   /* 🔥 FIX */
+}
+/* 🔥 ICON ALIGN FIX */
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.meta-icon {
+  color: #6b7280;
+  display: flex;
+  align-items: center;
 }
