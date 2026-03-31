@@ -235,8 +235,22 @@ return (
   {shop.business_type}
 </span>
 </td>
-          <td>{shop.opening_time || "-"}</td>
-          <td>{shop.closing_time || "-"}</td>
+          <td>
+  {shop.opening_time
+    ? new Date(`1970-01-01T${shop.opening_time}`).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "-"}
+</td>
+          <td>
+  {shop.closing_time
+    ? new Date(`1970-01-01T${shop.closing_time}`).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "-"}
+</td>
 
           <td>
             {new Date(shop.created_at).toLocaleString()}
@@ -329,8 +343,22 @@ return (
   {shop.business_type}
 </span>
 </td>
-            <td>{shop.opening_time || "-"}</td>
-            <td>{shop.closing_time || "-"}</td>
+            <td>
+  {shop.opening_time
+    ? new Date(`1970-01-01T${shop.opening_time}`).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "-"}
+</td>
+            <td>
+  {shop.closing_time
+    ? new Date(`1970-01-01T${shop.closing_time}`).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "-"}
+</td>
 
             <td>
               {new Date(shop.created_at).toLocaleString()}
@@ -396,8 +424,22 @@ return (
   {shop.business_type}
 </span>
 </td>
-            <td>{shop.opening_time || "-"}</td>
-            <td>{shop.closing_time || "-"}</td>
+            <td>
+  {shop.opening_time
+    ? new Date(`1970-01-01T${shop.opening_time}`).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "-"}
+</td>
+            <td>
+  {shop.closing_time
+    ? new Date(`1970-01-01T${shop.closing_time}`).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "-"}
+</td>
             <td>{new Date(shop.created_at).toLocaleString()}</td>
           </tr>
         ))}

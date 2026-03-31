@@ -21,8 +21,8 @@
   background: transparent !important;   /* VERY IMPORTANT */
   color: white;
   font-weight: 600;
+  text-align: left;
 }
-
 
 /* ===== TABLE BODY (IMPORTANT FIX) ===== */
 .admin-dashboard-page .shop-table tbody tr {
@@ -40,7 +40,7 @@
 .admin-dashboard-page .shop-table td {
   padding: 8px 13px;  /* 🔥 correct spacing */
   text-align: left;
-  font-size: 14px;
+  font-size: 13px;
 }
 .admin-dashboard-page .shop-table td {
   color: #01050c;
@@ -69,7 +69,7 @@ background: #f3f3f4 !important;
 /* 🔥 invisible track */
 .admin-dashboard-page .table-scroll::-webkit-scrollbar-track {
   background: transparent;
-  margin: 12px 0;   /* 🔥 TOP & BOTTOM GAP */
+  margin: 9px 0;   /* 🔥 TOP & BOTTOM GAP */
 }
 
 /* 🔥 slim thumb */
@@ -97,11 +97,16 @@ background: #f3f3f4 !important;
   word-break: break-word;
   max-width: 200px;
 }
+.admin-dashboard-page .shop-table td:nth-child(6),
+.admin-dashboard-page .shop-table td:nth-child(7) {
+  padding-right: 16px;
+}
 
 /* OPENING TIME */
 .admin-dashboard-page .shop-table th:nth-child(7),
 .admin-dashboard-page .shop-table td:nth-child(7) {
-  width: 120px;
+  width: 180px;
+min-width: 180px;
   text-align: center;
 }
 
@@ -131,6 +136,7 @@ background: #f3f3f4 !important;
   gap: 8px;
   align-items: center;
   justify-content: center;
+  flex-wrap: nowrap;
 }
 
 .admin-dashboard-page .actions .approve-btn,
@@ -425,11 +431,17 @@ background: #f3f3f4 !important;
   color: #ec4899;   /* pink */
   font-weight: 600;
 }
-.table-scroll {
+.admin-dashboard-page .table-scroll {
   margin-top: 20px;
   border-radius: 16px;
-  max-height: hidden;   /* 🔥 ADD THIS */
+  height: calc(100vh - 100px);   /* 🔥 MAIN FIX */
   overflow-y: auto;
+}
+.admin-dashboard-page .shop-table th,
+.admin-dashboard-page .shop-table td {
+  padding: 12px 14px;
+  text-align: left;
+  white-space: normal;   /* 🔥 THIS FIXES ALIGNMENT */
 }
 
 .tab {
@@ -533,20 +545,21 @@ background: #f3f3f4 !important;
 .admin-content {
   margin-left: 200px;
   width: calc(100% - 200px);   /* 🔥 MAIN FIX */
-  height: 100vh;
+  min-height: 100vh;
   transition: 0.3s;
 }
 
 /* 🔥 collapse adjust */
 .sidebar.collapsed ~ .admin-content {
   margin-left: 80px;
+  width: calc(100% - 80px);
 }
 
 /* ONLY DASHBOARD PAGE */
 .admin-dashboard-page.admin-container {
   padding: 18px 28px 28px 28px;
   font-family: Arial, sans-serif;
-  height: 100%;
+  min-height: 100vh;
   background: #ffffff;
 }
 
@@ -673,11 +686,23 @@ background: #f3f3f4 !important;
   background: rgba(255,255,255,0.2);
   color: white;
 }
-
 /* 🔥 LOGOUT ALIGN FIX */
 .signout-btn {
   width: 90%;
   align-self: center;
 }
+.admin-dashboard-page .shop-table {
+  table-layout: auto !important;   /* 🔥 FIX */
+}
+/* 🔥 ICON ALIGN FIX */
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 
-
+.meta-icon {
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+}

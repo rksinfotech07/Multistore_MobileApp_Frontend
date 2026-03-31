@@ -1,6 +1,6 @@
 .agents-page {
   padding: 30px;
-  background: #f4f7fb;
+  background: white;
   min-height: 100vh;
 }
 
@@ -111,7 +111,7 @@
 /* GRID LAYOUT */
 .agents-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  grid-template-columns: repeat(2, 1fr); 
   gap: 20px;
   width: 100%;
 }
@@ -191,6 +191,15 @@
 .agent-info-row a:hover {
   text-decoration: underline;
 }
+.agent-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #073068;
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -390,6 +399,10 @@
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
+  display: flex;            
+  align-items: center;        
+  justify-content: center;    
+  gap: 8px;
 }
 
 .generate-pass-btn:hover {
@@ -403,4 +416,10 @@
   font-size: 18px;
   cursor: pointer;
   color: #6c4cff;
+}
+.agent-contact span,
+.agent-info-row span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
