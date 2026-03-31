@@ -86,7 +86,7 @@ body {
   table-layout: fixed;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  box-shadow: 0 80px 25px rgba(0,0,0,0.08);
 }
 
 .products-table th,
@@ -110,8 +110,12 @@ body {
 .table-wrapper {
   width: 100%;
   border-radius: 20px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  box-shadow:none;
   overflow: hidden;
+  
+   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 .products-table td {
   font-size: 14px;
@@ -514,6 +518,7 @@ input:checked + .slider:before {
   overflow-y: auto;
   max-height: 480px;
 }
+
 .products-table thead th {
   position: sticky;
   top: 0;
@@ -545,11 +550,7 @@ input:checked + .slider:before {
   color: white;
   transform: translateX(-3px);
 }
-.table-wrapper {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
+
 .shop-table {
   min-width: 700px;
 }

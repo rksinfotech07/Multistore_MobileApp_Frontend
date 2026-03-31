@@ -52,6 +52,7 @@ useEffect(() => {
 
 }, []);
 
+
   
   // ✅ CLEAN & SIMPLE FILTER (FIXED)
   const filteredShops = shops.filter((shop) => {
@@ -151,12 +152,17 @@ useEffect(() => {
 
             <tbody>
               {loading ? (
-                <tr>
-                  <td colSpan="5" style={{ textAlign: "center" }}>
-                    Loading shops...
-                  </td>
-                </tr>
-              ) : filteredShops.length === 0 ? (
+  [...Array(5)].map((_, i) => (
+    <tr key={i}>
+      <td><div className="skeleton"></div></td>
+      <td><div className="skeleton"></div></td>
+      <td><div className="skeleton"></div></td>
+      <td><div className="skeleton"></div></td>
+      <td><div className="skeleton-btn"></div></td>
+    </tr>
+  ))
+)
+               : filteredShops.length === 0 ? (
                 <tr>
                   <td colSpan="5" style={{ textAlign: "center" }}>
                     No shops found
@@ -198,4 +204,3 @@ useEffect(() => {
 };
 
 export default AddProduct;
-// Sowdha testing

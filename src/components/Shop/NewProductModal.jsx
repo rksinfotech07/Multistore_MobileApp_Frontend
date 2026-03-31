@@ -176,7 +176,7 @@ useEffect(() => {
 }, [productTypes]);
 
   useEffect(() => {
-    if (category === "Food") {
+    if (category?.toLowerCase() === "food") {
       setStock("");
     }
   }, [category]);
@@ -659,7 +659,7 @@ const handleCrop = async () => {
 </div>
 
             {/* 🔥 DYNAMIC BOTTOM SECTION */}
-{category === "Food" ? (
+{category?.toLowerCase() === "food" ? (
   <>
     <h4>PREPARATION DETAILS *</h4>
 

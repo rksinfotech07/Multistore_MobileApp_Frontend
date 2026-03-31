@@ -22,7 +22,7 @@ const AdminShopProducts = () => {
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
-  const [shopCategory, setShopCategory] = useState("");
+  const [shopCategory, setShopCategory] = useState(null);
   const [shopCategoryId, setShopCategoryId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -38,19 +38,22 @@ const AdminShopProducts = () => {
 useEffect(() => {
   const fetchData = async () => {
     try {
-      // 🔥 1. Fetch products
-      const productsData = await getShopProducts(id);
-      console.log("API RESPONSE 👉", productsData);
-      setProducts(productsData);
+      // 🔥 FETCH BOTH SAME TIME (FIX FOR COLOR DELAY)
+const [productsData, shopData] = await Promise.all([
+  getShopProducts(id),
+  getSingleShop(id)
+]);
 
-      // 🔥 2. Fetch shop details
-      const shopData = await getSingleShop(id);
-      setShopName(shopData.shop_name);
-      const formattedCategory = shopData.category
+setProducts(productsData);
+
+setShopName(shopData.shop_name);
+
+const formattedCategory = shopData.category
   ? shopData.category.toLowerCase()
   : "";
-      setShopCategory(formattedCategory);
-      setShopCategoryId(shopData.category_id);
+
+setShopCategory(formattedCategory);
+setShopCategoryId(shopData.category_id);
     } catch (error) {
       console.error("Failed to fetch data 👉", error);
     } finally {
@@ -175,7 +178,7 @@ const getTableClass = () => {
 
   return (
     <div className="admin-products-page">
-
+{shopCategory && (
       <div className={`shop-banner ${getBannerClass()}`}>
         <button className="banner-back-btn" onClick={() => navigate(-1)}>
   <ArrowLeft size={18} />
@@ -193,6 +196,7 @@ const getTableClass = () => {
               TOTAL PRODUCTS: {products.length}
             </p>
           </div>
+        
 
           <div className="shop-banner-actions">
             <div className="search-box">
@@ -205,6 +209,9 @@ const getTableClass = () => {
     onChange={(e) => setSearchQuery(e.target.value)}
   />
   </div>
+  
+
+   
             <button
               className="shop-new-btn"
               onClick={() => {
@@ -219,6 +226,7 @@ const getTableClass = () => {
 
         </div>
       </div>
+)} 
 
       <div className="products-table-section">
         <h3 className="table-title">Product List</h3>
@@ -361,7 +369,10 @@ const getTableClass = () => {
 
 
     </div>
+
   );
 };
 
 export default AdminShopProducts;
+
+////
