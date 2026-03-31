@@ -374,3 +374,5 @@ const getTableClass = () => {
 };
 
 export default AdminShopProducts;
+
+////
