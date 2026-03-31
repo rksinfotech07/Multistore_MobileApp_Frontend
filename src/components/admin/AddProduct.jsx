@@ -125,7 +125,7 @@ useEffect(() => {
       <span>{item.count} shops</span>
 
       <div className="icon">
-        <Icon size={28} strokeWidth={1.5} />
+        <Icon size={28} strokeWidth={1.5}  />
       </div>
 
     </div>
