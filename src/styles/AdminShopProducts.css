@@ -581,3 +581,60 @@ input:checked + .slider:before {
 .banner-default {
   background: linear-gradient(135deg, #1e3a8a, #2563eb);
 }
+
+/* 🔥 FULL SCREEN */
+.page-loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 999999;
+}
+
+/* 🔵 LOADER CONTAINER */
+.dot-loader {
+  position: relative;
+  width: 60px;   /* 🔥 reduced size */
+  height: 60px;
+}
+
+/* 🔘 DOT */
+.dot-loader span {
+  position: absolute;
+  width: 8px;    /* 🔥 smaller dots */
+  height: 8px;
+  background: #444;
+  border-radius: 50%;
+  opacity: 0.3;
+
+  animation: fade 1.2s linear infinite;
+}
+
+/* 🔥 PERFECT 8 POINT CIRCLE */
+.dot-loader span:nth-child(1) { top: 0%; left: 50%; transform: translate(-50%, 0); animation-delay: 0s; }
+.dot-loader span:nth-child(2) { top: 15%; left: 85%; transform: translate(-50%, -50%); animation-delay: 0.15s; }
+.dot-loader span:nth-child(3) { top: 50%; left: 100%; transform: translate(-100%, -50%); animation-delay: 0.3s; }
+.dot-loader span:nth-child(4) { top: 85%; left: 85%; transform: translate(-50%, -50%); animation-delay: 0.45s; }
+.dot-loader span:nth-child(5) { top: 100%; left: 50%; transform: translate(-50%, -100%); animation-delay: 0.6s; }
+.dot-loader span:nth-child(6) { top: 85%; left: 15%; transform: translate(-50%, -50%); animation-delay: 0.75s; }
+.dot-loader span:nth-child(7) { top: 50%; left: 0%; transform: translate(0, -50%); animation-delay: 0.9s; }
+.dot-loader span:nth-child(8) { top: 15%; left: 15%; transform: translate(-50%, -50%); animation-delay: 1.05s; }
+
+/* ✨ SMOOTH ANIMATION */
+@keyframes fade {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
