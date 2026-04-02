@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../styles/AdminShopProducts.css";
-import { ArrowLeft,Search, Pencil, Trash2, PlusCircle } from "lucide-react";
+import { ArrowLeft,Search, Pencil, Trash2, PlusCircle, Loader2 } from "lucide-react";
 import NewProductModal from "../../components/Shop/NewProductModal";
 import ProductEmptyState from "../../components/Shop/ProductEmptyState";
 import { getSingleProduct } from "../../services/adminShopProductService";
@@ -38,6 +38,7 @@ const AdminShopProducts = () => {
 useEffect(() => {
   const fetchData = async () => {
     try {
+       setLoading(true);
       // 🔥 FETCH BOTH SAME TIME (FIX FOR COLOR DELAY)
 const [productsData, shopData] = await Promise.all([
   getShopProducts(id),
@@ -57,7 +58,9 @@ setShopCategoryId(shopData.category_id);
     } catch (error) {
       console.error("Failed to fetch data 👉", error);
     } finally {
-      setLoading(false);
+     setTimeout(() => {
+  setLoading(false);
+}, 1000); // 🔥 1 second delay
     }
   };
 
@@ -178,6 +181,22 @@ const getTableClass = () => {
 
   return (
     <div className="admin-products-page">
+{loading && (
+  <div className="page-loader-overlay">
+    <div className="dot-loader">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+)}
+
+
 {shopCategory && (
       <div className={`shop-banner ${getBannerClass()}`}>
         <button className="banner-back-btn" onClick={() => navigate(-1)}>
