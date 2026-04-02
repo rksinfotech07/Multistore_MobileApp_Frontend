@@ -195,7 +195,7 @@ const dropdownStyle = categoryOpen
       };
     })()
   : {};
-  /*
+  
   const verifyOtp = async () => {
   try {
     const res = await api.post("/api/vendor/verify-phone", {
@@ -210,7 +210,7 @@ const dropdownStyle = categoryOpen
     alert("Invalid OTP");
   }
 };
-*/
+
 
   return (
     <div className={`register-card ${categoryOpen ? "dropdown-open" : ""}`}>
@@ -519,7 +519,7 @@ const dropdownStyle = categoryOpen
           </div>
         </div>
       )}
-{/*
+
       {showOtpPopup && (
   <div className="popup-overlay">
     <div className="popup-box">
@@ -540,7 +540,7 @@ const dropdownStyle = categoryOpen
     </div>
   </div>
 )}
-*/}
+
     </div>
   );
 }

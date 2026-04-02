@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import Lottie from "lottie-react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../styles/AdminShopProducts.css";
-import { ArrowLeft,Search, Pencil, Trash2, PlusCircle, Loader2 } from "lucide-react";
+import { ArrowLeft,Search, Pencil, Trash2, PlusCircle} from "lucide-react";
 import NewProductModal from "../../components/Shop/NewProductModal";
 import ProductEmptyState from "../../components/Shop/ProductEmptyState";
 import { getSingleProduct } from "../../services/adminShopProductService";
+import loaderAnimation from "../../assets/loader.json";
 import { 
   getShopProducts,
   deleteShopProduct,
@@ -183,15 +185,11 @@ const getTableClass = () => {
     <div className="admin-products-page">
 {loading && (
   <div className="page-loader-overlay">
-    <div className="dot-loader">
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
+    <div className="lottie-loader">
+      <Lottie 
+        animationData={loaderAnimation} 
+        loop={true}
+      />
     </div>
   </div>
 )}
