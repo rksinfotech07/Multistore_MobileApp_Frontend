@@ -64,6 +64,8 @@ const [crop, setCrop] = useState({
       setType(product.food_type === "NON-VEG" ? "nonveg" : "veg");
       setTime(product.preparing_minutes || ""); 
       setProductType(product.product_type_id || "");
+      setWeight(product.weight_value || "");
+      setWeightUnit(product.weight_unit || "");
 
       if (product.image && product.image !== "image.jpg") {
         setImgLoading(true);
