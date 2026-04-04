@@ -194,7 +194,7 @@ const getTableClass = () => {
       <span></span>
     </div>
   </div>
-)}
+)} 
 
 
 {shopCategory && (
