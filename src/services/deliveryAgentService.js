@@ -22,3 +22,21 @@ export const updateDeliveryAgent = async (id, data) => {
   );
   return response.data;
 };
+// 🔥 NEW: APPROVE AGENT
+export const approveAgent = async (id) => {
+  const response = await api.put(
+    `/api/admin/deliveries/approve/${id}`
+  );
+  return response.data;
+};
+
+// 🔥 NEW: BLOCK AGENT
+export const blockAgent = async (id, blocked) => {
+  const response = await api.put(
+    `/api/admin/deliveries/block/${id}`,
+    {
+      blocked: blocked
+    }
+  );
+  return response.data;
+};

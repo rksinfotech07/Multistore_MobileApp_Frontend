@@ -192,7 +192,7 @@ const getTableClass = () => {
       />
     </div>
   </div>
-)}
+)} 
 
 
 {shopCategory && (

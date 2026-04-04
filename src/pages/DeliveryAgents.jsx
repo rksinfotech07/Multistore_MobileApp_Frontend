@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import "../styles/DeliveryAgents.css";
 import {
   getDeliveryAgents,
-  deleteDeliveryAgent
+  deleteDeliveryAgent,
+  approveAgent,
+  blockAgent
 } from "../services/deliveryAgentService";
 import {
   Trash2,
-  Pencil,
   Search,
   Phone,
   Mail,
@@ -15,10 +16,6 @@ import {
   CreditCard,
   Bike,
   Car,
-  Eye,
-  EyeOff,
-  Key,
-  Check,
   BadgeCheck
 } from "lucide-react";
 import SkeletonDashboard from "../components/common/SkeletonDashboard";
@@ -31,14 +28,7 @@ const DeliveryAgents = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteAgentId, setDeleteAgentId] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  const [editingCreds, setEditingCreds] = useState(null);
-  const [credData, setCredData] = useState({
-    uniqueId: "",
-    password: "",
-  });
 
   // 🔹 FETCH FUNCTION (Moved ABOVE useEffect — only change)
   const fetchAgents = async () => {
@@ -68,34 +58,7 @@ const DeliveryAgents = () => {
 
   // 🔹 HANDLERS
 
-  const handleGenerate = (id) => {
-    setAgents((prev) =>
-      prev.map((agent) =>
-        agent.id === id
-          ? {
-              ...agent,
-              generated: !agent.generated,
-              uniqueId: agent.generated
-                ? agent.uniqueId
-                : "AG" + Math.floor(1000 + Math.random() * 9000),
-              password: agent.generated
-                ? agent.password
-                : Math.random().toString(36).slice(-8),
-            }
-          : agent
-      )
-    );
-  };
-  const generatePassword = () => {
-  const newPass = Math.random().toString(36).slice(-8);
-
-  setCredData(prev => ({
-    ...prev,
-    password: newPass
-  }));
-};
-
-
+ 
   const handleDelete = async () => {
     try {
       await deleteDeliveryAgent(deleteAgentId);
@@ -113,37 +76,41 @@ const DeliveryAgents = () => {
       console.error("Delete failed:", error);
     }
   };
+ const handleApprove = async (agent) => {
+  try {
+    await approveAgent(agent.id);
 
-  const handleEditCreds = (agent) => {
-    setEditingCreds(agent);
-
-    setCredData({
-      uniqueId: agent.uniqueId || "",
-      password: agent.password || "",
-    });
-  };
-
-  const handleCredChange = (e) => {
-    setCredData({
-      ...credData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSaveCreds = () => {
-    setAgents((prev) =>
-      prev.map((agent) =>
-        agent.id === editingCreds.id
-          ? {
-              ...agent,
-              password: credData.password,
-            }
-          : agent
+    // 🔥 update UI instantly
+    setAgents(prev =>
+      prev.map(a =>
+        a.id === agent.id
+          ? { ...a, blocked: false, approved: true }
+          : a
       )
     );
 
-    setEditingCreds(null);
-  };
+  } catch (error) {
+    console.error("Approve failed:", error);
+  }
+};
+
+const handleBlock = async (agent) => {
+  try {
+    const newStatus = !agent.blocked; // 🔥 toggle
+
+    await blockAgent(agent.id, newStatus);
+
+    console.log("Block status:", newStatus);
+
+    fetchAgents();
+
+  } catch (error) {
+    console.error("Block failed:", error);
+  }
+};
+
+
+
 
   const filteredAgents = agents.filter((agent) =>
     agent.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -180,173 +147,118 @@ const DeliveryAgents = () => {
 
       </div>
 
-      <div className="agents-grid">
-        {filteredAgents.map((agent) => (
-          <div key={agent.id} className="agent-card">
+     <div className="agents-grid">
+  {filteredAgents.map((agent) => (
+    <div key={agent.id} className="agent-card">
 
-            {/* DELETE */}
-            <button
-              className="delete-btn"
-              onClick={() => setDeleteAgentId(agent.id)}
-            >
-              <Trash2 size={16} />
-            </button>
+      {/* DELETE */}
+      <button
+        className="delete-btn"
+        onClick={() => setDeleteAgentId(agent.id)}
+      >
+        <Trash2 size={16} />
+      </button>
 
-            {/* HEADER */}
-            <div className="agent-header">
-              <h3>{agent.name}</h3>
-            </div>
-
-            {/* CONTACT ROW */}
-            <div className="agent-contact">
-              <span><Phone size={14} /> {agent.phone}</span>
-              <span>|</span>
-              <span><Mail size={14} /> {agent.email}</span>
-              <span>|</span>
-
-              <a
-                href={agent.driving_license_url}
-                target="_blank"
-                rel="noreferrer"
-                className="license-link"
-              >
-                <FileText size={14} /> View License
-              </a>
-            </div>
-
-            {/* DETAILS ROW */}
-            <div className="agent-info-row">
-              <span><IdCard size={14} /> {agent.aadhar_number}</span>
-              <span>|</span>
-              <span><CreditCard size={14} /> {agent.pan_number}</span>
-              <span>|</span>
-              <span><Bike size={14} /> {agent.vehicle_type}</span>
-              <span>|</span>
-              <span><Car size={14} /> {agent.vehicle_number}</span>
-            </div>
-
-            {/* GENERATE BUTTON */}
-            <button
-              className="generate-btn"
-              onClick={() => handleGenerate(agent.id)}
-            >
-              {agent.generated ? "Hide Credentials" : "Generate"}
-            </button>
-
-            {/* CREDENTIAL PANEL */}
-            {agent.generated && (
-              <div className="generated-panel">
-                <p><b>Unique ID:</b> {agent.uniqueId}</p>
-                <p><b>Password:</b> {agent.password}</p>
-
-                <button
-                  className="edit-icon"
-                  onClick={() => handleEditCreds(agent)}
-                >
-                  <Pencil size={14} />
-                </button>
-              </div>
-            )}
-
-          </div>
-        ))}
+      {/* HEADER */}
+      <div className="agent-header">
+        <h3>{agent.name}</h3>
       </div>
 
-      {/* EDIT CREDENTIAL MODAL */}
-      {editingCreds && (
-        <div className="modal-overlay">
-          <div className="modal">
+      {/* CONTACT ROW */}
+      <div className="agent-contact">
+        <span><Phone size={14} /> {agent.phone}</span>
+        <span>|</span>
+        <span><Mail size={14} /> {agent.email}</span>
+        <span>|</span>
 
-            <h3 className="modal-title">Edit Password</h3>
+        <a
+          href={agent.driving_license_url}
+          target="_blank"
+          rel="noreferrer"
+          className="license-link"
+        >
+          <FileText size={14} /> View License
+        </a>
+      </div>
 
-            <label>Password</label>
+      {/* DETAILS ROW */}
+      <div className="agent-info-row">
+        <span><IdCard size={14} /> {agent.aadhar_number}</span>
+        <span>|</span>
+        <span><CreditCard size={14} /> {agent.pan_number}</span>
+        <span>|</span>
+        <span><Bike size={14} /> {agent.vehicle_type}</span>
+        <span>|</span>
+        <span><Car size={14} /> {agent.vehicle_number}</span>
+      </div>
 
-<div className="password-field">
+      {/* ACTION BUTTONS */}
+  <div className="action-row">
 
-  <input
-    type={showPassword ? "text" : "password"}
-    name="password"
-    value={credData.password}
-    onChange={handleCredChange}
-    placeholder="Enter new password"
-  />
+  {/* 🟢 ACCEPTED BADGE */}
+  {agent.approved && (
+    <span className="status-badge accepted">Accepted</span>
+  )}
 
-  {/* 👁️ Show / Hide Icon */}
+  {/* 🔴 BLOCKED BADGE */}
+  
+
+  {/* ✅ APPROVE BUTTON (only if not approved) */}
+  {!agent.approved && (
+    <button
+      className="approve-btn"
+      onClick={() => handleApprove(agent)}
+    >
+      Approve
+    </button>
+  )}
+
+  {/* 🔥 BLOCK / UNBLOCK ALWAYS VISIBLE */}
   <button
-    type="button"
-    className="eye-btn"
-    onClick={() => setShowPassword(!showPassword)}
+    className="block-btn"
+    onClick={() => handleBlock(agent)}
   >
-    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+    {agent.blocked ? "Unblock" : "Block"}
   </button>
 
 </div>
 
-{/* 🔑 Generate Password Button */}
-<button
-  className="generate-pass-btn"
-  onClick={generatePassword}
->
-  <Key size={14} /> Generate New Password
-</button>
+    </div>   
+  ))}        
+</div>
 
+{/* ✅ DELETE MODAL OUTSIDE */}
+{deleteAgentId && (
+  <div className="modal-overlay">
+    <div className="modal">
+      <h3 className="modal-title">Delete Agent?</h3>
+      <p>Are you sure you want to delete this profile?</p>
 
+      <div className="modal-actions">
+        <button
+          className="cancel-btn"
+          onClick={() => setDeleteAgentId(null)}
+        >
+          Cancel
+        </button>
 
-            <div className="modal-actions">
-              <button
-                className="cancel-btn"
-                onClick={() => setEditingCreds(null)}
-              >
-                Cancel
-              </button>
+        <button
+          className="delete-confirm-btn"
+          onClick={handleDelete}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
-              <button
-                className="save-btn"
-                onClick={handleSaveCreds}
-              >
-                <Check size={16} /> Save Changes
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
-
-      {/* DELETE CONFIRMATION MODAL */}
-      {deleteAgentId && (
-        <div className="modal-overlay">
-          <div className="modal">
-
-            <h3 className="modal-title">Delete Agent?</h3>
-
-            <p>Are you sure you want to delete this profile?</p>
-
-            <div className="modal-actions">
-              <button
-                className="cancel-btn"
-                onClick={() => setDeleteAgentId(null)}
-              >
-                Cancel
-              </button>
-
-              <button
-                className="delete-confirm-btn"
-                onClick={handleDelete}
-              >
-                Delete
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
-
-      {/* SUCCESS MESSAGE */}
-      {showSuccess && (
-        <div className="success-toast">
-          ✅ Profile deleted successfully
-        </div>
-      )}
+{/* ✅ SUCCESS MESSAGE OUTSIDE */}
+{showSuccess && (
+  <div className="success-toast">
+    ✅ Profile deleted successfully
+  </div>
+)}
 
     </div>
   );
