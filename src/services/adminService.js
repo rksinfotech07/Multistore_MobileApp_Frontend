@@ -16,3 +16,10 @@ export const getApprovedShops = () =>
 
 export const getDeclinedShops = () =>
   API.get("/api/admin/vendors/declined");
+
+//  ADMIN SETTINGS APIs
+export const getAdminProfile = () =>
+  API.get("/api/admin/profile");
+
+export const updateAdminProfile = (data) =>
+  API.put("/api/admin/profile", data);
