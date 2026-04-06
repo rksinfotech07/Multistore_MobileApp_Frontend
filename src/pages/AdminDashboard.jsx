@@ -12,7 +12,6 @@ import {
   XCircle,
   Search
 } from "lucide-react";
-import "../styles/common/common.css";
 
 const AdminDashboard = () => {
   const [shops, setShops] = useState([]);
@@ -282,8 +281,6 @@ return (
   </div>
   )
 )}
-      
-
       {/* APPROVED SHOPS */}
       {activeTab === "approved" && (
   <>

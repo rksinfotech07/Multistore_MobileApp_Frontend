@@ -294,39 +294,66 @@
   margin-top: 15px;
 }
 
-.approve-btn {
-  background: linear-gradient(90deg, #22c55e, #16a34a);
-  color: white;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
+/* 🔥 COMMON BUTTON */
+.delivery-approve-btn,
 .block-btn {
-  background: linear-gradient(90deg, #ef4444, #dc2626);
-  color: white;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   border: none;
-  padding: 8px 18px;
-  border-radius: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
   cursor: pointer;
   font-weight: 600;
+  font-size: 14px;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
-/* 🔥 STATUS BADGE */
 
+/* 🟢 APPROVE */
+.delivery-approve-btn {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+}
+
+.delivery-approve-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 14px rgba(34,197,94,0.4);
+}
+
+/* 🔴 BLOCK */
+.block-btn {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+.block-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 14px rgba(239,68,68,0.4);
+}
+
+/* 🔵 UNBLOCK */
+.block-btn.unblock {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
 .status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 6px 14px;
   border-radius: 999px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  display: inline-block;
 }
 
-/* 🟢 ACCEPTED */
 .status-badge.accepted {
-  background: #d1fae5;
-  color: #065f46;
+  background: linear-gradient(135deg, #22c55e, #4ade80);
+  color: white;
+  box-shadow: 0 4px 12px rgba(34,197,94,0.3);
 }
-
-
+.delivery-approve-btn,
+.block-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}

@@ -16,7 +16,9 @@ import {
   CreditCard,
   Bike,
   Car,
-  BadgeCheck
+  BadgeCheck,
+  Ban,
+  Unlock
 } from "lucide-react";
 import SkeletonDashboard from "../components/common/SkeletonDashboard";
 
@@ -93,25 +95,25 @@ const DeliveryAgents = () => {
     console.error("Approve failed:", error);
   }
 };
-
 const handleBlock = async (agent) => {
   try {
-    const newStatus = !agent.blocked; // 🔥 toggle
+    const newStatus = !agent.blocked;
 
     await blockAgent(agent.id, newStatus);
 
-    console.log("Block status:", newStatus);
-
-    fetchAgents();
+    // ✅ UPDATE ONLY BLOCKED (DO NOT TOUCH APPROVED)
+    setAgents(prev =>
+      prev.map(a =>
+        a.id === agent.id
+          ? { ...a, blocked: newStatus }
+          : a
+      )
+    );
 
   } catch (error) {
     console.error("Block failed:", error);
   }
 };
-
-
-
-
   const filteredAgents = agents.filter((agent) =>
     agent.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     agent.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -195,31 +197,38 @@ const handleBlock = async (agent) => {
       {/* ACTION BUTTONS */}
   <div className="action-row">
 
-  {/* 🟢 ACCEPTED BADGE */}
+  {/* ✅ ACCEPTED BADGE */}
   {agent.approved && (
-    <span className="status-badge accepted">Accepted</span>
+    <span className="status-badge accepted">
+      <BadgeCheck size={14} /> Accepted
+    </span>
   )}
 
-  {/* 🔴 BLOCKED BADGE */}
-  
-
-  {/* ✅ APPROVE BUTTON (only if not approved) */}
+  {/* ✅ APPROVE BUTTON */}
   {!agent.approved && (
     <button
-      className="approve-btn"
+      className="delivery-approve-btn"
       onClick={() => handleApprove(agent)}
     >
-      Approve
+      <BadgeCheck size={16} /> Approve
     </button>
   )}
 
-  {/* 🔥 BLOCK / UNBLOCK ALWAYS VISIBLE */}
+  {/* 🔥 BLOCK / UNBLOCK */}
   <button
-    className="block-btn"
-    onClick={() => handleBlock(agent)}
-  >
-    {agent.blocked ? "Unblock" : "Block"}
-  </button>
+  className={`block-btn ${agent.blocked ? "unblock" : ""}`}
+  onClick={() => handleBlock(agent)}
+>
+  {agent.blocked ? (
+    <>
+      <Unlock size={16} /> Unblock
+    </>
+  ) : (
+    <>
+      <Ban size={16} /> Block
+    </>
+  )}
+</button>
 
 </div>
 

@@ -706,3 +706,10 @@ min-width: 180px;
   display: flex;
   align-items: center;
 }
+.admin-dashboard-page .shop-table td {
+  border-bottom: none !important;
+}
+
+.admin-dashboard-page .shop-table tr {
+  border-bottom: 1px solid #e5e7eb;
+}
