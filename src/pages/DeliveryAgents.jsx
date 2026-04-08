@@ -33,23 +33,41 @@ const DeliveryAgents = () => {
   const [loading, setLoading] = useState(true);
 
   // 🔹 FETCH FUNCTION (Moved ABOVE useEffect — only change)
-  const fetchAgents = async () => {
-    setLoading(true);
+ const fetchAgents = async () => {
+  setLoading(true);
   try {
     const res = await getDeliveryAgents();
 
     console.log("API RESPONSE:", res);
 
-    // Handle all possible API formats
     const data = res?.data || res?.agents || res || [];
 
-    setAgents(Array.isArray(data) ? data : []);
+    // 🔥 MAIN FIX HERE
+    const formattedAgents = Array.isArray(data)
+      ? data.map((agent) => ({
+          ...agent,
+          // ✅ backend la status irundha handle pannum
+         approved:
+  agent.approved === true ||
+  agent.isApproved === true ||
+  agent.approved === 1 ||
+  agent.status === "accepted",
+
+          blocked:
+  agent.blocked === true ||
+  agent.isBlocked === true ||
+  agent.blocked === 1 ||
+  agent.status === "blocked",
+        }))
+      : [];
+
+    setAgents(formattedAgents);
 
   } catch (error) {
     console.error("Error fetching agents:", error);
     setAgents([]);
   }
-   setLoading(false); 
+  setLoading(false);
 };
 
 
