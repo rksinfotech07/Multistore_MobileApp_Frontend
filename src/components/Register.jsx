@@ -18,7 +18,7 @@ export default function Register() {
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
-  // const [showOtpPopup, setShowOtpPopup] = useState(false);   // ⭐ ADD THIS
+  const [showOtpPopup, setShowOtpPopup] = useState(false);   // ⭐ ADD THIS
   const [otp, setOtp] = useState("");  
   const [categoryOpen, setCategoryOpen] = useState(false);
 

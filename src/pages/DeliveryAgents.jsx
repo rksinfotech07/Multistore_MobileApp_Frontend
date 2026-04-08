@@ -43,7 +43,13 @@ const DeliveryAgents = () => {
     // Handle all possible API formats
     const data = res?.data || res?.agents || res || [];
 
-    setAgents(Array.isArray(data) ? data : []);
+const formatted = (Array.isArray(data) ? data : []).map(agent => ({
+  ...agent,
+  approved:
+  agent.is_approved === "approved"
+}));
+
+setAgents(formatted);
 
   } catch (error) {
     console.error("Error fetching agents:", error);

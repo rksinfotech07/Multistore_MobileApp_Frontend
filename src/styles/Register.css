@@ -718,3 +718,83 @@ hover:pl-5
   justify-content: center;
   color: #6b7280;
 }
+/* 🔥 TOP LEFT LOGO HEADER */
+.app-header {
+  position: absolute;
+  top: 15px;
+  left: 35px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 3;
+
+  animation: fadeSlide 0.8s ease;
+}
+
+/* smooth entry animation */
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* LOGO BOX */
+.logo-box {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #fff7ed, #ffffff);
+  border-radius: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow:
+    0 10px 25px rgba(255, 152, 0, 0.25),
+    0 2px 6px rgba(0,0,0,0.08);
+
+  transition: 0.3s ease;
+}
+
+.logo-box:hover {
+  transform: scale(1.08) rotate(5deg);
+}
+
+/* LOGO IMAGE */
+.logo-box img {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+}
+
+/* APP NAME */
+.app-name {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: 1px;
+
+  background: linear-gradient(90deg, #111827, #374151);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  position: relative;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* glowing underline */
+.app-name::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 40%;
+  height: 3px;
+  border-radius: 2px;
+}
+.app-header:hover .app-name {
+  text-shadow: 0 0 12px rgba(255, 152, 0, 0.3);
+}
