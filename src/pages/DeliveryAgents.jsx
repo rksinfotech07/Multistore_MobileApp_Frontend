@@ -33,14 +33,13 @@ const DeliveryAgents = () => {
   const [loading, setLoading] = useState(true);
 
   // 🔹 FETCH FUNCTION (Moved ABOVE useEffect — only change)
-  const fetchAgents = async () => {
-    setLoading(true);
+ const fetchAgents = async () => {
+  setLoading(true);
   try {
     const res = await getDeliveryAgents();
 
     console.log("API RESPONSE:", res);
 
-    // Handle all possible API formats
     const data = res?.data || res?.agents || res || [];
 
 const formatted = (Array.isArray(data) ? data : []).map(agent => ({
@@ -55,7 +54,7 @@ setAgents(formatted);
     console.error("Error fetching agents:", error);
     setAgents([]);
   }
-   setLoading(false); 
+  setLoading(false);
 };
 
 

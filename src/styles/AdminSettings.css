@@ -3,15 +3,13 @@
 /* ============================= */
 
 .admin-settings-page {
-  padding: 50px;
+  padding: 40px;
   background: white;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
+  align-items: flex-start;
 }
-
-
 /* ============================= */
 /* 🔥 SETTINGS CARD */
 /* ============================= */
@@ -19,11 +17,11 @@
 .settings-card {
   max-width: 600px;
   width: 100%;
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(20px);
   border-radius: 25px;
-  padding: 40px;
-  border: 1px solid rgba(255,255,255,0.4);
+  padding: 25px;
+  border: 1px solid rgba(19, 2, 2, 0.4);
   box-shadow: 0 20px 50px rgba(99,102,241,0.15);
   transition: 0.4s ease;
 }
@@ -33,22 +31,35 @@
   box-shadow: 0 30px 60px rgba(99,102,241,0.25);
 }
 
-.settings-title {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  color: #1e293b;
+
+/* ============================= */
+/* 🔥 PROFILE CENTER */
+/* ============================= */
+
+.profile-center {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;   /* 🔥 THIS LINE CHANGE */
+  margin-bottom: 20px;
 }
-
-
-/* ============================= */
-/* 🔥 PROFILE SECTION */
-/* ============================= */
-
-.profile-top {
+.profile-row {
   display: flex;
   align-items: center;
   gap: 20px;
+}
+
+.profile-info h2 {
+  margin: 0;
+}
+
+.profile-info p {
+  margin: 4px 0;
+  color: #64748b;
+}
+
+.avatar-wrapper {
+  position: relative;
+  display: inline-block;
 }
 
 .profile-avatar-large {
@@ -59,7 +70,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 30px;
   font-weight: bold;
   color: white;
   box-shadow: 0 15px 35px rgba(59,130,246,0.4);
@@ -67,13 +78,18 @@
 }
 
 .profile-avatar-large:hover {
-  transform: scale(1.1) rotate(5deg);
+  transform: scale(1.1);
 }
 
-.profile-subtitle {
+.profile-center h2 {
+  margin-top: 5px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.profile-center p {
   font-size: 13px;
   color: #64748b;
-  margin-top: 4px;
 }
 
 .role-badge {
@@ -95,85 +111,118 @@
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  margin-top: 25px;
+  gap: 7px;
+  margin-top: 20px;
 }
 
-.input-style {
-  width: 100%;
-  padding: 14px 18px;
-  border-radius: 18px;
-  border: 1px solid rgba(99,102,241,0.2);
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(10px);
-  font-size: 14px;
-  transition: 0.3s ease;
+.form-group label {
+  font-size: 13px;
+  color: #64748b;
 }
 
-.input-style:focus {
-  outline: none;
+.input-with-icon svg {
+  color: #64748b;
+  min-width: 18px;
+  margin-left: 4px;
+}
+.input-with-icon:focus-within {
   border-color: #36b1de;
-  box-shadow: 0 0 15px rgba(54,177,222,0.25);
-  transform: scale(1.02);
+  box-shadow: 0 0 12px rgba(54,177,222,0.2);
+  transform: scale(1.01);
+}
+/* ============================= */
+/* 🔥 PASSWORD SECTION */
+/* ============================= */
+
+.password-section {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(99,102,241,0.1);
 }
 
+.password-header {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.password-header h4 {
+  margin: 0;
+}
+
+.password-header p {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.password-fields {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+/* ============================= */
+/* 🔥 ICON INPUT */
+/* ============================= */
+
+.input-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 14px;
+  border-radius: 15px;
+  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(99,102,241,0.2);
+}
+
+.input-with-icon input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+}
+.input-with-icon input::placeholder {
+  font-size: 12px;   
+  color: #94a3b8; 
+}
 
 /* ============================= */
 /* 🔥 BUTTON */
 /* ============================= */
 
 .primary-btn {
-  margin-top: 25px;
-  padding: 14px;
-  border-radius: 40px;
-  font-weight: 700;
-  font-size: 14px;
+  margin-top: 15px;
+  padding: 12px 12px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 12px;
   color: white;
   border: none;
   cursor: pointer;
-  transition: 0.3s ease;
 
-  background: linear-gradient(135deg, #36b1de, #468ac5);
-  box-shadow: 0 8px 20px rgba(54,177,222,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  box-shadow: 0 10px 25px rgba(59,130,246,0.35);
+
+  transition: all 0.3s ease;
 }
 
+/* 🔥 HOVER EFFECT */
 .primary-btn:hover {
-  transform: scale(1.05);
-  background: linear-gradient(135deg, #2a9bc5, #3b78b3);
-  box-shadow: 0 15px 30px rgba(54,177,222,0.6);
+  transform: translateY(-2px) scale(1.03);
+  background: linear-gradient(135deg, #2563eb, #0891b2);
+  box-shadow: 0 15px 35px rgba(59,130,246,0.5);
 }
 
-
-/* ============================= */
-/* 🔥 TITLE ANIMATION */
-/* ============================= */
-
-.fade-in {
-  animation: fadeInUp 0.8s ease forwards;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.toggle-password-btn {
-  margin-top: 5px;
-  background: transparent;
-  border: none;
-  color: #3b82f6;
-  font-weight: 600;
-  cursor: pointer;
-  text-align: left;
-  padding-left: 5px;
-  transition: 0.2s;
-}
-
-.toggle-password-btn:hover {
-  color: #1d4ed8;
+/* 🔥 CLICK EFFECT */
+.primary-btn:active {
+  transform: scale(0.96);
 }
