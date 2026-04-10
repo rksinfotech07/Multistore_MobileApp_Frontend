@@ -156,8 +156,8 @@ if (formData.shopImage) {
     console.log("API Success:", res.data);
 
     // 4️⃣ Show OTP popup
-    //setShowOtpPopup(true);
-    // setShowOtpPopup(true);
+    setShowOtpPopup(true);
+    setShowOtpPopup(true);
 setShowPopup(true); // ✅ show success instead
 setTimeout(() => {
   navigate("/");
