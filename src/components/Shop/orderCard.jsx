@@ -40,12 +40,14 @@ const [status, setStatus] = useState(() => {
 
   return "received";
 });
+  const [isLocked, setIsLocked] = useState(false);
   const [loading, setLoading] = useState(false);
 
   /* =========================
      NORMALIZE STATUS FROM DB
   ========================= */
 useEffect(() => {
+   if (isLocked) return;
 
   const completedIds = JSON.parse(
     localStorage.getItem("completedOrders") || "[]"
@@ -75,9 +77,12 @@ useEffect(() => {
     }
 
   }
-
-  else if (s === "assigned")
-    setStatus("preparing");
+  else if (s === "assigned") {
+  setStatus((prev) => {
+    if (prev === "ready" || prev === "completed") return prev;
+    return "preparing";
+  });
+}
 
   else if (s === "ready")
     setStatus("ready");
@@ -154,6 +159,8 @@ const getOrderTime = () => {
 const handleAccept = async () => {
   try {
     setLoading(true);
+    setIsLocked(true); // 🔒 LOCK
+
     await acceptOrder(id);
 
     // ⭐ Scheduled orders skip delivery partner
@@ -173,6 +180,8 @@ const handleAccept = async () => {
   const handleReady = async () => {
     try {
       setLoading(true);
+      setIsLocked(true); // 🔒 LOCK
+    
       await markReady(id);
       setStatus("ready");
     } catch (err) {
@@ -182,6 +191,7 @@ const handleAccept = async () => {
     }
   };
  const handleComplete = () => {
+  setIsLocked(true); // 🔒 LOCK
   setStatus("completed");
 
   // ⭐ Get stored completed orders
@@ -205,6 +215,7 @@ const handleAccept = async () => {
 const handleDecline = async () => {
   try {
     setLoading(true);
+    setIsLocked(true); // 🔒 LOCK
     await declineOrder(id);
 
     setStatus("completed");

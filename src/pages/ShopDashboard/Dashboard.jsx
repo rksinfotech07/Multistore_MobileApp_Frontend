@@ -478,7 +478,7 @@ const prebookingOrders = orders.filter((o) => {
         ) : (
           activeOrders.map((order) => (
             <OrderCard
-  key={`${order.id}-${order.status}`}
+  key={order.id}
   id={order.id}
   orderCode={order.orderCode}
   createdAt={order.createdAt}
