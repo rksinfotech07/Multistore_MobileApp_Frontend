@@ -21,7 +21,12 @@ export default function Register() {
   const [showOtpPopup, setShowOtpPopup] = useState(false);   // ⭐ ADD THIS
   const [otp, setOtp] = useState("");  
   const [categoryOpen, setCategoryOpen] = useState(false);
-
+useEffect(() => {
+  if (localStorage.getItem("otpFlow") === "true") {
+    setShowOtpPopup(true);
+    setStep(4); // 🔥 MUST ADD
+  }
+}, []);
   const [formData, setFormData] = useState({
     shopName: "",
     category: "",
@@ -114,7 +119,7 @@ const getLatLngFromAddress = (address) => {
   });
 };
 const handleSubmit = async (e) => {
-  e.preventDefault();
+  if (e) e.preventDefault(); // safer
 
   try {
     // DEBUG
@@ -156,12 +161,15 @@ if (formData.shopImage) {
     console.log("API Success:", res.data);
 
     // 4️⃣ Show OTP popup
+    setTimeout(() => {
+    localStorage.setItem("otpFlow", "true");
     setShowOtpPopup(true);
-    setShowOtpPopup(true);
-setShowPopup(true); // ✅ show success instead
-setTimeout(() => {
-  navigate("/");
-}, 2000); // 2 seconds
+    }, 200);
+   //setShowOtpPopup(true);
+//setShowPopup(true); // ✅ show success instead
+//setTimeout(() => {
+  //navigate("/");
+//}, 2000); // 2 seconds
 
   } catch (err) {
     console.error("API Error:", err.response?.data || err.message);
@@ -196,14 +204,21 @@ const dropdownStyle = categoryOpen
     })()
   : {};
   
-  const verifyOtp = async () => {
+ const verifyOtp = async () => {
   try {
-    const res = await api.post("/api/vendor/verify-phone", {
-      otp: otp,
-    });
+    const res = await api.post(
+      "/api/vendor/verify-phone",
+      { otp: otp },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      }
+    );
 
     alert("Phone verified successfully");
-
+   localStorage.removeItem("otpFlow");
+    setShowOtpPopup(false);
     navigate("/");
 
   } catch (err) {
@@ -505,9 +520,9 @@ const dropdownStyle = categoryOpen
 
           <div className="btn-row">
             <button className="back-btn" onClick={() => setStep(3)}>← Back</button>
-            <button className="submit-btn" onClick={handleSubmit}>
-              Finish & Submit ✈
-            </button>
+           <button type="button" className="submit-btn" onClick={handleSubmit}>
+  Finish & Submit ✈
+</button>
           </div>
         </>
       )}
@@ -520,9 +535,15 @@ const dropdownStyle = categoryOpen
         </div>
       )}
 
-      {showOtpPopup && (
-  <div className="popup-overlay">
-    <div className="popup-box">
+     {showOtpPopup && (
+  <div
+    className="popup-overlay"
+    onClick={(e) => e.stopPropagation()}   // 🔥 ADD THIS
+  >
+    <div
+      className="popup-box"
+      onClick={(e) => e.stopPropagation()} // 🔥 ADD THIS
+    >
       <h3>Verify Phone Number</h3>
       <p>Enter the OTP sent to your phone</p>
 
@@ -530,7 +551,10 @@ const dropdownStyle = categoryOpen
         type="text"
         placeholder="Enter OTP"
         value={otp}
-        onChange={(e) => setOtp(e.target.value)}
+        onChange={(e) => {
+          e.stopPropagation();              // 🔥 ADD THIS
+          setOtp(e.target.value);
+        }}
         className="otp-input"
       />
 
