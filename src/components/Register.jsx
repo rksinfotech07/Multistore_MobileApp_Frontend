@@ -159,7 +159,7 @@ if (formData.shopImage) {
 });
 
     console.log("API Success:", res.data);
-
+localStorage.setItem("token", res.data.token);
     // 4️⃣ Show OTP popup
     setTimeout(() => {
     localStorage.setItem("otpFlow", "true");
