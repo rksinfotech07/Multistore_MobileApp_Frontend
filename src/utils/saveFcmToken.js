@@ -28,7 +28,6 @@ export const setupFcm = async () => {
       })
     });
 
-    console.log("FCM token saved");
 
   } catch (err) {
     console.error("FCM error:", err);

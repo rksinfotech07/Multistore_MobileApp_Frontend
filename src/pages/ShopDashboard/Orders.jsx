@@ -5,6 +5,8 @@ import "../../styles/Shop/Orders.css";
 import axios from "../../api/axios";
 import { socket } from "../../socket";
 import OrderCard from "../../components/Shop/orderCard";
+import Lottie from "lottie-react";
+import loadingAnimation from "../../assets/loading_gray.json";
 
 export default function Orders() {
 
@@ -168,7 +170,13 @@ qty: item.quantity || item.qty,
     );
   }
 
-  if (loading) return <p>Loading orders...</p>;
+  if (loading) {
+  return (
+    <div className="loader-container">
+      <Lottie animationData={loadingAnimation} loop />
+    </div>
+  );
+}
 
   /* =========================
      FILTER ORDERS

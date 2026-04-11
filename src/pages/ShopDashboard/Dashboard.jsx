@@ -9,6 +9,9 @@ import shopClosedImg from "../../assets/shopClosed.png";
 import { onMessage } from "firebase/messaging";
 import { messaging } from "../../firebase";
 import { setupFcm } from "../../utils/saveFcmToken";
+import Lottie from "lottie-react";
+import loadingAnimation from "../../assets/loading_gray.json";
+
 /* ===== COUNTER ===== */
 function Counter({ value }) {
   const [count, setCount] = useState(0);
@@ -271,7 +274,13 @@ socket.on("order_update", (update) => {
   /* =========================
      UI STATES
   ========================= */
-  if (loading) return <p>Loading dashboard...</p>;
+  if (loading) {
+  return (
+    <div className="loader-container">
+      <Lottie animationData={loadingAnimation} loop />
+    </div>
+  );
+}
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   if (!shopActive) {

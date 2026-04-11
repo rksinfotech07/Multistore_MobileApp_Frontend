@@ -363,22 +363,23 @@ const handleCrop = async () => {
     const cropY = crop.y * scaleY;
   // 🔥 FORCE SQUARE
 
-    const OUTPUT_SIZE = 220;
+    const width = crop.width * scaleX;
+const height = crop.height * scaleY;
 
-    canvas.width = OUTPUT_SIZE;
-    canvas.height = OUTPUT_SIZE;
+canvas.width = width;
+canvas.height = height;
 
-    ctx.drawImage(
-      image,
-      cropX,
-      cropY,
-      crop.width * scaleX,    // ✅ changed
-  crop.height * scaleY,   // ✅ changed
-      0,
-      0,
-      OUTPUT_SIZE,
-      OUTPUT_SIZE
-    );
+ctx.drawImage(
+  image,
+  cropX,
+  cropY,
+  width,
+  height,
+  0,
+  0,
+  width,
+  height
+);
 
     canvas.toBlob((blob) => {
       if (!blob) return;
@@ -390,7 +391,7 @@ const handleCrop = async () => {
       setImageFile(file);
       setPreview(URL.createObjectURL(file));
       setShowCrop(false);
-    }, "image/jpeg");
+    }, "image/jpeg", 0.95);
   };
 
   return (

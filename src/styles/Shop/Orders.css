@@ -179,3 +179,9 @@
   color:#6b7280;
   font-size:14px;
 }
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+}

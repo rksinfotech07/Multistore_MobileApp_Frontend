@@ -2,7 +2,9 @@ import API from "../../api/axios";
 import { useState, useEffect } from "react";
 import NewProductModal from "../../components/Shop/NewProductModal";
 import { getAllProducts } from "../../services/shopProductService";
-
+import { Search } from "lucide-react";
+import Lottie from "lottie-react";
+import loadingAnimation from "../../assets/loading_gray.json";
 import {
   deleteProductAPI,
 } from "../../services/productService";
@@ -14,6 +16,7 @@ export default function Products() {
   const [editProduct, setEditProduct] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadProducts();
@@ -21,12 +24,14 @@ export default function Products() {
 
   const loadProducts = async () => {
     try {
+      setLoading(true);
       const data = await getAllProducts();
-      console.log("🔥 API PRODUCTS RESPONSE:", data);
       setProducts(data);
     } catch (err) {
       console.error("Load Products Failed", err);
-    }
+    }finally {
+    setLoading(false);
+  }
   };
 
   const addProduct = async () => {
@@ -98,6 +103,9 @@ export default function Products() {
     </p>
   </div>
 
+  <div className="shop-product-search-box">
+  <Search className="shop-product-search-icon" size={18} />
+
   <input
     type="text"
     className="products-search"
@@ -106,9 +114,16 @@ export default function Products() {
     onChange={(e) => setSearch(e.target.value)}
   />
 </div>
+</div>
 <div className="products-grid-wrapper">
 
-  {filteredProducts.length === 0 ? (
+  {loading ? (
+
+  <div className="loader-container">
+    <Lottie animationData={loadingAnimation} loop />
+  </div>
+
+) : filteredProducts.length === 0 ? (
 
     /* ⭐ EMPTY STATE (LIKE YOUR SCREENSHOT) */
     <div className="empty-state">

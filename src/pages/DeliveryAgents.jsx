@@ -38,8 +38,6 @@ const DeliveryAgents = () => {
   try {
     const res = await getDeliveryAgents();
 
-    console.log("API RESPONSE:", res);
-
     const data = res?.data || res?.agents || res || [];
 
 const formatted = (Array.isArray(data) ? data : []).map(agent => ({

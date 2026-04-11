@@ -26,7 +26,6 @@ useEffect(() => {
   const fetchData = async () => {
     try {
       const shopRes = await getRegisteredShops();
-      console.log("shopRes:", shopRes); // 🔥 ADD THIS LINE
   
       const countRes = await getCategoryCounts();
 

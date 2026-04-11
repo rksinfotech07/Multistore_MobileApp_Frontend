@@ -12,11 +12,16 @@ Clock,
 Calendar,
 LogOut,
 ShieldCheck,
-Key
+Key,
+Pencil
 } from "lucide-react";
+import Lottie from "lottie-react";
+import loadingAnimation from "../../assets/loading_gray.json";
+
 export default function ProfileModal({ open, onClose, onEdit }) {
   const navigate = useNavigate();          // ✅ FIX: hook at top
   const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(false);
 const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   useEffect(() => {
     if (open) fetchProfile();
@@ -24,12 +29,14 @@ const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const fetchProfile = async () => {
     try {
+      setLoading(true);
       const vendor = await getVendorProfile();
-      console.log("PROFILE FROM API 👉", vendor);
       setProfile(vendor);
     } catch (err) {
       console.error("Profile API error", err);
-    }
+    } finally {
+    setLoading(false); // 🔥 stop loader
+  }
   };
 
   // ✅ Secure Logout
@@ -61,11 +68,12 @@ const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
           <div className="profile-actions">
             <button
-              className="edit-btn"
-              onClick={() => onEdit(profile)}
-            >
-               ✏️Edit Profile
-            </button>
+  className="profile-edit-btn"
+  onClick={() => onEdit(profile)}
+>
+  <Pencil size={16} className="profile-edit-icon" />
+  Edit Profile
+</button>
             <button className="close-btn" onClick={onClose}>✕</button>
           </div>
         </div>
@@ -73,72 +81,82 @@ const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     {/* BODY */}
 <div className="profile-body">
 
-  {/* DETAILS */}
-  <div className="info-grid">
+  {loading ? (
 
-    <div className="info-item">
-      <strong>
-        <ShieldCheck size={16} /> Account Status
-      </strong>
-      <p className="status-approved">Approved</p>
+    <div className="loader-container">
+      <Lottie animationData={loadingAnimation} loop />
     </div>
 
-    <div className="info-item">
-      <strong>
-        <Key size={16} /> Access Role
-      </strong>
-      <p>Owner</p>
+  ) : (
+
+    <div className="info-grid">
+
+      <div className="info-item">
+        <strong>
+          <ShieldCheck size={16} /> Account Status
+        </strong>
+        <p className="status-approved">Approved</p>
+      </div>
+
+      <div className="info-item">
+        <strong>
+          <Key size={16} /> Access Role
+        </strong>
+        <p>Owner</p>
+      </div>
+
+      <div className="info-item">
+        <strong>
+          <User size={16} /> Owner
+        </strong>
+        <p>{profile?.owner_name}</p>
+      </div>
+
+      <div className="info-item">
+        <strong>
+          <Store size={16} /> Shop Name
+        </strong>
+        <p>{profile?.shop_name}</p>
+      </div>
+
+      <div className="info-item full">
+        <strong>
+          <MapPin size={16} /> Address
+        </strong>
+        <p>{profile?.address}</p>
+      </div>
+
+      <div className="info-item">
+        <strong>
+          <Clock size={16} /> Operational Hours
+        </strong>
+        <p>
+          {profile?.opening_time || "-"} – {profile?.closing_time || "-"}
+        </p>
+      </div>
+
+      <div className="info-item">
+        <strong>
+          <Phone size={16} /> Contact
+        </strong>
+        <p>{profile?.phone}</p>
+      </div>
+
+      <div className="info-item full">
+        <strong>
+          <Calendar size={16} /> Registered On
+        </strong>
+        <p>
+          {profile?.created_at
+            ? new Date(profile.created_at).toDateString()
+            : "-"}
+        </p>
+      </div>
+
     </div>
 
-    <div className="info-item">
-      <strong>
-        <User size={16} /> Owner
-      </strong>
-      <p>{profile?.owner_name}</p>
-    </div>
+  )}
 
-    <div className="info-item">
-      <strong>
-        <Store size={16} /> Shop Name
-      </strong>
-      <p>{profile?.shop_name}</p>
-    </div>
-
-    <div className="info-item full">
-      <strong>
-        <MapPin size={16} /> Address
-      </strong>
-      <p>{profile?.address}</p>
-    </div>
-
-    <div className="info-item">
-      <strong>
-        <Clock size={16} /> Operational Hours
-      </strong>
-      <p>
-        {profile?.opening_time || "-"} – {profile?.closing_time || "-"}
-      </p>
-    </div>
-
-    <div className="info-item">
-      <strong>
-        <Phone size={16} /> Contact
-      </strong>
-      <p>{profile?.phone}</p>
-    </div>
-
-    <div className="info-item full">
-      <strong>
-        <Calendar size={16} /> Registered On
-      </strong>
-      <p>
-        {profile?.created_at
-          ? new Date(profile.created_at).toDateString()
-          : "-"}
-      </p>
-    </div>
-
-  </div>
 </div>
 
 

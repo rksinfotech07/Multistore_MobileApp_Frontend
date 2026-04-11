@@ -18,7 +18,6 @@ export default function Admindb() {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getDashboardData();
-      console.log("🔥 DATA:", data);
       setDashboard(data);
     };
 

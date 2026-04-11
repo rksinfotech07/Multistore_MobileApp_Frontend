@@ -102,25 +102,6 @@ gap:10px;
 margin-top:14px;
 }
 
-.edit-btn{
-margin-top:12px;
-background:rgba(255,255,255,.25);
-border:none;
-padding:8px 14px;
-border-radius:20px;
-font-size:13px;
-font-weight:600;
-color:#ffffff;
-display:inline-flex;
-align-items:center;
-gap:6px;
-cursor:pointer;
-}
-
-.edit-btn:hover{
-background:rgba(255,255,255,.35);
-}
-
 /* ===== CLOSE BUTTON ===== */
 .close-btn{
 position:absolute;
@@ -357,4 +338,27 @@ background:#dc2626;
   background: #4ade80;
 
   box-shadow: 0 6px 16px rgba(34,197,94,0.45); /* green glow */
+}
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+.profile-edit-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px; 
+  background: rgba(255,255,255,.25);
+  border: none;
+  cursor: pointer;
+
+  padding: 6px 10px;        
+  border-radius: 999px; 
+}
+.profile-edit-icon {
+  color: white; /* 🔥 white icon */
+}
+.profile-edit-btn:hover {
+  background: rgba(255,255,255,.35);
 }

@@ -34,16 +34,26 @@
   color: #6b7280;
   margin-top: 4px;
 }
+.shop-product-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
 
+.shop-product-search-icon {
+  position: absolute;
+  left: 14px;
+  color: #9ca3af;
+}
 .products-search {
   width: 280px;
   height: 48px;
-
+  padding-left: 40px;
   border-radius: 999px;   /* 🔥 full rounded */
   border: 1px solid #e5e7eb;
 
   background: #ffffff;
-  padding: 0 20px;
+  padding: 0 40px;
 
   font-size: 15px;
   color: #374151;
@@ -233,4 +243,10 @@
   font-size: 14px;
   color: #6b7280;
   line-height: 1.5;
+}
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
 }

@@ -6,6 +6,8 @@ import { socket } from "../../socket";
 import OrderCard from "../../components/Shop/orderCard";
 import shopClosedImg from "../../assets/shopClosed.png";
 import "../../styles/Shop/Dashboard.css";
+import Lottie from "lottie-react";
+import loadingAnimation from "../../assets/loading_gray.json";
 
 export default function Prebooking() {
   const { shopActive } = useOutletContext();
@@ -164,7 +166,13 @@ if (!shopActive) {
   );
 }
 
-  if (loading) return <p>Loading prebooking orders...</p>;
+  if (loading) {
+  return (
+    <div className="loader-container">
+      <Lottie animationData={loadingAnimation} loop />
+    </div>
+  );
+}
 
   return (
     <>
