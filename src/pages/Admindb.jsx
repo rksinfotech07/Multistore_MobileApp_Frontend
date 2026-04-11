@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import KPICard from "../components/admin/KPIcard";
 import OrdersChart from "../components/admin/OrdersChart";
 import RevenueChart from "../components/admin/RevenueChart";
@@ -5,10 +7,32 @@ import TopShops from "../components/admin/TopShops";
 import RecentShops from "../components/admin/RecentShops";
 import LatestOrders from "../components/admin/LatestOrders";
 
+import { getDashboardData } from "../services/dashboardService";
 
 import "../styles/Admindb.css";
 
 export default function Admindb() {
+
+  const [dashboard, setDashboard] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getDashboardData();
+      console.log("🔥 DATA:", data);
+      setDashboard(data);
+    };
+
+    fetchData();
+  }, []);
+
+  if (!dashboard) return <p>Loading...</p>;
+
+  // 🔥 FORMAT DATA
+  const formattedOrders = dashboard.ordersPerDay.map(item => ({
+    day: item.day.slice(0, 3),
+    count: item.count
+  }));
+
   return (
     <div className="admin-dashboard">
 
@@ -18,38 +42,29 @@ export default function Admindb() {
           <h2>Admin Dashboard</h2>
           <p>Platform Overview</p>
         </div>
-
-        <div className="dashboard-actions">
-          <select>
-            <option>Last 7 Days</option>
-            <option>Last 30 Days</option>
-          </select>
-          <button className="export-btn">Export</button>
-        </div>
       </div>
 
-      {/* KPI Section */}
+      {/* 🔥 KPI */}
       <div className="kpi-grid">
-        <KPICard title="Total Shops" value="124" change="+8%" color="blue" />
-        <KPICard title="Active Shops" value="86" change="+5%" color="green" />
-        <KPICard title="Total Orders" value="1,540" change="+12%" color="orange" />
-        <KPICard title="Revenue" value="₹2,45,800" change="+20%" color="purple" />
-        <KPICard title="Pending Approvals" value="8" change="3 awaiting" color="red" />
+        <KPICard title="Total Shops" value={dashboard.totalShops} />
+        <KPICard title="Active Shops" value={dashboard.activeShops} />
+        <KPICard title="Total Orders" value={dashboard.totalOrders} />
+        <KPICard title="Revenue" value={dashboard.revenue} />
+        <KPICard title="Pending Approvals" value={dashboard.pendingApprovals} />
       </div>
       
+      {/* 🔥 CHART */}
       <div className="charts-grid">
-  <OrdersChart />
-  <RevenueChart />
-</div>
+        <OrdersChart data={formattedOrders} />  {/* 🔥 IMPORTANT */}
+        <RevenueChart />
+      </div>
 
-<div className="bottom-grid">
-  <TopShops />
-  <RecentShops />
-  <LatestOrders />
- 
-</div>
-
-
+      {/* BOTTOM */}
+      <div className="bottom-grid">
+        <TopShops />
+        <RecentShops data={dashboard.latestShops} />
+<LatestOrders data={dashboard.latestOrders} />
+      </div>
 
     </div>
   );
