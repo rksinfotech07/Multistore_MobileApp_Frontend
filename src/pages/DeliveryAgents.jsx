@@ -30,6 +30,7 @@ const DeliveryAgents = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteAgentId, setDeleteAgentId] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showApproveToast, setShowApproveToast] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // 🔹 FETCH FUNCTION (Moved ABOVE useEffect — only change)
@@ -81,11 +82,10 @@ setAgents(formatted);
       console.error("Delete failed:", error);
     }
   };
- const handleApprove = async (agent) => {
+const handleApprove = async (agent) => {
   try {
     await approveAgent(agent.id);
 
-    // 🔥 update UI instantly
     setAgents(prev =>
       prev.map(a =>
         a.id === agent.id
@@ -93,6 +93,10 @@ setAgents(formatted);
           : a
       )
     );
+
+    // 🔥 ADD THIS
+    setShowApproveToast(true);
+    setTimeout(() => setShowApproveToast(false), 2000);
 
   } catch (error) {
     console.error("Approve failed:", error);
@@ -269,6 +273,11 @@ const handleBlock = async (agent) => {
 {showSuccess && (
   <div className="success-toast">
     ✅ Profile deleted successfully
+  </div>
+)}
+{showApproveToast && (
+  <div className="success-toast">
+    ✅ Accepted successfully
   </div>
 )}
 

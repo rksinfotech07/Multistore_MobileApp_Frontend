@@ -265,3 +265,35 @@ body {
   background: #fef9c3;
   color: #ca8a04;
 }
+
+/* HEADER ROW FIX */
+.kpi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ICON FIX */
+.kpi-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* TITLE FIX */
+.kpi-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #475569;
+}
+
+/* VALUE */
+.kpi-value {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 6px;
+}
