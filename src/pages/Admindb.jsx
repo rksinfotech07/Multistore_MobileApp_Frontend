@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import KPICard from "../components/admin/KPIcard";
 import OrdersChart from "../components/admin/OrdersChart";
 import RevenueChart from "../components/admin/RevenueChart";
-import TopShops from "../components/admin/TopShops";
 import RecentShops from "../components/admin/RecentShops";
 import LatestOrders from "../components/admin/LatestOrders";
 
@@ -60,7 +59,6 @@ export default function Admindb() {
 
       {/* BOTTOM */}
       <div className="bottom-grid">
-        <TopShops />
         <RecentShops data={dashboard.latestShops} />
 <LatestOrders data={dashboard.latestOrders} />
       </div>

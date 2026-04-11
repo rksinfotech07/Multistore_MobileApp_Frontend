@@ -114,7 +114,7 @@
 }
 @media (min-width: 768px) {
   .bottom-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -296,4 +296,21 @@ body {
   font-size: 22px;
   font-weight: 700;
   margin-top: 6px;
+}
+.card-header {
+  display: flex;
+  align-items: center;   
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.card-header h4 {
+  margin: 0;             
+  line-height: 1;       
+}
+
+.card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
