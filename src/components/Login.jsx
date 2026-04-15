@@ -191,7 +191,11 @@ login({ role: "vendor" });
 
       <button
         className="back-btn owner-btn"
-        onClick={() => navigate("/register")}
+        onClick={() => {
+  localStorage.removeItem("otpFlow");  // 🔥 VERY IMPORTANT
+  localStorage.removeItem("token");    // 🔥 VERY IMPORTANT
+  navigate("/register");
+}}
       >
         Become a Shop Owner
       </button>
