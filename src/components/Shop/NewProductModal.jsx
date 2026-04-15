@@ -39,6 +39,7 @@ export default function NewProductModal({ open, onClose, onDeploy, product, shop
   const [productTypes, setProductTypes] = useState([]);
   const [productType, setProductType] = useState("");
   const [openProductType, setOpenProductType] = useState(false);
+  const [gst, setGst] = useState("");
 const productTypeRef = useRef(null);
 const [showCrop, setShowCrop] = useState(false);
 const [selectedImage, setSelectedImage] = useState(null);
@@ -66,6 +67,7 @@ const [crop, setCrop] = useState({
       setProductType(product.product_type_id || "");
       setWeight(product.weight_value || "");
       setWeightUnit(product.weight_unit || "");
+      setGst(product.gst_percentage || "");
 
       if (product.image && product.image !== "image.jpg") {
         setImgLoading(true);
@@ -91,6 +93,7 @@ setProductTypes([]);
 setOpenProductType(false); 
 setWeight("");        
 setWeightUnit("");   
+setGst("");
  }
 
 }, [open, product]);
@@ -224,7 +227,10 @@ const isEditMode = !!product;
     }
   }
     }
-
+    // ✅ GST validation
+if (gst && Number(gst) < 0) {
+  newErrors.gst = "GST cannot be negative";
+}
     if (Object.keys(newErrors).length > 0) {
       console.log("ERRORS:", newErrors);
       setErrors(newErrors);
@@ -268,6 +274,7 @@ formData.append("food_type", type === "veg" ? "VEG" : "NON-VEG");
 formData.append("category", backendCategoryMap[category]);
 formData.append("subcategory", subCategory || "");
 formData.append("is_live", true);
+formData.append("gst_percentage", gst || 0);
 const selectedType = productTypes.find(
   (pt) => pt.id == productType
 );
@@ -634,7 +641,7 @@ ctx.drawImage(
             {errors.desc && <p className="error">{errors.desc}</p>}
 
 
-            <h4>PRICING DETAILS *</h4>
+            <h4>PRICING DETAILS & GST *</h4>
             <div className="row">
   <div className="field">
     <input
@@ -644,7 +651,7 @@ ctx.drawImage(
     />
     {errors.base && <p className="error">{errors.base}</p>}
   </div>
-
+  
   <div className="field">
     <input
       placeholder="Selling Price ₹"
@@ -653,6 +660,16 @@ ctx.drawImage(
     />
     {errors.rebate && <p className="error">{errors.rebate}</p>}
   </div>
+  
+
+<div className="field gst-field">
+    <input
+      type="number"
+      placeholder="GST % (e.g. 5)"
+      value={gst}
+      onChange={(e) => setGst(e.target.value)}
+    />
+</div>
 </div>
 
             {/* 🔥 DYNAMIC BOTTOM SECTION */}

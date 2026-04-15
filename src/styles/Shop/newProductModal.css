@@ -128,8 +128,9 @@
 .row {
   display: flex;
   gap: 12px;
+  flex-wrap: nowrap;      /* 🔥 ADD THIS */
+  align-items: flex-start; /* 🔥 ADD THIS */
 }
-
 /* FINAL PRICE */
 .final-price {
   background: linear-gradient(90deg,#36b1de,#468ac5);
@@ -923,4 +924,13 @@ line-height: 1.2;
 .quantity-field select {
   width: 40%;
   border-left: 1px solid #e2e8f0;
+}
+.gst-field {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 0 0 140px; 
+}
+.row .field {
+  min-width: 0;   /* 🔥 prevents overflow issues */
 }
