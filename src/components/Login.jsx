@@ -17,7 +17,6 @@ export default function Login() {
   password: "",
 });
   const [errors, setErrors] = useState({});
-  const [apiError, setApiError] = useState(""); 
 
   const validateLogin = () => {
   let newErrors = {};
@@ -39,7 +38,6 @@ export default function Login() {
   return Object.keys(newErrors).length === 0;
 };
 const handleLogin = async () => {
-  setApiError("");
   if (!validateLogin()) return;
 
   try {
@@ -66,8 +64,6 @@ const handleLogin = async () => {
     if (loginData.identifier === "admin@gmail.com") {
       res = await adminLogin(payload);
 
-      setErrors({}); 
-
       localStorage.setItem("role", "admin");
 login({ role: "admin" });
       navigate("/admin/dashboard");
@@ -77,7 +73,6 @@ login({ role: "admin" });
     // 🟡 VENDOR LOGIN
     res = await vendorLogin(payload);
 
-    setErrors({});
     
     const shopData = await getVendorProfile();
 
@@ -118,9 +113,9 @@ login({ role: "vendor" });
     }
 
     if (status === 401) {
-  setApiError("Incorrect password"); 
-  return;
-}
+      setErrors({ password: "Incorrect password" });
+      return;
+    }
 
     if (status === 404) {
       setErrors({ identifier: "Account not found" }); // ✅ FIXED
@@ -149,10 +144,9 @@ login({ role: "vendor" });
   type="text"
   placeholder="Enter email or phone number"
   value={loginData.identifier}
-  onChange={(e) => {
-  setLoginData({ ...loginData, identifier: e.target.value });
-  setErrors((prev) => ({ ...prev, identifier: "" })); // 🔥 clear only this field
-}}
+  onChange={(e) =>
+    setLoginData({ ...loginData, identifier: e.target.value })
+  }
 />
         </div>
         {errors.identifier && <p className="login-error">{errors.identifier}</p>}
@@ -166,16 +160,14 @@ login({ role: "vendor" });
             type="password"
             placeholder="••••••••"
             value={loginData.password}
-            onChange={(e) => {
-  setLoginData({ ...loginData, password: e.target.value });
-  setErrors((prev) => ({ ...prev, password: "" }));
-  setApiError(""); 
-}}
+            onChange={(e) =>
+              setLoginData({ ...loginData, password: e.target.value })
+            }
           />
           
           
         </div>
-        {apiError && <p className="login-error">{apiError}</p>}
+        {errors.password && <p className="login-error">{errors.password}</p>}
         <p className="forgot-wrap">
   <span onClick={() => navigate("/forgot-password")} className="forgot-link">
     Forgot Password?
@@ -199,11 +191,7 @@ login({ role: "vendor" });
 
       <button
         className="back-btn owner-btn"
-        onClick={() => {
-  localStorage.removeItem("otpFlow");  // 🔥 VERY IMPORTANT
-  localStorage.removeItem("token");    // 🔥 VERY IMPORTANT
-  navigate("/register");
-}}
+        onClick={() => navigate("/register")}
       >
         Become a Shop Owner
       </button>
