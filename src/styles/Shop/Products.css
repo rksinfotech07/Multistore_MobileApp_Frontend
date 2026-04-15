@@ -250,3 +250,26 @@
   align-items: center;
   height: 60vh;
 }
+.price-row {
+  display: flex;
+  justify-content: space-between; /* 🔥 THIS IS IMPORTANT */
+  align-items: center;
+  margin-top: 6px;
+}
+
+/* Left side price group */
+.price-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ⭐ Rating UI */
+.rating-box {
+  font-size: 12px;
+  font-weight: 600;
+  color: #f59e0b; /* nice orange star color */
+  background: #fff7ed;
+  padding: 4px 8px;
+  border-radius: 999px;
+}
