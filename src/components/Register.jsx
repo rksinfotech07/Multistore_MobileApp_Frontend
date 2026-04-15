@@ -22,9 +22,13 @@ export default function Register() {
   const [otp, setOtp] = useState("");  
   const [categoryOpen, setCategoryOpen] = useState(false);
 useEffect(() => {
-  if (localStorage.getItem("otpFlow") === "true") {
+  const otpFlow = localStorage.getItem("otpFlow");
+
+  if (otpFlow === "true") {
     setShowOtpPopup(true);
-    setStep(4); // 🔥 MUST ADD
+    setStep(4);
+  } else {
+    setStep(1); // 🔥 RESET FORM
   }
 }, []);
   const [formData, setFormData] = useState({
@@ -205,9 +209,16 @@ const dropdownStyle = categoryOpen
   : {};
   const verifyOtp = async () => {
   try {
+    const token = localStorage.getItem("token");
+
     const res = await api.post(
       "/api/vendor/verify-phone",
-      { otp: otp }
+      { otp: otp },
+      {
+        headers: {
+          Authorization: `Bearer ${token}` // 🔥 ADD THIS
+        }
+      }
     );
 
     alert("Phone verified successfully");
@@ -219,7 +230,8 @@ const dropdownStyle = categoryOpen
     navigate("/");
 
   } catch (err) {
-    alert("Invalid OTP");
+    console.log(err);
+    alert(err.response?.data?.message || "Invalid OTP");
   }
 };
 
