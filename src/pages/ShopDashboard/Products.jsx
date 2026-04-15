@@ -26,7 +26,8 @@ export default function Products() {
     try {
       setLoading(true);
       const data = await getAllProducts();
-      setProducts(data);
+      console.log("API RESPONSE 👉", data);  // ✅ ADD THIS LINE
+      setProducts(data.products || []);
     } catch (err) {
       console.error("Load Products Failed", err);
     }finally {
@@ -194,16 +195,20 @@ if (p.image && p.image !== "default-product.png") {
                     <h3>{p.name}</h3>
 
                     <div className="price-row">
-                      <span className="final-price">
-                        ₹{finalPrice}
-                      </span>
+  {/* LEFT SIDE */}
+  <div className="price-left">
+    <span className="final-price">₹{finalPrice}</span>
 
-                      {hasDiscount && (
-                        <span className="mrp">
-                          ₹{p.price}
-                        </span>
-                      )}
-                    </div>
+    {hasDiscount && (
+      <span className="mrp">₹{p.price}</span>
+    )}
+  </div>
+
+  {/* RIGHT SIDE ⭐ RATING */}
+  <div className="rating-box">
+    ⭐ {p.avg_rating || 0} ({p.total_ratings || 0})
+  </div>
+</div>
 
                     <div className="bottom-row">
                       <div className="stock-section">
