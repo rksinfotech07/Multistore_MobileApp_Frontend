@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { vendorLogin, adminLogin } from "../services/authService";
 import { getVendorProfile } from "../services/ProfileService";
-import { saveToken } from "../utils/authStorage";
 
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -65,9 +64,8 @@ const handleLogin = async () => {
     if (loginData.identifier === "admin@gmail.com") {
       res = await adminLogin(payload);
 
-      const token = res.data.token;
-      localStorage.setItem("admin_token", token);
-      login({ token, role: "admin" });
+      localStorage.setItem("role", "admin");
+login({ role: "admin" });
       navigate("/admin/dashboard");
       return;
     }
@@ -75,10 +73,7 @@ const handleLogin = async () => {
     // 🟡 VENDOR LOGIN
     res = await vendorLogin(payload);
 
-    const token = res.data.token;
-
-    saveToken(token);
-
+    
     const shopData = await getVendorProfile();
 
     localStorage.setItem(
@@ -97,7 +92,8 @@ const handleLogin = async () => {
       })
     );
 
-    login({ token, role: "vendor" });
+    localStorage.setItem("role", "vendor");
+login({ role: "vendor" });
     navigate("/shop-dashboard");
 
   } catch (err) {

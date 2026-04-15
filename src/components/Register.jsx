@@ -203,21 +203,18 @@ const dropdownStyle = categoryOpen
       };
     })()
   : {};
-  
- const verifyOtp = async () => {
+  const verifyOtp = async () => {
   try {
     const res = await api.post(
       "/api/vendor/verify-phone",
-      { otp: otp },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
-      }
+      { otp: otp }
     );
 
     alert("Phone verified successfully");
-   localStorage.removeItem("otpFlow");
+
+    localStorage.removeItem("otpFlow");
+    localStorage.removeItem("token"); // 🔥 ADD THIS (cleanup)
+
     setShowOtpPopup(false);
     navigate("/");
 
@@ -225,7 +222,6 @@ const dropdownStyle = categoryOpen
     alert("Invalid OTP");
   }
 };
-
 
   return (
     <div className={`register-card ${categoryOpen ? "dropdown-open" : ""}`}>

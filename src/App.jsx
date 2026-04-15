@@ -27,13 +27,25 @@ const DashboardHome = () => <h2 style={{color:"white"}}>Dashboard Overview</h2>;
 const OrdersPage = () => <h2 style={{color:"white"}}>Orders Page</h2>;
 const SettingsPage = () => <h2 style={{color:"white"}}>Settings Page</h2>;
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, role }) => {
   const { isAuthenticated } = useContext(AuthContext);
- if (isAuthenticated === null) {
-  return <div>Loading...</div>;
-}
 
-return isAuthenticated ? children : <Navigate to="/" />;
+  const userRole = localStorage.getItem("role"); // 🔥 get role
+
+  if (isAuthenticated === null) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/" />;
+  }
+
+  // 🔥 ROLE CHECK
+  if (role && userRole !== role) {
+    return <Navigate to="/" />;
+  }
+
+  return children;
 };
 
 export default function App() {
@@ -74,9 +86,9 @@ export default function App() {
         <Route
           path="/shop-dashboard"
           element={
-            <ProtectedRoute>
-              <ShopLayout />
-            </ProtectedRoute>
+            <ProtectedRoute role="vendor">
+  <ShopLayout />
+</ProtectedRoute>
           }
         >
           <Route index element={<Dashboard />} />
@@ -89,9 +101,9 @@ export default function App() {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute>
-              <AdminLayout />
-            </ProtectedRoute>
+            <ProtectedRoute role="admin">
+  <AdminLayout />
+</ProtectedRoute>
           }
         >
           <Route path="dashboard" element={<Admindb />} />
@@ -106,7 +118,7 @@ export default function App() {
         <Route
           path="/shop/:id"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute role="admin">
               <FullPageLayout />
             </ProtectedRoute>
           }

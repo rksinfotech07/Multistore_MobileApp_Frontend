@@ -6,8 +6,6 @@ export const setupFcm = async () => {
 
   try {
 
-    const token = localStorage.getItem("vendor_token");
-
     if (!token) return;
 
     const fcmToken = await getFcmToken();
@@ -19,9 +17,9 @@ export const setupFcm = async () => {
 
     await fetch(`${API_URL}/api/notifications/save-fcm-token`, {
       method: "POST",
+      credentials: "include",
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         token: fcmToken

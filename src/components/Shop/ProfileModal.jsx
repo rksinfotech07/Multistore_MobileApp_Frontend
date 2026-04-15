@@ -1,3 +1,4 @@
+import api from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getVendorProfile } from "../../services/ProfileService";
@@ -40,12 +41,19 @@ const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   };
 
   // ✅ Secure Logout
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("shopActive");
+  const handleLogout = async () => {
+  try {
+    await api.post("/api/auth/logout"); // 🔥 clear cookies
+
+    localStorage.clear();
+    localStorage.removeItem("role"); // 🔥 IMPORTANT
+
     onClose();
-    navigate("/"); // change to /login if needed
-  };
+    navigate("/");
+  } catch (err) {
+    console.log("Logout error", err);
+  }
+};
 
   if (!open) return null;
 

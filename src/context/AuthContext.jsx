@@ -1,25 +1,27 @@
 import { createContext, useState, useEffect } from "react";
-import { getToken, saveToken, removeToken } from "../utils/authStorage";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
- useEffect(() => {
-  const token = getToken();
-  setIsAuthenticated(!!token);
-}, []);
+  // 🔥 check localStorage role for persistence
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("role")
+  );
 
-  const login = (data) => {
-  saveToken(data.token);   // backend token
-  setIsAuthenticated(true);
-};
+  // 🔥 sync on refresh
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+    setIsAuthenticated(!!role);
+  }, []);
 
+  const login = () => {
+    setIsAuthenticated(true);
+  };
 
   const logout = () => {
-    removeToken();
     setIsAuthenticated(false);
+    localStorage.removeItem("role"); // 🔥 important
   };
 
   return (

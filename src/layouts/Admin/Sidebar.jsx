@@ -1,3 +1,4 @@
+import api from "../../api/axios";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";   
 import {
@@ -64,10 +65,18 @@ const Sidebar = () => {
       <button
   type="button"
   className="signout-btn"
-  onClick={() => {
+  onClick={async () => {
+  try {
+    await api.post("/api/auth/logout"); // 🔥 clear cookies
+
     localStorage.clear();
+    localStorage.removeItem("role"); // 🔥 IMPORTANT
+
     window.location.replace("/");
-  }}
+  } catch (err) {
+    console.log("Logout error", err);
+  }
+}}
 >
   <LogOut size={18} />
   {!collapsed && <span>Log Out</span>}
