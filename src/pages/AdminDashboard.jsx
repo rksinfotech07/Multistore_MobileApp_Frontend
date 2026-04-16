@@ -4,6 +4,10 @@ import { getDeclinedShops } from "../services/adminService";
 import "../styles/Admin.css";
 import SkeletonDashboard from "../components/common/SkeletonDashboard";
 import "../styles/common/common.css";
+import { getAdminNotifications } from "../services/adminService";
+import { setupFcm } from "../utils/saveFcmToken";
+import { messaging } from "../firebase";
+import { onMessage } from "firebase/messaging";
 import {
   Check,
   X,
@@ -21,21 +25,57 @@ const AdminDashboard = () => {
   const [declinedShops, setDeclinedShops] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 const [loading, setLoading] = useState(true);
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("admin_token");
   const [selectedRow, setSelectedRow] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+const [showDropdown, setShowDropdown] = useState(false);
 
-  useEffect(() => {
+useEffect(() => {
   const loadAll = async () => {
-    await Promise.all([
-      loadPendingShops(),
-      loadApprovedShops(),
-      loadDeclinedShops()
-    ]);
+    try {
+      await setupFcm();
+      await loadPendingShops();
+      await loadApprovedShops();
+      await loadDeclinedShops();
 
-    setLoading(false); // 🔥 after data loaded
+      const notifRes = await getAdminNotifications();
+
+      setNotifications(notifRes.data.data || []);
+
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   loadAll();
+}, []);
+
+useEffect(() => {
+  onMessage(messaging, (payload) => {
+    console.log("🔥 Foreground Notification:", payload);
+
+    new Notification(payload.notification.title, {
+      body: payload.notification.body,
+    });
+
+    // 🔥🔥🔥 ADD THIS (MAIN FIX)
+    const reloadNotifications = async () => {
+  const res = await getAdminNotifications();
+  setNotifications(res.data.data || []);
+};
+
+onMessage(messaging, async (payload) => {
+  console.log("🔥 Foreground Notification:", payload);
+
+  new Notification(payload.notification.title, {
+    body: payload.notification.body,
+  });
+
+  // ✅ REAL FIX
+  await reloadNotifications();
+});
+  });
 }, []);
 
   const loadPendingShops = async () => {
@@ -135,6 +175,27 @@ return (
      
      
 <div className="admin-header">
+  {/* 🔔 NOTIFICATION BELL */}
+  <div 
+  className="bell-container"
+  onClick={() => setShowDropdown(!showDropdown)}
+>
+    🔔
+   {notifications?.length > 0 && (
+      <span className="badge">{notifications.length}</span>
+    )}
+  </div>
+
+ {showDropdown && (
+  <div className="notification-dropdown">
+  {notifications.map((n) => (
+    <div key={n.id} className="notification-item">
+      <strong>{n.title}</strong>
+      <p>{n.message}</p>
+    </div>
+  ))}
+</div>
+ )}
 
   <div className="status-navbar">
     <button
@@ -168,8 +229,10 @@ return (
       onChange={(e) => setSearchTerm(e.target.value)}
     />
   </div>
+  
 
 </div>
+
   
 
 

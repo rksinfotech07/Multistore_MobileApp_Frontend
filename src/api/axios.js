@@ -11,18 +11,25 @@ instance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // 🔄 If token expired
     if (
       error.response?.status === 401 &&
-      !originalRequest._retry
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/auth/refresh")
     ) {
       originalRequest._retry = true;
 
       try {
-        await instance.post("/auth/refresh");
+        console.log("🔄 Refreshing token...");
+
+        await instance.post("/api/auth/refresh");
+
+        console.log("✅ Token refreshed");
+
         return instance(originalRequest);
       } catch (err) {
-        window.location.href = "/"; // redirect to login
+        console.log("❌ Refresh failed");
+
+        window.location.href = "/"; // login page
       }
     }
 

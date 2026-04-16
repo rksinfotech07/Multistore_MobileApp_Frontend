@@ -66,7 +66,6 @@ const [loading, setLoading] = useState(true);
   <th>Notes</th>
 </tr>
       </thead>
-
       <tbody>
         {orders
   .filter((o) =>
@@ -106,8 +105,7 @@ const [loading, setLoading] = useState(true);
   }}
 >
   <Pencil size={16} />
-</button>
-          
+</button>  
             </td>
           </tr>
         ))}
