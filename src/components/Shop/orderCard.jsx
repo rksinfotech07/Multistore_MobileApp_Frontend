@@ -47,7 +47,6 @@ const [status, setStatus] = useState(() => {
      NORMALIZE STATUS FROM DB
   ========================= */
 useEffect(() => {
-   if (isLocked) return;
 
   const completedIds = JSON.parse(
     localStorage.getItem("completedOrders") || "[]"
