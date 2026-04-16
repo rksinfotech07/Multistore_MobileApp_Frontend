@@ -299,6 +299,12 @@
   background: #1e3a8a; /* solid blue */
   color: white;
 }
+.shop-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #1e3a8a;
+}
 .shop-table th {
   padding: 16px;
   font-size: 13.5px;

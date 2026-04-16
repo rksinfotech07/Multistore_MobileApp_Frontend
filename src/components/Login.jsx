@@ -38,6 +38,7 @@ export default function Login() {
   return Object.keys(newErrors).length === 0;
 };
 const handleLogin = async () => {
+  console.log("LOGIN CLICKED"); // 👈 inga podu
   if (!validateLogin()) return;
 
   try {
@@ -100,6 +101,9 @@ login({ role: "vendor" });
     const status = err.response?.status;
     const message = err.response?.data?.message;
 
+     console.log("ERROR STATUS:", status);   // ✅ add
+  console.log("ERROR MESSAGE:", message); // ✅ add
+  
     if (status === 403) {
       setPendingMsg("⏳ Your shop is waiting for admin approval.");
       return;
