@@ -11,17 +11,19 @@
   border-collapse: collapse;
   background: #ffffff;
   border-radius: 12px;
-  overflow: hidden;
   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
 /* ===== TABLE HEADER ===== */
 
 .admin-dashboard-page .shop-table thead th {
-  background: transparent !important;   /* VERY IMPORTANT */
+  background: #1e3a8a !important;  /* VERY IMPORTANT */
   color: white;
   font-weight: 600;
   text-align: left;
+  position: sticky  ; /* 🔥 ADD */
+  top: 0;             /* 🔥 ADD */
+  z-index: 100;
 }
 
 /* ===== TABLE BODY (IMPORTANT FIX) ===== */

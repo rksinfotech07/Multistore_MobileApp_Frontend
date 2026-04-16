@@ -497,9 +497,10 @@ input:checked + .slider:before {
 }
 
 .products-table thead th {
-  position: sticky;
+  position: sticky !important;  /* ✅ CORRECT */
   top: 0;
-  z-index: 2;
+  z-index: 10;
+  background: inherit;          /* 🔥 ADD THIS */
 }
 
 .banner-back-btn {
