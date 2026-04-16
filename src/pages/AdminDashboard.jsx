@@ -60,14 +60,21 @@ useEffect(() => {
     });
 
     // 🔥🔥🔥 ADD THIS (MAIN FIX)
-    setNotifications((prev) => [
-      {
-        id: Date.now(),
-        title: payload.notification.title,
-        message: payload.notification.body,
-      },
-      ...prev,
-    ]);
+    const reloadNotifications = async () => {
+  const res = await getAdminNotifications();
+  setNotifications(res.data.data || []);
+};
+
+onMessage(messaging, async (payload) => {
+  console.log("🔥 Foreground Notification:", payload);
+
+  new Notification(payload.notification.title, {
+    body: payload.notification.body,
+  });
+
+  // ✅ REAL FIX
+  await reloadNotifications();
+});
   });
 }, []);
 

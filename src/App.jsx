@@ -2,7 +2,10 @@ import { useContext, useEffect } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { socket } from "./socket"; // ✅ SOCKET IMPORT
+import { socket } from "./socket";
+import { setupFcm } from "./utils/saveFcmToken"; // your path
+import { onMessage } from "firebase/messaging";
+import { messaging } from "./firebase";
 
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -51,6 +54,13 @@ const ProtectedRoute = ({ children, role }) => {
 export default function App() {
 
   /* =========================
+   🔔 FCM SETUP
+========================= */
+useEffect(() => {
+  setupFcm();
+}, []);
+
+  /* =========================
      🌐 GLOBAL SOCKET CONNECT
   ========================= */
   useEffect(() => {
@@ -69,6 +79,23 @@ export default function App() {
       socket.off("disconnect");
     };
   }, []);
+  /* =========================
+   🔔 FCM LISTENER
+========================= */
+useEffect(() => {
+  onMessage(messaging, (payload) => {
+    console.log("🔔 FCM Message received: ", payload);
+
+    if (Notification.permission === "granted") {
+      new Notification(payload.notification.title, {
+        body: payload.notification.body,
+      });
+    }
+
+    // 🔥 IMPORTANT: update bell count here
+    fetchNotifications();
+  });
+}, []);
 
   return (
     <BrowserRouter>
@@ -130,4 +157,3 @@ export default function App() {
     </BrowserRouter>
   );
 }
-//Finalized shobi code
