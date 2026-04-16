@@ -83,6 +83,12 @@ useEffect(() => {
     // 🔄 Refresh orders automatically
     fetchOrders();
 
+console.log("🔥 CALLING NOTIFICATION API"); // ✅ ADD THIS
+
+setTimeout(() => {
+  fetchNotifications(); // ✅ DELAYED CALL
+}, 1000);
+
   });
 
   return () => unsubscribe();
