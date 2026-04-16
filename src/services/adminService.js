@@ -23,3 +23,6 @@ export const getAdminProfile = () =>
 
 export const updateAdminProfile = (data) =>
   API.put("/api/admin/profile", data);
+// 🔔 ADMIN NOTIFICATIONS (BELL)
+export const getAdminNotifications = () =>
+  API.get("/api/notifications/admin/notifications");

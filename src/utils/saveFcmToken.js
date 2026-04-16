@@ -6,6 +6,10 @@ export const setupFcm = async () => {
 
   try {
 
+    const token =
+  localStorage.getItem("admin_token") ||
+  localStorage.getItem("vendor_token");
+
     if (!token) return;
 
     const fcmToken = await getFcmToken();
