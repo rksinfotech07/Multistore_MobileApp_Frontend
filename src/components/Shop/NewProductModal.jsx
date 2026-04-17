@@ -56,6 +56,8 @@ const [crop, setCrop] = useState({
   useEffect(() => {
     if(!open) return;
     if (product) {
+      console.log("UNIT FROM API:", product.weight_unit);
+console.log("CATEGORY:", product.category);
       setName(product.name || "");
       setDesc(product.description ?? product.desc ?? "");
       setBase(product.price || "");
@@ -66,7 +68,7 @@ const [crop, setCrop] = useState({
       setTime(product.preparing_minutes || ""); 
       setProductType(product.product_type_id || "");
       setWeight(product.weight_value || "");
-      setWeightUnit(product.weight_unit || "");
+      setWeightUnit(product.weight_unit?.toString().trim().toLowerCase() || "");
       setGst(product.gst_percentage || "");
 
       if (product.image && product.image !== "image.jpg") {
@@ -730,7 +732,7 @@ ctx.drawImage(
     >
       <option value="" disabled hidden>Unit</option>
 
-      {(subCategory === "Juice" || subCategory === "Shake") ? (
+      {(category === "liquor" || subCategory === "Juice" || subCategory === "Shake") ? (
         <>
           <option value="ml">ML</option>
           <option value="l">Litre</option>
@@ -789,8 +791,9 @@ ctx.drawImage(
     Select Unit
   </option>
 
-  {category === "Food" && 
-   (subCategory === "Juice" || subCategory === "Shake") ? (
+  {(category === "liquor" ||
+   (category === "Food" && 
+   (subCategory === "Juice" || subCategory === "Shake"))) ? (
     <>
       <option value="ml">ML</option>
       <option value="l">Litre</option>
