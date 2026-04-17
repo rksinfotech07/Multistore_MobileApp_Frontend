@@ -56,8 +56,6 @@ const [crop, setCrop] = useState({
   useEffect(() => {
     if(!open) return;
     if (product) {
-      console.log("UNIT FROM API:", product.weight_unit);
-console.log("CATEGORY:", product.category);
       setName(product.name || "");
       setDesc(product.description ?? product.desc ?? "");
       setBase(product.price || "");
@@ -194,7 +192,8 @@ if (!open) return null;
     Grocery: "Grocery",
     Pharmacy: "Pharmacy",
     Electronics: "Electronics",
-    Cosmetics: "Cosmetics"
+    Cosmetics: "Cosmetics",
+    Liquor: "Liquor"
   };
 const isEditMode = !!product;
   
@@ -732,7 +731,7 @@ ctx.drawImage(
     >
       <option value="" disabled hidden>Unit</option>
 
-      {(category === "liquor" || subCategory === "Juice" || subCategory === "Shake") ? (
+      {(category?.toLowerCase() === "liquor" || subCategory === "Juice" || subCategory === "Shake") ? (
         <>
           <option value="ml">ML</option>
           <option value="l">Litre</option>
@@ -791,8 +790,8 @@ ctx.drawImage(
     Select Unit
   </option>
 
-  {(category === "liquor" ||
-   (category === "Food" && 
+  {(category?.toLowerCase() === "liquor" ||
+   (category?.toLowerCase() === "food" && 
    (subCategory === "Juice" || subCategory === "Shake"))) ? (
     <>
       <option value="ml">ML</option>
