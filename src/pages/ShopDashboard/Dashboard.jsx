@@ -58,6 +58,22 @@ function Counter({ value }) {
       }
     });
   }, []);
+  /* =========================
+   FETCH NOTIFICATIONS
+========================= */
+const fetchNotifications = async () => {
+  try {
+
+    const res = await axios.get("/api/notifications");
+
+    if (res.data?.success) {
+      setNotifications(res.data.data);
+    }
+
+  } catch (err) {
+    console.error("Notification fetch error 👉", err);
+  }
+};
 /* 🔥 FCM MESSAGE LISTENER */
 useEffect(() => {
 
@@ -85,9 +101,7 @@ useEffect(() => {
 
 console.log("🔥 CALLING NOTIFICATION API"); // ✅ ADD THIS
 
-setTimeout(() => {
-  fetchNotifications(); // ✅ DELAYED CALL
-}, 1000);
+setTimeout(fetchNotifications, 500);
 
   });
 
@@ -165,22 +179,7 @@ useEffect(() => {
     fetchNotifications(); // 🔔 fetch notifications on load
   }
 }, [shopActive]);
-/* =========================
-   FETCH NOTIFICATIONS
-========================= */
-const fetchNotifications = async () => {
-  try {
 
-    const res = await axios.get("/api/notifications");
-
-    if (res.data?.success) {
-      setNotifications(res.data.data);
-    }
-
-  } catch (err) {
-    console.error("Notification fetch error 👉", err);
-  }
-};
 /* =========================
    🔥 SOCKET LISTENER — FINAL
 ========================= */
