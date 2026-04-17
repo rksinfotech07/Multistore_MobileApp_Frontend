@@ -220,3 +220,86 @@ transition:all .25s ease;
 transform:translateY(-2px);
 box-shadow:0 14px 30px rgba(99,102,241,.45);
 }
+/* ========================= */
+/* 🔥 OTP MODAL STYLING */
+/* ========================= */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+/* OTP BOX */
+.modal-box {
+  width: 320px;
+  background: #ffffff;
+  padding: 22px;
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  animation: scaleIn 0.25s ease;
+  text-align: center;
+}
+
+/* TITLE */
+.modal-box h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* OTP INPUT */
+.modal-box input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  font-size: 14px;
+  text-align: center;
+  letter-spacing: 2px;
+
+  outline: none;
+}
+
+.modal-box input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* BUTTON CONTAINER */
+.modal-box div {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* VERIFY BUTTON */
+.modal-box button:first-child {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.modal-box button:first-child:hover {
+  transform: scale(1.05);
+}
+
+/* CANCEL BUTTON */
+.modal-box button:last-child {
+  background: #e5e7eb;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}

@@ -18,3 +18,9 @@ export const updateVendorProfile = async (data) => {
     throw err;
   }
 };
+export const verifyPhoneOtp = async (otp) => {
+  const res = await api.post("/api/vendor/verify-phone-update", {
+    otp
+  });
+  return res.data;
+};

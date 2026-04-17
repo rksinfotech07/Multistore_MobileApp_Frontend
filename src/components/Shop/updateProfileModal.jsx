@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import SuccessModal from "../common/SuccessModal";
-import { updateVendorProfile } from "../../services/ProfileService";
+import { updateVendorProfile, verifyPhoneOtp } from "../../services/ProfileService";
 import "../../styles/Shop/updateprofile.css";
+
 import {
 User,
 Store,
@@ -20,9 +21,9 @@ export default function UpdateProfileModal({ open, onClose, profile }) {
     closing_time: "",
     email: "",
   });
-
+const [showOtpModal, setShowOtpModal] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-
+const [otp, setOtp] = useState("");
   // Fill form when profile comes
   useEffect(() => {
     if (profile) {
@@ -59,7 +60,7 @@ export default function UpdateProfileModal({ open, onClose, profile }) {
       shop_name: formData.shop_name,
       owner_name: formData.owner_name,
       address: formData.address,
-
+      phone: formData.phone,
       // ⭐ Normalize time safely
       opening_time: formatTime(formData.opening_time),
       closing_time: formatTime(formData.closing_time),
@@ -67,9 +68,13 @@ export default function UpdateProfileModal({ open, onClose, profile }) {
 
     console.log("FINAL Payload 👉", payload);
 
-    await updateVendorProfile(payload);
-
-    const oldProfile = JSON.parse(localStorage.getItem("profileData")) || {};
+     const res = await updateVendorProfile(payload);
+     if (res.message === "OTP sent to new phone number") {
+      alert("OTP sent to your phone 📱");
+      setShowOtpModal(true);
+      return;
+    }
+     const oldProfile = JSON.parse(localStorage.getItem("profileData")) || {};
     const updatedProfile = { ...oldProfile, ...payload };
     localStorage.setItem("profileData", JSON.stringify(updatedProfile));
 
@@ -81,6 +86,27 @@ export default function UpdateProfileModal({ open, onClose, profile }) {
     console.error("Update failed", err);
   }
 };
+
+const handleVerifyOtp = async () => {
+  try {
+    const data = await verifyPhoneOtp(otp);   // 🔥 SERVICE CALL
+
+    if (data.message === "Phone verified successfully") {
+      alert("Phone verified successfully ✅");
+
+      setShowOtpModal(false);
+      setShowSuccess(true);
+    } else {
+      alert("Invalid OTP ❌");
+    }
+
+  } catch (err) {
+    console.error("OTP verify error:", err);
+  }
+};
+
+  
+
 
   return (
     <>
@@ -211,6 +237,27 @@ export default function UpdateProfileModal({ open, onClose, profile }) {
           onClose();
         }}
       />
-    </>
-  );
+      {/* 🔥 OTP MODAL ADD HERE */}
+{showOtpModal && (
+  <div className="modal-overlay">
+    <div className="modal-box">
+      <h3>Enter OTP 🔐</h3>
+
+      <input
+        type="text"
+        value={otp}
+        onChange={(e) => setOtp(e.target.value)}
+        placeholder="Enter OTP"
+      />
+
+      <div style={{ marginTop: "10px" }}>
+        <button onClick={handleVerifyOtp}>Verify</button>
+        <button onClick={() => setShowOtpModal(false)}>Cancel</button>
+      </div>
+    </div>
+  </div>
+)}  
+
+</>
+);
 }

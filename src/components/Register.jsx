@@ -191,7 +191,7 @@ const categories = [
   { value: "Electronics", label: "📱 Electronics" },
   { value: "Cosmetics", label: "💄 Cosmetics" },
   { value: "Home Appliances", label: "🏠 Home Appliances" },
-  
+  { value: "Liquor", label: "🍷 Liquor" },
 ];
 const dropdownStyle = categoryOpen
   ? (() => {
