@@ -290,6 +290,8 @@ min-width: 180px;
 
 /* 🔍 SEARCH BAR */
 .admin-search {
+   margin-top: -18px; 
+   margin-right: 90px; 
   position: absolute;
   right: 0;     /* 🔥 right side */
 }
@@ -303,7 +305,7 @@ min-width: 180px;
 
 .admin-search input {
 
-  width: 300px;
+  width: 250px;
   padding: 9px 18px 12px 42px;
 
   border-radius: 8px;
@@ -719,7 +721,7 @@ min-width: 180px;
 /* 🔔 BELL ICON */
 .bell-container {
   position: absolute;
-  left: 260px;   /* 🔥 sidebar width adjust pannitu set pannu */
+  right: 40px;   /* ✅ ALWAYS RIGHT EDGE */
   top: 20px;
   font-size: 22px;
   cursor: pointer;
@@ -738,10 +740,10 @@ min-width: 180px;
   font-weight: bold;
 }
 
-/* 📩 DROPDOWN (🔥 MAIN FIX HERE) */
+/* 📩 DROPDOWN */
 .notification-dropdown {
   position: absolute;
-  left: 260px;   /* 🔥 SAME as bell */
+  right: 20px;   /* ✅ SAME AS BELL */
   top: 60px;
   width: 300px;
   max-height: 350px;
