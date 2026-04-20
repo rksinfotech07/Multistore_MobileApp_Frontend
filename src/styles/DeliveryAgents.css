@@ -263,6 +263,8 @@
   font-size: 14px;
   outline: none;
   transition: 0.2s;
+  margin-right: 50px; 
+  margin-bottom: 6px;
 }
 
 .search-input:focus {

@@ -16,19 +16,20 @@ import {
   XCircle,
   Search
 } from "lucide-react";
+import { useOutletContext } from "react-router-dom";
 
 const AdminDashboard = () => {
+  const { setNotifications } = useOutletContext();
+
   const [shops, setShops] = useState([]);
   const [approvedShops, setApprovedShops] = useState([]);
   const [viewId, setViewId] = useState(null);
   const [activeTab, setActiveTab] = useState("pending");
   const [declinedShops, setDeclinedShops] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("admin_token");
   const [selectedRow, setSelectedRow] = useState(null);
-  const [notifications, setNotifications] = useState([]);
-const [showDropdown, setShowDropdown] = useState(false);
 
 useEffect(() => {
   const loadAll = async () => {
@@ -162,27 +163,6 @@ return (
      
      
 <div className="admin-header">
-  {/* 🔔 NOTIFICATION BELL */}
-  <div 
-  className="bell-container"
-  onClick={() => setShowDropdown(!showDropdown)}
->
-    🔔
-   {notifications?.length > 0 && (
-      <span className="badge">{notifications.length}</span>
-    )}
-  </div>
-
- {showDropdown && (
-  <div className="notification-dropdown">
-  {notifications.map((n) => (
-    <div key={n.id} className="notification-item">
-      <strong>{n.title}</strong>
-      <p>{n.message}</p>
-    </div>
-  ))}
-</div>
- )}
 
   <div className="status-navbar">
     <button

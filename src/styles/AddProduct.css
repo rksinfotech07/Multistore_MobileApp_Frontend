@@ -32,6 +32,8 @@
   display: flex;
   gap: 12px;
   margin-left: auto;
+  margin-right: -59px;   
+  margin-top: 8px;      
 }
 
 .search-input {
