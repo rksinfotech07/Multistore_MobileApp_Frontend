@@ -85,17 +85,32 @@ useEffect(() => {
     const title = payload?.notification?.title || "New Order";
     const body = payload?.notification?.body || "You have a new order";
 
-      if (Notification.permission === "granted") {
-  navigator.serviceWorker.getRegistration().then((reg) => {
-    if (reg) {
-      reg.showNotification(title, {
-        body: body,
-        icon: "/logo.png",
-        vibrate: [200, 100, 200],
-      });
-    }
-  });
-}
+      onMessage(messaging, (payload) => {
+  console.log("🔥 FCM MESSAGE RECEIVED:", payload);
+
+  const title = payload?.notification?.title || "New Order";
+  const body = payload?.notification?.body || "You have a new order";
+
+  // ✅ FOREGROUND (APP OPEN) → SAME AS ADMIN
+  if (document.visibilityState === "visible") {
+    new Notification(title, {
+      body,
+      icon: "/logo.png",
+    });
+  } 
+  // ✅ BACKGROUND → SERVICE WORKER
+  else {
+    navigator.serviceWorker.getRegistration().then((reg) => {
+      if (reg) {
+        reg.showNotification(title, {
+          body,
+          icon: "/logo.png",
+        });
+      }
+    });
+  }
+
+});
     // 🔄 Refresh orders automatically
     fetchOrders();
 
