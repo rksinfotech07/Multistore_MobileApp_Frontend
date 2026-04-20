@@ -59,22 +59,9 @@ useEffect(() => {
       body: payload.notification.body,
     });
 
-    // 🔥🔥🔥 ADD THIS (MAIN FIX)
-    const reloadNotifications = async () => {
-  const res = await getAdminNotifications();
-  setNotifications(res.data.data || []);
-};
-
-onMessage(messaging, async (payload) => {
-  console.log("🔥 Foreground Notification:", payload);
-
-  new Notification(payload.notification.title, {
-    body: payload.notification.body,
-  });
-
-  // ✅ REAL FIX
-  await reloadNotifications();
-});
+     // ✅ THIS LINE FIXES BELL INSTANT UPDATE
+    const res = await getAdminNotifications();
+    setNotifications(res.data.data || []);
   });
 }, []);
 
