@@ -52,7 +52,7 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-  onMessage(messaging, (payload) => {
+  onMessage(messaging, async (payload) => {
     console.log("🔥 Foreground Notification:", payload);
 
     new Notification(payload.notification.title, {
@@ -61,7 +61,7 @@ useEffect(() => {
 
      // ✅ THIS LINE FIXES BELL INSTANT UPDATE
     const res = await getAdminNotifications();
-    setNotifications(res.data.data || []);
+    setNotifications([...(res.data.data || [])]);
   });
 }, []);
 
