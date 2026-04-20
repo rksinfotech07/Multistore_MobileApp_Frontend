@@ -11,12 +11,30 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
+/* 🔥 BACKGROUND NOTIFICATION */
 messaging.onBackgroundMessage(function(payload) {
 
-  console.log("Background message received:", payload);
+  console.log("🔥 Background message:", payload);
 
-  self.registration.showNotification(payload.notification.title, {
-    body: payload.notification.body
+  const title = payload?.notification?.title || "New Notification";
+  const body = payload?.notification?.body || "You have a new update";
+
+  self.registration.showNotification(title, {
+    body: body,
+    icon: "/logo.png",   // ✅ IMPORTANT
+    badge: "/logo.png",  // ✅ optional
+    vibrate: [200, 100, 200],
+    data: {
+      url: "/"   // 👉 where to open on click
+    }
   });
+});
 
+/* 🔥 CLICK ACTION */
+self.addEventListener("notificationclick", function(event) {
+  event.notification.close();
+
+  event.waitUntil(
+    clients.openWindow(event.notification.data.url)
+  );
 });

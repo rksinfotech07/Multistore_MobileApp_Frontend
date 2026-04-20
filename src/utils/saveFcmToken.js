@@ -5,19 +5,18 @@ const API_URL = import.meta.env.VITE_API_URL;
 export const setupFcm = async () => {
   try {
     const permission = await Notification.requestPermission();
+     console.log("🔔  Permission:", permission); 
 
     if (permission !== "granted") {
       console.warn("Notification permission not granted");
       return;
     }
 
-    const token =
-      localStorage.getItem("admin_token") ||
-      localStorage.getItem("vendor_token");
-
-    if (!token) return;
+     console.log("🚀 Calling getFcmToken...");   // ✅ ADD THIS LINE
 
     const fcmToken = await getFcmToken();
+    console.log("🔥 FCM TOKEN:", fcmToken); // ✅ debug
+
 
     if (!fcmToken) {
       console.warn("FCM token not generated");
@@ -34,6 +33,7 @@ export const setupFcm = async () => {
         token: fcmToken
       })
     });
+    console.log("✅ FCM token sent to backend");
 
   } catch (err) {
     console.error("FCM error:", err);

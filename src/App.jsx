@@ -84,17 +84,30 @@ useEffect(() => {
 ========================= */
 useEffect(() => {
   onMessage(messaging, (payload) => {
-    console.log("🔔 FCM Message received: ", payload);
+  console.log("🔔 FCM Message received: ", payload);
 
-    if (Notification.permission === "granted") {
-      new Notification(payload.notification.title, {
-        body: payload.notification.body,
-      });
-    }
+  const title = payload?.notification?.title || "New Notification";
+  const body = payload?.notification?.body || "You have a new update";
 
-    // 🔥 IMPORTANT: update bell count here
-    fetchNotifications();
+  // ✅ METHOD 1: SYSTEM NOTIFICATION
+  if (Notification.permission === "granted") {
+    navigator.serviceWorker.getRegistration().then((reg) => {
+      if (reg) {
+        reg.showNotification(title, {
+          body: body,
+          icon: "/logo.png",
+        });
+      }
+    });
+  }
+
+  // ✅ METHOD 2: DIRECT BROWSER NOTIFICATION (IMPORTANT)
+  new Notification(title, {
+    body: body,
+    icon: "/logo.png",
   });
+
+});
 }, []);
 
   return (

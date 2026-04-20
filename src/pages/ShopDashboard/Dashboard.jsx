@@ -85,17 +85,17 @@ useEffect(() => {
     const title = payload?.notification?.title || "New Order";
     const body = payload?.notification?.body || "You have a new order";
 
-    if (Notification.permission === "granted") {
-      const notification = new Notification(title, {
+      if (Notification.permission === "granted") {
+  navigator.serviceWorker.getRegistration().then((reg) => {
+    if (reg) {
+      reg.showNotification(title, {
         body: body,
-        icon: "/logo.png"
+        icon: "/logo.png",
+        vibrate: [200, 100, 200],
       });
-
-      notification.onclick = () => {
-        window.focus();
-      };
     }
-
+  });
+}
     // 🔄 Refresh orders automatically
     fetchOrders();
 
@@ -246,7 +246,9 @@ socket.on("new_order", (data) => {
   fetchNotifications(); // 🔔 fetch latest notifications
   // 🔔 play notification sound
 const audio = new Audio("/sounds/notificationSound.mp3");
-audio.play();
+audio.play().catch((err) => {
+  console.warn("🔇 Audio blocked:", err);
+});
 
 // 🔔 trigger bell shake
 setShakeBell(true);
