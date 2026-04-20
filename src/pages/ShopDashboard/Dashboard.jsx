@@ -85,32 +85,27 @@ useEffect(() => {
     const title = payload?.notification?.title || "New Order";
     const body = payload?.notification?.body || "You have a new order";
 
-      onMessage(messaging, (payload) => {
-  console.log("🔥 FCM MESSAGE RECEIVED:", payload);
+      if (Notification.permission === "granted") {
 
-  const title = payload?.notification?.title || "New Order";
-  const body = payload?.notification?.body || "You have a new order";
-
-  // ✅ FOREGROUND (APP OPEN) → SAME AS ADMIN
-  if (document.visibilityState === "visible") {
+  // 🔥 FORCE FOREGROUND POPUP (IMPORTANT)
+  setTimeout(() => {
     new Notification(title, {
-      body,
+      body: body,
       icon: "/logo.png",
     });
-  } 
-  // ✅ BACKGROUND → SERVICE WORKER
-  else {
-    navigator.serviceWorker.getRegistration().then((reg) => {
-      if (reg) {
-        reg.showNotification(title, {
-          body,
-          icon: "/logo.png",
-        });
-      }
-    });
-  }
+  }, 100);
 
-});
+  // ✅ Keep background support
+  navigator.serviceWorker.getRegistration().then((reg) => {
+    if (reg) {
+      reg.showNotification(title, {
+        body: body,
+        icon: "/logo.png",
+      });
+    }
+  });
+
+}
     // 🔄 Refresh orders automatically
     fetchOrders();
 
@@ -381,8 +376,7 @@ const prebookingOrders = orders.filter((o) => {
           </h1>
 
           <p className="welcome-sub">
-            Here's what's happening with your store today.Testing
-            
+            Here's what's happening with your store today.
           </p>
         </div>
         <div className="header-right">
