@@ -19,10 +19,18 @@
   top: 35px;
   background: #fff;
   width: 360px;
-  max-height: 300px;
-  overflow-y: auto;
+  height: 350px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
+  padding: 7px;
+  display: flex;              /* 🔥 ADD THIS */
+  flex-direction: column;     /* 🔥 ADD THIS */
+}
+
+/* 🔴 ONLY THIS SCROLLS */
+.notification-list {
+  overflow-y: auto;
+  flex: 1;
   padding: 10px;
 }
 
@@ -36,4 +44,49 @@
   font-size: 11px;
   border-radius: 50%;
   padding: 3px 6px;
+}
+.notification-header {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  font-weight: 600;
+}
+/* ❌ CLOSE BUTTON */
+.close-btn {
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+  top: 3px;
+}
+
+.close-btn:hover {
+  color: red;
+}
+
+/* 🔔 ITEM STYLE */
+.notification-item {
+  padding: 10px;
+  border-radius: 8px;
+  background: #f8fafc;
+  margin-bottom: 8px;
+}
+
+/* TITLE */
+.notification-item h5 {
+  font-size: 14px;
+  margin-bottom: 3px;
+  color: #1e293b;
+}
+
+/* MESSAGE */
+.notification-item p {
+  font-size: 12px;
+  color: #64748b;
 }

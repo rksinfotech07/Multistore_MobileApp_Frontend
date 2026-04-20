@@ -36,16 +36,28 @@ const AdminLayout = () => {
 
         {showDropdown && (
           <div className="notification-dropdown">
+            {/* 🔴 ADD THIS HEADER */}
+    <div className="notification-header">
+      <span>Notifications</span>
+      <span
+        className="close-btn"
+        onClick={() => setShowDropdown(false)}
+      >
+        ✖
+      </span>
+    </div>
+     <div className="notification-list">
             {notifications.length === 0 ? (
               <p>No notifications</p>
             ) : (
               notifications.map((n) => (
                 <div key={n.id} className="notification-item">
-                  <strong>{n.title}</strong>
+                  <h5>{n.title}</h5>
                   <p>{n.message}</p>
                 </div>
               ))
             )}
+          </div>
           </div>
         )}
       </div>
