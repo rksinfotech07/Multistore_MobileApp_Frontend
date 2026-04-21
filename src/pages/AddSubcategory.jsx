@@ -6,6 +6,7 @@ import {
   addSubCategory,
   updateSubCategory
 } from "../services/adminService";
+import { Pencil } from "lucide-react";
 
 const AddSubcategory = () => {
   const [categories, setCategories] = useState([]);
@@ -19,7 +20,6 @@ const AddSubcategory = () => {
   const [icon, setIcon] = useState("");
   const [image, setImage] = useState(null);
 
-  // ✅ LOAD CATEGORIES
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -29,7 +29,6 @@ const AddSubcategory = () => {
     setCategories(res);
   };
 
-  // ✅ CLICK CATEGORY
   const handleCategoryClick = async (cat) => {
     setSelectedCategory(cat);
     setShowForm(false);
@@ -38,7 +37,6 @@ const AddSubcategory = () => {
     setSubcategories(res);
   };
 
-  // ✅ ADD SUBCATEGORY
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -62,7 +60,7 @@ const AddSubcategory = () => {
       setShowForm(false);
       setEditMode(false);
 
-      handleCategoryClick(selectedCategory); // refresh
+      handleCategoryClick(selectedCategory);
     } catch (err) {
       console.log(err);
     }
@@ -81,7 +79,7 @@ const AddSubcategory = () => {
   return (
     <div className="add-sub-container">
 
-      <h2>Categories</h2>
+      <h2 className="add-sub-title">Categories</h2>
 
       {/* ✅ CATEGORY CARDS */}
       <div className="add-sub-category-grid">
@@ -91,28 +89,12 @@ const AddSubcategory = () => {
             className={`add-sub-category-card ${
               selectedCategory?.id === cat.id ? "active" : ""
             }`}
+            onClick={() => handleCategoryClick(cat)}
           >
-            <div onClick={() => handleCategoryClick(cat)}>
-              <h3>{cat.icon} {cat.name}</h3>
-            </div>
-
-            {/* ➕ BUTTON */}
-            <button
-              className="add-sub-add-btn"
-              onClick={(e) => {
-  e.stopPropagation();   // VERY IMPORTANT
-
-  setSelectedCategory(cat);
-  setEditMode(false);    // ensure add mode
-  setName("");           // clear old data
-  setIcon("");
-  setImage(null);
-
-  setShowForm(true);     // open popup
-}}
-            >
-              ➕
-            </button>
+            <h3 className="add-sub-category-title">
+  <span className="add-sub-category-icon-box">{cat.icon}</span>
+  {cat.name}
+</h3>
           </div>
         ))}
       </div>
@@ -120,62 +102,80 @@ const AddSubcategory = () => {
       {/* ✅ SUBCATEGORIES */}
       {selectedCategory && (
         <>
-          <h3>Subcategories of {selectedCategory.name}</h3>
+          <div className="add-sub-header">
+            <h3 className="add-sub-subcategory-title">Subcategories of {selectedCategory.name}</h3>
 
-          <div className="add-sub-subcategory-grid">
-            {subcategories.map((sub) => (
-              <div
-                key={sub.id}
-                className="add-sub-subcategory-card"
-              >
-
-                {/* ✏️ EDIT BUTTON */}
-                <button
-                  className="add-sub-edit-btn"
-                  onClick={(e) => {
-  e.stopPropagation();   // VERY IMPORTANT
-  handleEdit(sub);
-}}
-                >
-                  ✏️
-                </button>
-
-                <p>{sub.icon} {sub.name}</p>
-
-                {sub.image_url && (
-                  <img src={sub.image_url} alt="" />
-                )}
-              </div>
-            ))}
+            <button
+              className="add-sub-main-btn"
+              onClick={() => {
+                setEditMode(false);
+                setName("");
+                setIcon("");
+                setImage(null);
+                setShowForm(true);
+              }}
+            >
+              + Add Subcategory
+            </button>
           </div>
+
+         <div className="add-sub-subcategory-grid">
+  {subcategories.map((sub) => (
+    <div key={sub.id} className="sub-card">
+
+      {/* 🔝 TOP SECTION */}
+      <div className="sub-card-top">
+
+        {sub.image_url ? (
+          <img src={sub.image_url} alt="" />
+        ) : (
+          <div className="sub-icon">{sub.icon}</div>
+        )}
+
+        {/* EDIT BUTTON */}
+        <button
+          className="sub-edit"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleEdit(sub);
+          }}
+        >
+            <Pencil size={16} />
+          Edit
+        </button>
+
+      </div>
+
+      {/* 🔽 BOTTOM SECTION */}
+      <div className="sub-card-bottom">
+        <h4>{sub.icon} {sub.name}</h4>
+      </div>
+
+    </div>
+  ))}
+</div>
         </>
       )}
 
-      {/* ✅ MODAL POPUP */}
+      {/* ✅ MODAL */}
       {showForm && (
         <div className="add-sub-modal-overlay">
           <div className="add-sub-modal">
 
-            <div className="modal-header">
-              <h3>
-                {editMode
-                  ? "Edit Subcategory"
-                  : `Add Subcategory to ${selectedCategory.name}`}
-              </h3>
-
-              <span
-                className="add-sub-close-btn"
-                onClick={() => setShowForm(false)}
-              >
-                ✖
-              </span>
-            </div>
-
-            <form
-              onSubmit={handleSubmit}
-              className="add-sub-modal-form"
+            <span
+              className="add-sub-close-btn"
+              onClick={() => setShowForm(false)}
             >
+              ✖
+            </span>
 
+            <h3>
+              {editMode
+                ? "Edit Subcategory"
+                : `Add Subcategory to ${selectedCategory.name}`}
+            </h3>
+
+            <form onSubmit={handleSubmit} className="add-sub-modal-form">
               <input
                 type="text"
                 placeholder="Subcategory Name"
@@ -196,16 +196,12 @@ const AddSubcategory = () => {
               />
 
               <button type="submit">
-                {editMode
-                  ? "Update SubCategory"
-                  : "Add SubCategory"}
+                {editMode ? "Update SubCategory" : "Add SubCategory"}
               </button>
-
             </form>
           </div>
         </div>
       )}
-
     </div>
   );
 };
