@@ -26,3 +26,44 @@ export const updateAdminProfile = (data) =>
 // 🔔 ADMIN NOTIFICATIONS (BELL)
 export const getAdminNotifications = () =>
   API.get("/api/notifications/admin/notifications");
+
+// ✅ ADD SUBCATEGORY
+export const addSubCategory = (categoryId, formData) =>
+  API.post(`/api/categories/${categoryId}/subcategories`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  // ✅ GET ALL CATEGORIES
+export const getCategories = async () => {
+  try {
+    const res = await API.get("/api/common/categories"); // your endpoint
+    return res.data; // ⚠️ directly array
+  } catch (err) {
+    throw err.response?.data || err.message;
+  }
+};
+// ✅ GET SUBCATEGORIES BY CATEGORY
+export const getSubcategories = async (categoryId) => {
+  try {
+    const res = await API.get(
+      `/api/common/categories/${categoryId}/subcategories`
+    );
+    return res.data;
+  } catch (err) {
+    throw err.response?.data || err.message;
+  }
+};
+// ✅ UPDATE SUBCATEGORY
+export const updateSubCategory = async (id, formData) => {
+  try {
+    const res = await API.put(`/api/subcategories/${id}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return res.data;
+  } catch (err) {
+    throw err.response?.data || err.message;
+  }
+};

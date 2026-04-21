@@ -44,6 +44,11 @@ const Sidebar = () => {
   {!collapsed && <span>Add Product</span>}
 </NavLink>
 
+<NavLink to="/admin/add-subcategory" className="side-link">
+  <PlusCircle size={18} />
+  {!collapsed && <span>Add SubCategory</span>}
+</NavLink>
+
 <NavLink to="/admin/delivery-agents" className="side-link">
   <Truck size={18} />
   {!collapsed && <span>Delivery Agents</span>}
