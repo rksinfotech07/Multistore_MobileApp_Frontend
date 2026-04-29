@@ -6,6 +6,7 @@ import {
   Eye,
   X,
   RefreshCw,
+  CalendarDays,
   Filter,
 } from "lucide-react";
 import { getAllTransactions } from "../services/transactionService";
@@ -125,6 +126,13 @@ function TransactionModal({ txn, onClose }) {
 /* ═══════════════════════════════════════════
    MAIN PAGE
 ═══════════════════════════════════════════ */
+/* ── DATE HELPERS ── */
+const todayStr = () => new Date().toISOString().slice(0, 10);
+const firstOfMonthStr = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`;
+};
+
 export default function AdminTransactions() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -133,21 +141,29 @@ export default function AdminTransactions() {
   const [modeFilter, setModeFilter] = useState("all");
   const [selectedTxn, setSelectedTxn] = useState(null);
 
-  /* ── FETCH ── */
+  /* ── DATE RANGE STATE (defaults: 1st of month → today) ── */
+  const [startDate, setStartDate] = useState(firstOfMonthStr);
+  const [endDate, setEndDate]     = useState(todayStr);
+
+  /* ── FETCH (passes date range to backend) ── */
   const fetchTransactions = async () => {
     setLoading(true);
-    const data = await getAllTransactions();
+    const data = await getAllTransactions(startDate, endDate);
     setTransactions(Array.isArray(data) ? data : data?.transactions || []);
     setLoading(false);
   };
 
   useEffect(() => {
     fetchTransactions();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /* ── FILTER ── */
+  /* ── CLIENT-SIDE FILTER (search + status + mode + date range) ── */
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
+    const from = startDate ? new Date(startDate) : null;
+    const to   = endDate   ? new Date(endDate + "T23:59:59") : null;
+
     return transactions.filter((t) => {
       const matchSearch =
         !q ||
@@ -166,9 +182,16 @@ export default function AdminTransactions() {
         modeFilter === "all" ||
         (t.mode || t.payment_mode || "").toLowerCase() === modeFilter.toLowerCase();
 
-      return matchSearch && matchStatus && matchMode;
+      /* date filter — works on addedon or date field */
+      const raw = t.addedon || t.date;
+      const txDate = raw ? new Date(raw) : null;
+      const matchDate =
+        !txDate ||
+        ((!from || txDate >= from) && (!to || txDate <= to));
+
+      return matchSearch && matchStatus && matchMode && matchDate;
     });
-  }, [transactions, search, statusFilter, modeFilter]);
+  }, [transactions, search, statusFilter, modeFilter, startDate, endDate]);
 
   /* ── STATS ── */
   const stats = useMemo(() => {
@@ -234,60 +257,111 @@ export default function AdminTransactions() {
 
       {/* ── TOOLBAR ── */}
       <div className="txn-toolbar">
-        {/* Search */}
-        <div className="txn-search-wrap">
-          <Search className="txn-search-icon" />
-          <input
-            type="text"
-            placeholder="Search by Txn ID, Order ID, name, email, phone..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+
+        {/* ── ROW 1: Search + Status + Mode ── */}
+        <div className="txn-toolbar-row">
+          {/* Search */}
+          <div className="txn-search-wrap">
+            <Search className="txn-search-icon" />
+            <input
+              type="text"
+              placeholder="Search by Txn ID, Order ID, name, email, phone..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
+          {/* Status filter */}
+          <select
+            className="txn-filter-select"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="all">All Statuses</option>
+            <option value="success">Success</option>
+            <option value="failed">Failed</option>
+            <option value="pending">Pending</option>
+            <option value="usercancel">User Cancelled</option>
+            <option value="initiated">Initiated</option>
+          </select>
+
+          {/* Payment mode filter */}
+          <select
+            className="txn-filter-select"
+            value={modeFilter}
+            onChange={(e) => setModeFilter(e.target.value)}
+          >
+            <option value="all">All Modes</option>
+            {paymentModes.map((m) => (
+              <option key={m} value={m}>{m}</option>
+            ))}
+          </select>
         </div>
 
-        {/* Status filter */}
-        <select
-          className="txn-filter-select"
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          <option value="all">All Statuses</option>
-          <option value="success">Success</option>
-          <option value="failed">Failed</option>
-          <option value="pending">Pending</option>
-          <option value="usercancel">User Cancelled</option>
-          <option value="initiated">Initiated</option>
-        </select>
+        {/* ── ROW 2: Date range (left) + Refresh + Export (right) ── */}
+        <div className="txn-toolbar-row txn-toolbar-row--between">
 
-        {/* Payment mode filter */}
-        <select
-          className="txn-filter-select"
-          value={modeFilter}
-          onChange={(e) => setModeFilter(e.target.value)}
-        >
-          <option value="all">All Modes</option>
-          {paymentModes.map((m) => (
-            <option key={m} value={m}>
-              {m}
-            </option>
-          ))}
-        </select>
+          {/* LEFT: From — To — Apply */}
+          <div className="txn-date-group">
+            <div className="txn-date-field">
+              <label className="txn-date-label">
+                <CalendarDays size={12} />
+                From
+              </label>
+              <input
+                type="date"
+                className="txn-date-input"
+                value={startDate}
+                max={endDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </div>
 
-        {/* Refresh */}
-        <button className="txn-export-btn" onClick={fetchTransactions} title="Refresh">
-          <RefreshCw size={15} />
-          Refresh
-        </button>
+            <span className="txn-date-sep">—</span>
 
-        {/* Export CSV — kept here away from notification bell */}
-        <button
-          className="txn-export-btn"
-          onClick={() => exportCSV(filtered)}
-          title="Export filtered data as CSV"
-        >
-          <Download size={15} />
-          Export CSV
-        </button>
+            <div className="txn-date-field">
+              <label className="txn-date-label">
+                <CalendarDays size={12} />
+                To
+              </label>
+              <input
+                type="date"
+                className="txn-date-input"
+                value={endDate}
+                min={startDate}
+                max={todayStr()}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+
+            <button
+              className="txn-apply-btn"
+              onClick={fetchTransactions}
+              title="Apply date filter"
+            >
+              <Filter size={13} />
+              Apply
+            </button>
+          </div>
+
+          {/* RIGHT: Refresh + Export CSV */}
+          <div className="txn-date-right">
+            <button className="txn-icon-btn" onClick={fetchTransactions} title="Refresh">
+              <RefreshCw size={14} />
+              Refresh
+            </button>
+            <button
+              className="txn-export-btn"
+              onClick={() => exportCSV(filtered)}
+              title="Export as CSV"
+            >
+              <Download size={14} />
+              Export CSV
+            </button>
+          </div>
+
+        </div>
+
       </div>
 
       {/* ── TABLE (headers always visible) ── */}

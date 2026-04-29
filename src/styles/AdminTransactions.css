@@ -77,13 +77,25 @@
 .txn-stat-value.pending { color: #d97706; }
 .txn-stat-value.amount  { color: #7c3aed; }
 
-/* ---- TOOLBAR (search + filters + export) ---- */
+/* ---- TOOLBAR (two rows) ---- */
 .txn-toolbar {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
   margin-bottom: 14px;
+}
+
+/* Base row */
+.txn-toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   flex-wrap: wrap;
+}
+
+/* Row 2 modifier: left group vs right group */
+.txn-toolbar-row--between {
+  justify-content: space-between;
 }
 
 .txn-search-wrap {
@@ -126,14 +138,124 @@
   outline: none;
   background: #fff;
   cursor: pointer;
-  min-width: 140px;
+  min-width: 130px;
   color: #1e293b;
+  height: 38px;
 }
 
 .txn-filter-select:focus {
   border-color: #7c3aed;
 }
 
+/* ---- DATE RANGE GROUP (flat, no box) ---- */
+.txn-date-group {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.txn-date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.txn-date-label {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.txn-date-input {
+  padding: 0 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #1e293b;
+  outline: none;
+  background: #fff;
+  cursor: pointer;
+  transition: border 0.2s, box-shadow 0.2s;
+  height: 36px;
+}
+
+.txn-date-input:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.1);
+}
+
+/* — separator between dates */
+.txn-date-sep {
+  font-size: 14px;
+  color: #cbd5e1;
+  line-height: 36px;
+  align-self: flex-end;
+  padding-bottom: 0;
+}
+
+/* ---- APPLY BUTTON ---- */
+.txn-apply-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 14px;
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.15s, box-shadow 0.15s;
+  align-self: flex-end;
+  height: 36px;
+}
+
+.txn-apply-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+/* ---- RIGHT GROUP (Refresh + Export) ---- */
+.txn-date-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---- REFRESH BUTTON (subtle variant) ---- */
+.txn-icon-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  background: #fff;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.2s, background 0.2s;
+  height: 38px;
+}
+
+.txn-icon-btn:hover {
+  border-color: #7c3aed;
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+
+/* ---- EXPORT CSV BUTTON ---- */
 .txn-export-btn {
   display: flex;
   align-items: center;
@@ -148,11 +270,33 @@
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
   white-space: nowrap;
+  height: 38px;
 }
 
 .txn-export-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+  .txn-toolbar-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .txn-search-wrap { min-width: unset; }
+  .txn-filter-select { width: 100%; }
+  .txn-date-group {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px;
+  }
+  .txn-date-sep { display: none; }
+  .txn-date-input { width: 100%; }
+  .txn-apply-btn, .txn-icon-btn, .txn-export-btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* ---- TABLE WRAPPER ---- */
