@@ -4,3 +4,13 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  # Tell Netlify secrets scanner to skip the Firebase API key found in the
+  # service worker (public/firebase-messaging-sw.js). Firebase web API keys
+  # are intentionally public — they are NOT secret and are protected by
+  # Firebase Security Rules, not by secrecy.
+  SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES = "AIzaSyC3hAIqhkKsTsmQ13Jva8p2SPQzQE9noZM,AIzaSyA581l0fDF8q_IgCcW0mHN1G48KD6umB8s"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
