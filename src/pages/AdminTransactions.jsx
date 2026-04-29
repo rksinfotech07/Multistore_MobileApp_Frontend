@@ -232,6 +232,7 @@ export default function AdminTransactions() {
         </div>
       </div>
 
+      
       {/* ── TOOLBAR ── */}
       <div className="txn-toolbar">
         {/* Search */}
