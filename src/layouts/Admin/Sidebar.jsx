@@ -8,7 +8,8 @@ import {
   PlusCircle,
   Truck,
   Settings,
-  LogOut
+  LogOut,
+  CreditCard
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -37,6 +38,11 @@ const Sidebar = () => {
 <NavLink to="/admin/orders" className="side-link">
   <Package size={18} />
   {!collapsed && <span>Orders</span>}
+</NavLink>
+
+<NavLink to="/admin/transactions" className="side-link">
+  <CreditCard size={18} />
+  {!collapsed && <span>Transactions</span>}
 </NavLink>
 
 <NavLink to="/admin/add-product" className="side-link">

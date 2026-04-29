@@ -26,6 +26,7 @@ import DeliveryAgents from "./pages/DeliveryAgents";
 import Prebooking from "./pages/ShopDashboard/Prebooking";
 import AdminOrders from "./pages/AdminOrders";
 import AddSubcategory from "./pages/AddSubcategory";
+import AdminTransactions from "./pages/AdminTransactions";
 
 const DashboardHome = () => <h2 style={{color:"white"}}>Dashboard Overview</h2>;
 const OrdersPage = () => <h2 style={{color:"white"}}>Orders Page</h2>;
@@ -150,6 +151,7 @@ useEffect(() => {
           <Route path="dashboard" element={<Admindb />} />
           <Route path="shops" element={<AdminDashboard />} />
           <Route path="orders" element={<AdminOrders />} />
+          <Route path="transactions" element={<AdminTransactions />} />
           <Route path="add-product" element={<AddProduct />} />
           <Route path="add-subcategory" element={<AddSubcategory />} />
           <Route path="delivery-agents" element={<DeliveryAgents />} />
