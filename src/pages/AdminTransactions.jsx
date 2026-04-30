@@ -36,7 +36,6 @@ const exportCSV = (data) => {
     "Txn ID",
     "Order ID",
     "Customer Name",
-    "Customer Email",
     "Customer Phone",
     "Amount (₹)",
     "Payment Mode",
@@ -49,7 +48,6 @@ const exportCSV = (data) => {
     t.txnid,
     t.order_id || t.udf1 || "-",
     t.firstname || t.name || "-",
-    t.email || "-",
     t.phone || "-",
     parseFloat(t.amount || 0).toFixed(2),
     t.mode || t.payment_mode || "-",
@@ -82,7 +80,6 @@ function TransactionModal({ txn, onClose }) {
     { label: "Transaction ID", value: txn.txnid },
     { label: "Order ID", value: txn.order_id || txn.udf1 || "-" },
     { label: "Customer Name", value: txn.firstname || txn.name || "-" },
-    { label: "Email", value: txn.email || "-" },
     { label: "Phone", value: txn.phone || "-" },
     { label: "Amount", value: fmt(txn.amount) },
     { label: "Payment Mode", value: txn.mode || txn.payment_mode || "-" },
@@ -373,7 +370,6 @@ export default function AdminTransactions() {
               <th>Txn ID</th>
               <th>Order ID</th>
               <th>Customer</th>
-              <th>Email</th>
               <th>Phone</th>
               <th>Amount</th>
               <th>Payment Mode</th>
@@ -386,7 +382,7 @@ export default function AdminTransactions() {
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={12} className="txn-empty">
+                <td colSpan={11} className="txn-empty">
                   <CreditCard size={36} />
                   <p>No transactions found.</p>
                 </td>
@@ -398,7 +394,6 @@ export default function AdminTransactions() {
                   <td>{t.txnid || "-"}</td>
                   <td>{t.order_id || t.udf1 || "-"}</td>
                   <td>{t.firstname || t.name || "-"}</td>
-                  <td>{t.email || "-"}</td>
                   <td>{t.phone || "-"}</td>
                   <td className="txn-amount">{fmt(t.amount)}</td>
                   <td>
